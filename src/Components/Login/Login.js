@@ -16,6 +16,16 @@ function Login({setUser}) {
     const [authFailed, setAuthFailed] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
+    function hashCode(str) {
+        let hash = 0;
+        for (let i = 0, len = str.length; i < len; i++) {
+            let chr = str.charCodeAt(i);
+            hash = (hash << 5) - hash + chr;
+            hash |= 0; // Convert to 32bit integer
+        }
+        return hash.toString(16);
+    }
+
     const handleUserInputChange = event => {
         console.log("handleInputChange called.");
 
@@ -58,7 +68,16 @@ function Login({setUser}) {
                     console.log(`api returns user info and it is: ${JSON.stringify(userInfo)}`);
                     const user = userInfo.user;
                     if( userInfo.status === "OK" ) {
-                        setUser(user);
+                        // If the hashed input and the stored hash aren't the same we fail
+                        // Else we continue as normal
+                        if(hashCode(passwordInput) !== userInfo.user.password_hash){
+                            console.log("Incorrect Password")
+                            setVerifyInput(false);
+                            setAuthFailed(true);
+                        }
+                        else{
+                            setUser(user);
+                        }
                     } else  {
                         setVerifyInput(false);
                         setAuthFailed(true);

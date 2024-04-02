@@ -176,7 +176,7 @@ function Menu({user, logoutAction}) {
 
             <Main open={open}>
                 {
-                    menuItemsForUser()[selectedMenuItem].component
+                    React.cloneElement(menuItemsForUser()[selectedMenuItem].component, { user: user })
                 }
             </Main>
         </Fragment>

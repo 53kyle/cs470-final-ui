@@ -32,4 +32,20 @@ export default class APIInterface {
                 }));
     }
 
+    async mainSummaryWithID(employee_id) {
+        return axiosAgent.get(`summary/main/${employee_id}`);
+    }
+
+    async trainedSummaryWithID(employee_id) {
+        return axiosAgent.get(`summary/trained/${employee_id}`);
+    }
+
+    async availabilitySummaryWithID(employee_id) {
+        return axiosAgent.get(`summary/availability/${employee_id}`);
+    }
+
+    async requestsSummaryWithID(employee_id) {
+        return axiosAgent.get(`summary/requests/${employee_id}`);
+    }
+
 }
