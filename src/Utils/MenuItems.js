@@ -25,7 +25,7 @@ const AdminMenuItems = (props) => {
         },
         {
             title: 'All Schedules',
-            component: <AdminSchedules/>,
+            component: <AdminSchedules />,
             icon: <CalendarMonthIcon/>
         },
         {
