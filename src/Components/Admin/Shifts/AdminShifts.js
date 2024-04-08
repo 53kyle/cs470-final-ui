@@ -219,6 +219,11 @@ function AdminShiftsCell({currentWeek, shifts, row_idx, col_idx}) {
                         }
                         <Typography variant="caption" align="center" component="div" style={{ whiteSpace: "pre-wrap" }}>
                             {
+                                `Meal: ${ScheduleHelper.getMealTimesForShift(shift)}`
+                            }
+                        </Typography>
+                        <Typography variant="caption" align="center" component="div" style={{ whiteSpace: "pre-wrap" }}>
+                            {
                                 shift.employee_id != -1 ? `${shift.employee_fname} ${shift.employee_lname}` : "Any Employee"
                             }
                         </Typography>
