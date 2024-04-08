@@ -59,4 +59,14 @@ export default class APIInterface {
     async allEmployees() {
         return axiosAgent.get(`employees/all-employees`);
     }
+
+    async allPunches()
+    {
+        return axiosAgent.get(`employees/all-punches`);
+    }
+
+    async allRequests()
+    {
+        return axiosAgent.get(`employees/all-requests`);
+    }
 }
