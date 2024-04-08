@@ -114,7 +114,7 @@ function AdminDateCell({date, idx}) {
     );
 }
 
-function AdminShiftsCell({currentWeek, row_idx, col_idx}) {
+function AdminShiftsCell({currentWeek, shifts, row_idx, col_idx}) {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const menuOpen = Boolean(anchorEl);
 
@@ -139,7 +139,7 @@ function AdminShiftsCell({currentWeek, row_idx, col_idx}) {
         setAnchorEl(null);
     }
 
-    const shiftsForColumn = SampleData.sampleShifts(currentWeek)[col_idx].shifts;
+    const shiftsForColumn = shifts.filter(s => DateHelper.dateToMySQLDate(DateHelper.textToDate(s.date)) == DateHelper.dateToMySQLDate(currentWeek[col_idx]));
     const shift = row_idx < shiftsForColumn.length ? shiftsForColumn[row_idx] : 0;
 
     const cellType = row_idx < shiftsForColumn.length ? 1 : row_idx === shiftsForColumn.length ? 0 : -1;
@@ -213,18 +213,18 @@ function AdminShiftsCell({currentWeek, row_idx, col_idx}) {
                         {
                             <Typography variant="subtitle1" align="center" component="div" flexGrow={1}>
                                 {
-                                    `${shift.start_time % 12 || "12"}${Math.floor(shift.start_time/12) ? "pm" : "am" } - ${shift.end_time % 12 || "12"}${Math.floor(shift.end_time/12) ? "pm" : "am" }`
+                                    ScheduleHelper.getTimesForShift(shift)
                                 }
                             </Typography>
                         }
                         <Typography variant="caption" align="center" component="div" style={{ whiteSpace: "pre-wrap" }}>
                             {
-                                shift.employee_id != -1 ? "" : "Any Employee"
+                                shift.employee_id != -1 ? `${shift.employee_fname} ${shift.employee_lname}` : "Any Employee"
                             }
                         </Typography>
                         <Typography variant="caption" align="center" component="div" style={{ whiteSpace: "pre-wrap" }}>
                             {
-                                shift.position
+                                shift.department
                             }
                         </Typography>
                         <Typography variant="caption" align="center" component="div" style={{ whiteSpace: "pre-wrap" }}>
@@ -243,13 +243,13 @@ function AdminShiftsCell({currentWeek, row_idx, col_idx}) {
     );
 }
 
-function AdminShiftsRow({currentWeek, row_idx}) {
+function AdminShiftsRow({currentWeek, shifts, row_idx}) {
 
     return (
         <TableRow tabIndex={-1} key={1}>
             {
                 currentWeek.map((date, col_idx) => (
-                    <AdminShiftsCell currentWeek={currentWeek} row_idx={row_idx} col_idx={col_idx}/>
+                    <AdminShiftsCell currentWeek={currentWeek} shifts={shifts} row_idx={row_idx} col_idx={col_idx}/>
                 ))
             }
         </TableRow>
@@ -257,6 +257,25 @@ function AdminShiftsRow({currentWeek, row_idx}) {
 }
 
 function AdminShiftsTable({currentWeek}) {
+    const [shifts, setShifts] = useState([]);
+
+    useEffect(() => {
+        async function fetchData() {
+
+            try {
+                const api = new API();
+
+                const shiftsResponse = await api.shiftsInRange(DateHelper.dateToMySQLDate(currentWeek[0]), DateHelper.dateToMySQLDate(currentWeek[6]));
+                setShifts(shiftsResponse.data);
+
+                console.log("Shifts: " + JSON.stringify(shiftsResponse.data))
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+
+        fetchData();
+    }, [currentWeek]);
 
     return (
         <Paper sx={{ width: '100%', height: '100%', overflow: 'hidden', minWidth: 560 }}>
@@ -273,8 +292,8 @@ function AdminShiftsTable({currentWeek}) {
                     </TableHead>
                     <TableBody>
                         {
-                            ScheduleHelper.getMapForShifts(SampleData.sampleShifts(currentWeek)).map((row_idx) => (
-                                <AdminShiftsRow currentWeek={currentWeek} row_idx={row_idx} />
+                            ScheduleHelper.getNumRowsForShifts(currentWeek, shifts).map((row_idx) => (
+                                <AdminShiftsRow currentWeek={currentWeek} shifts={shifts} row_idx={row_idx} />
                             ))
                         }
                     </TableBody>

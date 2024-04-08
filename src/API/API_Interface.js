@@ -48,4 +48,15 @@ export default class APIInterface {
         return axiosAgent.get(`summary/requests/${employee_id}`);
     }
 
+    async shiftsInRange(start_date, end_date) {
+        return axiosAgent.get(`shifts/all-shifts/${start_date}/${end_date}`);
+    }
+
+    async shiftsForEmployeeInRange(start_date, end_date, employee_id) {
+        return axiosAgent.get(`shifts/employee/${employee_id}/${start_date}/${end_date}`);
+    }
+
+    async allEmployees() {
+        return axiosAgent.get(`employees/all-employees`);
+    }
 }

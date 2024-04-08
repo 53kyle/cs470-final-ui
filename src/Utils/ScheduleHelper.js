@@ -1,5 +1,28 @@
+import DateHelper from "./DateHelper";
+
+const getTimesForShift = (shift) => {
+    const startHour = new Date(shift.start_time).getHours();
+    const endHour = new Date(shift.end_time).getHours();
+
+    return `${startHour % 12 || "12"}${Math.floor(startHour/12) ? "pm" : "am"} - ${endHour % 12 || "12"}${Math.floor(endHour/12) ? "pm" : "am"}`
+}
+
+const getMealTimesForShift = (shift) => {
+    if (!shift.meal) {
+        return 'N/A'
+    }
+
+    const startHour = new Date(shift.meal_start).getHours();
+    const endHour = new Date(shift.meal_end).getHours();
+
+    return `${startHour % 12 || "12"}${Math.floor(startHour/12) ? "pm" : "am"} - ${endHour % 12 || "12"}${Math.floor(endHour/12) ? "pm" : "am"}`
+}
+
 const getHoursForShift = (shift) => {
-    return (shift.end_time - shift.start_time - shift.meal_length);
+    const startHour = new Date(shift.start_time).getHours();
+    const endHour = new Date(shift.end_time).getHours();
+    const mealLength = new Date(shift.meal_end).getHours() - new Date(shift.meal_start).getHours();
+    return (endHour - startHour - mealLength);
 }
 
 const getHoursForSchedule = (schedule) => {
@@ -12,15 +35,15 @@ const getHoursForSchedule = (schedule) => {
     return total;
 }
 
-const getMapForShifts = (shifts) => {
+const getNumRowsForShifts = (currentWeek, shifts) => {
     const numRows = Math.max(
-        shifts[0].shifts.length,
-        shifts[1].shifts.length,
-        shifts[2].shifts.length,
-        shifts[3].shifts.length,
-        shifts[4].shifts.length,
-        shifts[5].shifts.length,
-        shifts[6].shifts.length
+        shifts.filter(s => DateHelper.dateToMySQLDate(DateHelper.textToDate(s.date)) == DateHelper.dateToMySQLDate(currentWeek[0])).length,
+        shifts.filter(s => DateHelper.dateToMySQLDate(DateHelper.textToDate(s.date)) == DateHelper.dateToMySQLDate(currentWeek[1])).length,
+        shifts.filter(s => DateHelper.dateToMySQLDate(DateHelper.textToDate(s.date)) == DateHelper.dateToMySQLDate(currentWeek[2])).length,
+        shifts.filter(s => DateHelper.dateToMySQLDate(DateHelper.textToDate(s.date)) == DateHelper.dateToMySQLDate(currentWeek[3])).length,
+        shifts.filter(s => DateHelper.dateToMySQLDate(DateHelper.textToDate(s.date)) == DateHelper.dateToMySQLDate(currentWeek[4])).length,
+        shifts.filter(s => DateHelper.dateToMySQLDate(DateHelper.textToDate(s.date)) == DateHelper.dateToMySQLDate(currentWeek[5])).length,
+        shifts.filter(s => DateHelper.dateToMySQLDate(DateHelper.textToDate(s.date)) == DateHelper.dateToMySQLDate(currentWeek[6])).length
     ) + 1;
 
     return [...Array(numRows).keys()];
@@ -48,7 +71,9 @@ const getDataForShiftsTable = (shifts) => {
 }*/
 
 export default {
+    getTimesForShift: getTimesForShift,
+    getMealTimesForShift: getMealTimesForShift,
     getHoursForShift: getHoursForShift,
     getHoursForSchedule: getHoursForSchedule,
-    getMapForShifts: getMapForShifts
+    getNumRowsForShifts: getNumRowsForShifts
 }

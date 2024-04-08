@@ -203,7 +203,7 @@ function AdminScheduleCell({shift, idx}) {
                 }}
             >
                 {
-                    shift.start_time >= 0 ?
+                    shift.length > 0 ?
                     scheduledOptions.map((option) => (
                         <MenuItem onClick={option.action}>
                             <ListItemIcon>
@@ -235,27 +235,32 @@ function AdminScheduleCell({shift, idx}) {
                         height: "100%"
                     }}>
                         {
-                            ScheduleHelper.getHoursForShift(shift) ?
+                            shift.length > 0 ?
                                 <Typography variant="subtitle1" align="center" component="div" flexGrow={1}>
                                     {
-                                        `${shift.start_time % 12 || "12"}${Math.floor(shift.start_time/12) ? "pm" : "am" } - ${shift.end_time % 12 || "12"}${Math.floor(shift.end_time/12) ? "pm" : "am" }`
+                                        ScheduleHelper.getTimesForShift(shift[0])
                                     }
                                 </Typography> :
                                 <Typography variant="subtitle1" align="center" component="div" flexGrow={1} color="gray">
                                     OFF
                                 </Typography>
                         }
-
                         <Typography variant="caption" align="center" component="div" style={{ whiteSpace: "pre-wrap" }}>
                             {
-                                ScheduleHelper.getHoursForShift(shift) ?
-                                    shift.position : " "
+                                shift.length > 0 ?
+                                    `Meal: ${ScheduleHelper.getMealTimesForShift(shift[0])}` : " "
                             }
                         </Typography>
                         <Typography variant="caption" align="center" component="div" style={{ whiteSpace: "pre-wrap" }}>
                             {
-                                ScheduleHelper.getHoursForShift(shift) ?
-                                    `${ScheduleHelper.getHoursForShift(shift)} hours` : " "
+                                shift.length > 0 ?
+                                    shift[0].department : " "
+                            }
+                        </Typography>
+                        <Typography variant="caption" align="center" component="div" style={{ whiteSpace: "pre-wrap" }}>
+                            {
+                                shift.length > 0 ?
+                                    `${ScheduleHelper.getHoursForShift(shift[0])} hours` : " "
                             }
                         </Typography>
                     </Box>
@@ -265,7 +270,7 @@ function AdminScheduleCell({shift, idx}) {
     );
 }
 
-function AdminScheduleRow({currentWeek, employee, eIdx}) {
+function AdminScheduleRow({currentWeek, employee, shifts}) {
 
     return (
         <TableRow tabIndex={-1} key={1}>
@@ -285,16 +290,13 @@ function AdminScheduleRow({currentWeek, employee, eIdx}) {
                             `${employee.first_name} ${employee.last_name}`
                         }
                     </Typography>
-                    <Typography variant="caption" align="center" component="div">
-                        {
-                            `${employee.position}`
-                        }
-                    </Typography>
                 </Box>
             </TableCell>
             {
-                SampleData.complexSampleSchedule(currentWeek)[eIdx].schedule.map((shift, idx) => (
-                    <AdminScheduleCell shift={shift} idx={idx}/>
+                currentWeek.map((date, idx) => (
+                    <AdminScheduleCell idx={idx} shift={
+                        shifts.filter(s => s.employee_id == employee.employee_id && DateHelper.dateToMySQLDate(DateHelper.textToDate(s.date)) == DateHelper.dateToMySQLDate(date))
+                    }/>
                 ))
             }
             <TableCell
@@ -304,7 +306,7 @@ function AdminScheduleRow({currentWeek, employee, eIdx}) {
             >
                 <Typography variant="subtitle1" align="center" component="div">
                     {
-                        ScheduleHelper.getHoursForSchedule(SampleData.complexSampleSchedule(currentWeek)[eIdx].schedule)
+                        ScheduleHelper.getHoursForSchedule(shifts.filter(s => s.employee_id == employee.employee_id))
                     }
                 </Typography>
             </TableCell>
@@ -313,6 +315,44 @@ function AdminScheduleRow({currentWeek, employee, eIdx}) {
 }
 
 function AdminScheduleTable({currentWeek}) {
+    const [employees, setEmployees] = useState([]);
+    const [shifts, setShifts] = useState([]);
+
+    useEffect(() => {
+        async function fetchData() {
+
+            try {
+                const api = new API();
+
+                const shiftsResponse = await api.shiftsInRange(DateHelper.dateToMySQLDate(currentWeek[0]), DateHelper.dateToMySQLDate(currentWeek[6]));
+                setShifts(shiftsResponse.data);
+
+                console.log("Shifts: " + JSON.stringify(shiftsResponse.data))
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+
+        fetchData();
+    }, [currentWeek]);
+
+    useEffect(() => {
+        async function fetchData() {
+
+            try {
+                const api = new API();
+
+                const employeesResponse = await api.allEmployees();
+                setEmployees(employeesResponse.data);
+
+                console.log("Employees: " + JSON.stringify(employeesResponse.data))
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+
+        fetchData();
+    }, [])
 
     return (
         <Paper sx={{ width: '100%', height: '100%', overflow: 'hidden', minWidth: 710 }}>
@@ -343,8 +383,8 @@ function AdminScheduleTable({currentWeek}) {
                     </TableHead>
                     <TableBody>
                         {
-                            SampleData.sampleEmployees().map((employee, eIdx) => (
-                                <AdminScheduleRow currentWeek={currentWeek} employee={employee} eIdx={eIdx}/>
+                            employees.map((employee) => (
+                                <AdminScheduleRow currentWeek={currentWeek} employee={employee} shifts={shifts}/>
                             ))
                         }
                     </TableBody>

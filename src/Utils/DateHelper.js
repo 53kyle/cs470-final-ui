@@ -91,7 +91,7 @@ const dateToTextField = (date) => {
 const dateToMySQLDate = (date) => {
     const dateAsDate = new Date(date);
 
-    return dateFormat(dateAsDate, "YYYY-MM-DD");
+    return dateFormat(dateAsDate, "yyyy-mm-dd");
 }
 
 /*
@@ -103,7 +103,7 @@ const dateToMySQLDate = (date) => {
 const dateToMySQLDateTime = (date) => {
     const dateAsDate = new Date(date);
 
-    return dateFormat(dateAsDate, "YYYY-MM-DDThh:mm:ss");
+    return dateFormat(dateAsDate, "yyyy-mm-ddThh:MM:ss");
 }
 
 /*
@@ -116,7 +116,7 @@ const dateToMySQLDateTime = (date) => {
     variable.
  */
 const textToDate = (date) => {
-    return new Date(date).getTime() + millisecondsInDay;
+    return new Date(date).getTime();
 }
 
 const getPlainWeekday = (idx) => {
@@ -161,5 +161,6 @@ export default {
     dateRangeFormat: dateRangeFormat,
     dateToTextField: dateToTextField,
     textToDate: textToDate,
-    getPlainWeekday
+    getPlainWeekday: getPlainWeekday,
+    dateToMySQLDate: dateToMySQLDate
 }
