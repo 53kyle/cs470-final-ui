@@ -69,4 +69,12 @@ export default class APIInterface {
     {
         return axiosAgent.get(`employees/all-requests`);
     }
+
+    async timeOffRequestByID(employee_id) {
+        return axiosAgent.get(`employees/requests/time-off/${employee_id}`);
+    }
+
+    async availabilityRequestsByID(employee_id) {
+        return axiosAgent.get(`employees/requests/availability/${employee_id}`);
+    }
 }
