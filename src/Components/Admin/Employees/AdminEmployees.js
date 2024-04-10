@@ -15,6 +15,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import Typography from '@mui/material/Typography';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import SaveIcon from '@mui/icons-material/Save';
 
 const employeeTableAttributes = [
     {
@@ -49,7 +50,9 @@ const EmployeeTable = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [anchorEl, setAnchorEl] = useState(null);
-    const [selectedEmployee, setselectedEmployee] = useState(null);
+    const [selectedEmployee, setSelectedEmployee] = useState(null);
+    const [isEditing, setIsEditing] = useState(false);
+    const [editedEmployee, setEditedEmployee] = useState({});
 
     useEffect(() => {
         const fetchEmployees = async () => {
@@ -69,23 +72,53 @@ const EmployeeTable = () => {
 
     const handleGearClick = (event, employee) => {
         setAnchorEl(event.currentTarget);
-        setselectedEmployee(employee);
+        setSelectedEmployee(employee);
     };
 
     const handleClosePopover = () => {
         setAnchorEl(null);
     };
 
-    const handleEditHours = () => {
+    const handleEdit = () => {
         handleClosePopover();
-        // Add your approve logic here
+        setIsEditing(true);
+        //Set the edited employee object with the selected employee's information
+        setEditedEmployee(selectedEmployee);
+    };
+
+    const handleEditChange = (e) => {
+        const { name, value } = e.target;
+        setEditedEmployee(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+
+    const handleSave = async () => {
+        // Ensure selectedEmployee and editedEmployee are not null before proceeding
+        if (!selectedEmployee || !editedEmployee) return;
+
+        console.log(selectedEmployee);
+        console.log(editedEmployee);
+    
+        try {
+            const api = new API();
+            await api.updateEmployee(selectedEmployee.employee_id, editedEmployee);
+            // After successful update, you may want to update the employees list or perform any other actions
+            console.log('Employee updated successfully!');
+            setIsEditing(false); // Exit editing mode
+        } catch (error) {
+            console.error('Error updating employee:', error);
+        }
+
+        handleClosePopover();
+        setIsEditing(false);
     };
 
     const handleRemove = () => {
         handleClosePopover();
         // Add your deny logic here
     };
-
 
     const renderTableRow = (employeeObject, index) => (
         <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
@@ -94,7 +127,7 @@ const EmployeeTable = () => {
                     {employeeObject[attr.attributeDBName]}
                 </TableCell>
             ))}
-           <TableCell align="right">
+            <TableCell align="right">
                 <IconButton onClick={(event) => handleGearClick(event, employeeObject)}>
                     <SettingsIcon />
                 </IconButton>
@@ -111,11 +144,11 @@ const EmployeeTable = () => {
                         horizontal: 'right',
                     }}
                 >
-                    <MenuItem onClick={handleEditHours}>
+                    <MenuItem onClick={handleEdit}>
                         <ListItemIcon>
                             <EditIcon />
                         </ListItemIcon>
-                        <Typography variant="inherit">Edit Hours</Typography>
+                        <Typography variant="inherit">Edit</Typography>
                     </MenuItem>
                     <MenuItem onClick={handleRemove}>
                         <ListItemIcon>
@@ -151,8 +184,39 @@ const EmployeeTable = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {employees.map((employee, idx) => renderTableRow(employee, idx))}
-                    </TableBody>
+    {employees.map((employee, idx) => (
+        <Fragment key={idx}>
+            {isEditing && employee.employee_id === selectedEmployee.employee_id ? (
+                <TableRow>
+                    {employeeTableAttributes.map((attr, idx) => (
+                        attr.attributeDBName !== 'employee_id' ? (
+                            <TableCell key={idx} align={attr.align}>
+                                <input
+                                    type={attr.attributeDBName === 'max_hours' ? 'number' : 'text'}
+                                    name={attr.attributeDBName}
+                                    value={editedEmployee[attr.attributeDBName] || ''}
+                                    onChange={handleEditChange}
+                                />
+                            </TableCell>
+                        ) : (
+                            <TableCell key={idx} align={attr.align}>
+                                {employee[attr.attributeDBName]}
+                            </TableCell>
+                        )
+                    ))}
+                    <TableCell align="right">
+                        <IconButton onClick={() => handleSave(employee.employee_id)}>
+                            <SaveIcon />
+                        </IconButton>
+                    </TableCell>
+                </TableRow>
+            ) : (
+                renderTableRow(employee, idx)
+            )}
+        </Fragment>
+    ))}
+</TableBody>
+
                 </Table>
             </TableContainer>
         </Fragment>
