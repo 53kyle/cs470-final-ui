@@ -78,7 +78,7 @@ export default class APIInterface {
         return axiosAgent.get(`employees/requests/availability/${employee_id}`);
     }
 
-    async updateEmployee(employee_id, employeeData) {
-            return axiosAgent.put(`employees/update/${employee_id}`, employeeData);
+    async updateEmployee(employeeData) {
+            return axiosAgent.put(`employees/update`, employeeData);
     }
 }

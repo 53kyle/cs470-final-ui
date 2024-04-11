@@ -66,9 +66,11 @@ const EmployeeTable = () => {
                 setLoading(false);
             }
         };
-
-        fetchEmployees();
-    }, []);
+        if(!isEditing)
+        {
+            fetchEmployees();
+        }
+    }, [isEditing]);
 
     const handleGearClick = (event, employee) => {
         setAnchorEl(event.currentTarget);
@@ -103,13 +105,15 @@ const EmployeeTable = () => {
     
         try {
             const api = new API();
-            await api.updateEmployee(selectedEmployee.employee_id, editedEmployee);
+            await api.updateEmployee(editedEmployee);
             // After successful update, you may want to update the employees list or perform any other actions
             console.log('Employee updated successfully!');
             setIsEditing(false); // Exit editing mode
         } catch (error) {
             console.error('Error updating employee:', error);
         }
+
+
 
         handleClosePopover();
         setIsEditing(false);
