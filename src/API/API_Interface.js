@@ -89,4 +89,12 @@ export default class APIInterface {
     async employeesAvailableForShift(shift_id, day) {
         return axiosAgent.get(`employees/available/${shift_id}/${day}`);
     }
+
+    async employeesTrainedInShift(shift_id) {
+        return axiosAgent.get(`employees/trained/${shift_id}`);
+    }
+
+    async employeesAvailableForShift(shift_id, day) {
+        return axiosAgent.get(`employees/available/${shift_id}/${day}`);
+    }
 }
