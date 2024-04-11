@@ -9,44 +9,45 @@ import EmployeeRequests from "../Components/Employee/Requests/EmployeeRequests";
 import EmployeeSchedule from "../Components/Employee/Schedule/EmployeeSchedule";
 import EmployeeSummary from "../Components/Employee/Summary/EmployeeSummary";
 
-import HomeIcon from '@mui/icons-material/Home'; // summary icon
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'; // schedule icon
-import PeopleIcon from '@mui/icons-material/People'; // employees icon
-import EventAvailableIcon from '@mui/icons-material/EventAvailable'; // requests icon
-import EditCalendarIcon from '@mui/icons-material/EditCalendar'; // shifts icon
-import PunchClockIcon from '@mui/icons-material/PunchClock'; // punch icon
+import { FcCalendar } from "react-icons/fc";
+import { FcHome } from "react-icons/fc";
+import { FcClock } from "react-icons/fc";
+import { FcOvertime } from "react-icons/fc";
+import { FcConferenceCall } from "react-icons/fc";
+import { FcDataSheet } from "react-icons/fc"
+
 
 const AdminMenuItems = (props) => {
     return [
         {
             title: 'Summary',
             component: <AdminSummary/>,
-            icon: <HomeIcon/>
+            icon: <FcHome size="30px"/>
         },
         {
             title: 'All Schedules',
             component: <AdminSchedules />,
-            icon: <CalendarMonthIcon/>
+            icon: <FcCalendar size="30px"/>
         },
         {
             title: 'Employees',
             component: <AdminEmployees/>,
-            icon: <PeopleIcon/>
+            icon: <FcConferenceCall size="30px"/>
         },
         {
             title: 'Availability & Time Off Requests',
             component: <AdminRequests/>,
-            icon: <EventAvailableIcon/>
+            icon: <FcOvertime size="30px"/>
         },
         {
             title: 'Shifts',
             component: <AdminShifts/>,
-            icon: <EditCalendarIcon/>
+            icon: <FcDataSheet size="30px"/>
         },
         {
             title: 'Punches',
             component: <AdminPunches/>,
-            icon: <PunchClockIcon/>
+            icon: <FcClock size="30px"/>
         }
     ];
 };
@@ -56,17 +57,17 @@ const EmployeeMenuItems = (props) => {
         {
             title: 'Summary',
             component: <EmployeeSummary/>,
-            icon: <HomeIcon/>
+            icon: <FcHome size="30px"/>
         },
         {
             title: 'Schedule',
             component: <EmployeeSchedule/>,
-            icon: <CalendarMonthIcon/>
+            icon: <FcCalendar size="30px"/>,
         },
         {
             title: 'Availability & Time Off',
             component: <EmployeeRequests/>,
-            icon: <EventAvailableIcon/>
+            icon: <FcOvertime size="30px"/>
         }
     ];
 };
