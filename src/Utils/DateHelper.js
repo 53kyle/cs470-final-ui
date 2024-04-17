@@ -11,31 +11,59 @@ const millisecondsInWeek = 8.64e+7*7;
     sundayOf, mondayOf, tuesdayOf, wednesdayOf, thursdayOf, fridayOf, saturdayOf
  */
 const sundayOf = (date) => {
-    return date - (date % millisecondsInWeek) - millisecondsInDay * 3;
+    const dateAsDate = new Date(date);
+    if(dateAsDate.getDay() > 3){
+        return date - (date % millisecondsInWeek) - millisecondsInDay * 3;
+    }
+    return date - (date % millisecondsInWeek) - millisecondsInDay * 3 + millisecondsInWeek;
 };
 
 const mondayOf = (date) => {
-    return date - (date % millisecondsInWeek) - millisecondsInDay * 2;
+    const dateAsDate = new Date(date);
+    if(dateAsDate.getDay() > 3){
+        return date - (date % millisecondsInWeek) - millisecondsInDay * 2;
+    }
+    return date - (date % millisecondsInWeek) - millisecondsInDay * 2 + millisecondsInWeek;
 };
 
 const tuesdayOf = (date) => {
-    return date - (date % millisecondsInWeek) - millisecondsInDay;
+    const dateAsDate = new Date(date);
+    if(dateAsDate.getDay() > 3){
+        return date - (date % millisecondsInWeek) - millisecondsInDay;
+    }
+    return date - (date % millisecondsInWeek) - millisecondsInDay + millisecondsInWeek;
 };
 
 const wednesdayOf = (date) => {
-    return date - (date % millisecondsInWeek);
+    const dateAsDate = new Date(date);
+    if(dateAsDate.getDay() > 3){
+        return date - (date % millisecondsInWeek);
+    }
+    return date - (date % millisecondsInWeek) + millisecondsInWeek;
 };
 
 const thursdayOf = (date) => {
-    return date - (date % millisecondsInWeek) + millisecondsInDay;
+    const dateAsDate = new Date(date);
+    if(dateAsDate.getDay() > 3){
+        return date - (date % millisecondsInWeek) + millisecondsInDay;
+    }
+    return date - (date % millisecondsInWeek) + millisecondsInDay + millisecondsInWeek;
 };
 
 const fridayOf = (date) => {
-    return date - (date % millisecondsInWeek) + millisecondsInDay * 2;
+    const dateAsDate = new Date(date);
+    if(dateAsDate.getDay() > 3){
+        return date - (date % millisecondsInWeek) + millisecondsInDay * 2;
+    }
+    return date - (date % millisecondsInWeek) + millisecondsInDay * 2 + millisecondsInWeek;
 };
 
 const saturdayOf = (date) => {
-    return date - (date % millisecondsInWeek) + millisecondsInDay * 3;
+    const dateAsDate = new Date(date);
+    if(dateAsDate.getDay() > 3){
+        return date - (date % millisecondsInWeek) + millisecondsInDay * 3;
+    }
+    return date - (date % millisecondsInWeek) + millisecondsInDay * 3 + millisecondsInWeek;
 }
 
 const weekOf = (date) => {
@@ -143,6 +171,12 @@ const getPlainWeekday = (idx) => {
     }
 }
 
+function mysqlDateToMilliseconds(mysqlDateString) {
+    const mysqlDate = new Date(mysqlDateString);
+
+    return mysqlDate.getTime();
+}
+
 export default {
     millisecondsInMinute: millisecondsInMinute,
     millisecondsInHour: millisecondsInHour,
@@ -162,5 +196,6 @@ export default {
     dateToTextField: dateToTextField,
     textToDate: textToDate,
     getPlainWeekday: getPlainWeekday,
-    dateToMySQLDate: dateToMySQLDate
+    dateToMySQLDate: dateToMySQLDate,
+    mysqlDateToMilliseconds: mysqlDateToMilliseconds
 }
