@@ -8,11 +8,11 @@ import DateHelper from "../../../Utils/DateHelper";
 
 function AdminScheduleTopBar({startDate, setStartDate, endDate, setEndDate, generateSchedule, postSchedule}) {
     const handleStartDateChange = (event) => {
-        setStartDate(DateHelper.textToDate(event.target.value));
+        setStartDate(DateHelper.textToDate(event.target.value)+DateHelper.millisecondsInDay);
     }
 
     const handleEndDateChange = (event) => {
-        setEndDate(DateHelper.textToDate(event.target.value));
+        setEndDate(DateHelper.textToDate(event.target.value)+DateHelper.millisecondsInDay);
     }
 
     return(
