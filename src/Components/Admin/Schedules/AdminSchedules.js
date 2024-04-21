@@ -14,6 +14,7 @@ import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import EditCalendarIcon from '@mui/icons-material/EditCalendar';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
+import { generate } from "../../../Utils/ScheduleGeneration";
 
 import {
     Box,
@@ -327,7 +328,7 @@ function AdminScheduleTable({currentWeek}) {
                 const shiftsResponse = await api.shiftsInRange(DateHelper.dateToMySQLDate(currentWeek[0]), DateHelper.dateToMySQLDate(currentWeek[6]));
                 setShifts(shiftsResponse.data);
 
-                console.log("Shifts: " + JSON.stringify(shiftsResponse.data))
+                //console.log("Shifts: " + JSON.stringify(shiftsResponse.data))
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
@@ -345,7 +346,7 @@ function AdminScheduleTable({currentWeek}) {
                 const employeesResponse = await api.allEmployees();
                 setEmployees(employeesResponse.data);
 
-                console.log("Employees: " + JSON.stringify(employeesResponse.data))
+                //console.log("Employees: " + JSON.stringify(employeesResponse.data))
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
@@ -420,7 +421,8 @@ function AdminSchedules() {
     }
 
     const generateSchedule = () => {
-        console.log("Generate Schedule Clicked...")
+        console.log("Generate Schedule Clicked..." )
+        generate(startDate, endDate);
     }
 
     const postSchedule = () => {

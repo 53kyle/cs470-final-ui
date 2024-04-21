@@ -82,19 +82,28 @@ export default class APIInterface {
             return axiosAgent.put(`employees/update`, employeeData);
     }
 
-    async employeesTrainedInShift(shift_id) {
-        return axiosAgent.get(`employees/trained/${shift_id}`)
+    async updateShift(employee_id, shift_id) {
+        return axiosAgent.put(`shifts/update/${employee_id}/${shift_id}`);
     }
 
-    async employeesAvailableForShift(shift_id, day) {
-        return axiosAgent.get(`employees/available/${shift_id}/${day}`);
-    }
 
     async employeesTrainedInShift(shift_id) {
         return axiosAgent.get(`employees/trained/${shift_id}`);
     }
 
     async employeesAvailableForShift(shift_id, day) {
-        return axiosAgent.get(`employees/available/${shift_id}/${day}`);
+        return axiosAgent.get(`employees/available/${shift_id}`);
+    }
+
+    async employeeHoursInRange(start_date, end_date) {
+        return axiosAgent.get(`employees/hours/${start_date}/${end_date}`);
+    }
+
+    async employeeShiftsInRange(start_date, end_date) {
+        return axiosAgent.get(`employees/shifts/${start_date}/${end_date}`);
+    }
+
+    async employeeCountByShift(start_date, end_date) {
+        return axiosAgent.get(`shifts/generator/${start_date}/${end_date}`);
     }
 }
