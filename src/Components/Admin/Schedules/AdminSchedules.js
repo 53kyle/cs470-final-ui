@@ -7,6 +7,7 @@ import SampleData from "../../../Utils/SampleData";
 import ScheduleTopBar from "../../Generic/ScheduleTopBar";
 import AdminScheduleTopBar from "./AdminScheduleTopBar";
 import InfoIcon from '@mui/icons-material/Info';
+import SettingsIcon from '@mui/icons-material/Settings';
 import PeopleIcon from '@mui/icons-material/People';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
@@ -14,9 +15,6 @@ import EditCalendarIcon from '@mui/icons-material/EditCalendar';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import { generate } from "../../../Utils/ScheduleGeneration";
-import { post } from "../../../Utils/PostSchedule";
-import { FcSettings } from "react-icons/fc";
-import { useTheme } from '@mui/material/styles'
 
 import {
     Box,
@@ -35,7 +33,6 @@ import {
 function AdminDateCell({date, idx}) {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const menuOpen = Boolean(anchorEl);
-    const theme = useTheme();
 
     const handleOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -81,7 +78,7 @@ function AdminDateCell({date, idx}) {
         <TableCell
             key={idx+1}
             align="center"
-            style={{ minWidth: 80, maxWidth: 80, borderLeft: "1px solid rgba(224, 224, 224, 1)",  backgroundColor: theme.palette.primary.main, color: theme.palette.text.primary,}}
+            style={{ minWidth: 80, maxWidth: 80, borderLeft: "1px solid rgba(224, 224, 224, 1)", backgroundColor: "#eff4fb"}}
         >
             <Fragment>
                 <Box sx={{
@@ -118,12 +115,12 @@ function AdminDateCell({date, idx}) {
                         ))
                     }
                 </Menu>
-                <Typography variant="caption" align="center" component="div" color="white">
+                <Typography variant="caption" align="center" component="div">
                     {
                         DateHelper.getPlainWeekday(idx)
                     }
                 </Typography>
-                <Typography variant="subtitle1" align="center" component="div" color="white">
+                <Typography variant="subtitle1" align="center" component="div">
                     {
                         DateHelper.shorterDateFormat(date)
                     }
@@ -136,7 +133,6 @@ function AdminDateCell({date, idx}) {
 function AdminScheduleCell({shift, idx}) {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const menuOpen = Boolean(anchorEl);
-    const theme = useTheme();
 
     const handleOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -195,7 +191,7 @@ function AdminScheduleCell({shift, idx}) {
                 zIndex: 'tooltip'
             }}>
                 <IconButton aria-label="menu" size="small" onClick={handleOpen}>
-                    <FcSettings/>
+                    <SettingsIcon fontSize="small" />
                 </IconButton>
             </Box>
             <Menu
@@ -322,7 +318,6 @@ function AdminScheduleRow({currentWeek, employee, shifts}) {
 function AdminScheduleTable({currentWeek}) {
     const [employees, setEmployees] = useState([]);
     const [shifts, setShifts] = useState([]);
-    const theme = useTheme();
 
     useEffect(() => {
         async function fetchData() {
@@ -369,7 +364,7 @@ function AdminScheduleTable({currentWeek}) {
                             <TableCell
                                 key={0}
                                 align="center"
-                                style={{ minWidth: 100, maxWidth: 100, backgroundColor: theme.palette.primary.main, color: "white"}}
+                                style={{ minWidth: 100, maxWidth: 100, backgroundColor: "#eff4fb"}}
                             >
                                 Employee
                             </TableCell>
@@ -381,7 +376,7 @@ function AdminScheduleTable({currentWeek}) {
                             <TableCell
                                 key={9}
                                 align="center"
-                                style={{ minWidth: 50, maxWidth: 50, borderLeft: "1px solid rgba(224, 224, 224, 1)",  backgroundColor: theme.palette.primary.main, color: "white"}}
+                                style={{ minWidth: 50, maxWidth: 50, borderLeft: "1px solid rgba(224, 224, 224, 1)", backgroundColor: "#eff4fb"}}
                             >
                                 Total Hours
                             </TableCell>
@@ -432,8 +427,6 @@ function AdminSchedules() {
 
     const postSchedule = () => {
         console.log("Post Schedule Clicked...")
-
-        post(startDate, endDate);
     }
 
     return (
@@ -443,6 +436,7 @@ function AdminSchedules() {
                 setStartDate={(date) => handleSetStartDate(date)}
                 endDate={endDate}
                 setEndDate={(date) => handleSetEndDate(date)}
+                generateSchedule={() => generateSchedule()}
                 postSchedule={() => postSchedule()}
             />
 
