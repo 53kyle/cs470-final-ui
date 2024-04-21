@@ -100,18 +100,17 @@ function Menu({user, logoutAction}) {
                             menuItemsForUser()[selectedMenuItem].title
                         }
                     </Typography>
-
-                    <IconButton
-                        size="large"
-                        aria-label="show notifications"
-                        color="inherit"
-                    >
-                        {
+                    {!user.permission && (
+                        <IconButton
+                            size="large"
+                            aria-label="show notifications"
+                            color="inherit"
+                        >
                             <Badge badgeContent={numNotifications} color="error">
-                                <NotificationsIcon/>
+                                <NotificationsIcon />
                             </Badge>
-                        }
-                    </IconButton>
+                        </IconButton>
+                    )}
 
                     <Box sx={{
                         display: "flex",
