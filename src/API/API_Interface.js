@@ -48,6 +48,10 @@ export default class APIInterface {
         return axiosAgent.get(`summary/requests/${employee_id}`);
     }
 
+    async nextShiftForEmployee(employee_id){
+        return axiosAgent.get(`shifts/employee/${employee_id}/next`);
+    }
+
     async shiftsInRange(start_date, end_date) {
         return axiosAgent.get(`shifts/all-shifts/${start_date}/${end_date}`);
     }
@@ -63,6 +67,10 @@ export default class APIInterface {
     async allPunches()
     {
         return axiosAgent.get(`employees/all-punches`);
+    }
+
+    async lastPunchForEmployee(employee_id) {
+        return axiosAgent.get(`punchin/last-punch/${employee_id}`);
     }
 
     async allRequests()

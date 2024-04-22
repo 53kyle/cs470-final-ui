@@ -70,6 +70,18 @@ const weekOf = (date) => {
     return [sundayOf(date), mondayOf(date), tuesdayOf(date), wednesdayOf(date), thursdayOf(date), fridayOf(date), saturdayOf(date)];
 }
 
+const shortTimeFormat = (date) => {
+    const dateAsDate = new Date(date);
+
+    return dateFormat(dateAsDate, "hh:MM:ss")
+}
+
+const friendlyTimeFormat = (date) => {
+    const dateAsDate = new Date(date);
+
+    return `${dateFormat(dateAsDate, "h:MM")}${Math.floor(dateAsDate/12) ? "pm" : "am"}`
+}
+
 /*
     shortDateFormat accepts a date as a number of milliseconds, and
     returns a string in the format "mm/dd/yyyy"
@@ -190,6 +202,8 @@ export default {
     fridayOf: fridayOf,
     saturdayOf: saturdayOf,
     weekOf: weekOf,
+    shortTimeFormat: shortTimeFormat,
+    friendlyTimeFormat: friendlyTimeFormat,
     shortDateFormat: shortDateFormat,
     shorterDateFormat: shorterDateFormat,
     dateRangeFormat: dateRangeFormat,
