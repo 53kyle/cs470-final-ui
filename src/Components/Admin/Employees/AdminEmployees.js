@@ -22,6 +22,7 @@ import { FcSettings } from "react-icons/fc";
 import { FcReuse } from "react-icons/fc";
 import { FcEditImage } from "react-icons/fc";
 import { FcOk } from "react-icons/fc";
+import { FcPlanner } from "react-icons/fc";
 
 const employeeTableAttributes = [
     {
@@ -430,7 +431,7 @@ const EmployeeTable = () => {
                     </MenuItem>
                     <MenuItem onClick={handleOpenRequestsModal}>
                         <ListItemIcon>
-                            <FcFinePrint />
+                            <FcPlanner />
                         </ListItemIcon>
                         <Typography variant="inherit">View Requests</Typography>
                     </MenuItem>
