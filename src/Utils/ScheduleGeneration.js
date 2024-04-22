@@ -1,6 +1,5 @@
 import API from "../API/API_Interface";
 import DateHelper from "./DateHelper";
-import dateHelper from "./DateHelper";
 
 export async function generate(startDate, endDate) {
     try {
@@ -26,9 +25,6 @@ export async function generate(startDate, endDate) {
         // Assign empty shifts to employees
         shiftData.data.forEach(async shift => {
             // Only look at a shift if it has no employee assigned to it
-
-            //console.log(shift.start_time)
-            //console.log(DateHelper.dateToMySQLDate((DateHelper.mysqlDateToMilliseconds(shift.start_time))))
 
             if (shift.employee_id === null) {
 
