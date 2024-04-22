@@ -132,7 +132,7 @@ function AdminSummary({ user }) {
                                     </Typography>
                                     <Typography variant="body">
                                         {
-                                            availabilityForWeekday(item) && availabilityForWeekday(item).length > 0 ? `${availabilityForWeekday(item)[0].start_time} - ${availabilityForWeekday(item)[0].end_time}` : "OFF"
+                                            availabilityForWeekday(item) && availabilityForWeekday(item).length > 0 ? `${DateHelper.formatTime(availabilityForWeekday(item)[0].start_time)} - ${DateHelper.formatTime(availabilityForWeekday(item)[0].end_time)}` : "OFF"
                                         }
                                     </Typography>
                                     {
