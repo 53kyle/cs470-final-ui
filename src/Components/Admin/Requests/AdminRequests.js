@@ -39,8 +39,9 @@ const requestsTableAttributes = [
         align: 'left'
     },
     {
-        title: '',
-        align: 'right'
+        title: 'Status',
+        attributeDBName: 'status',
+        align: 'left'
     }
 ];
 
@@ -75,11 +76,19 @@ const RequestTable = () => {
     };
 
     const handleApprove = () => {
-        handleClosePopover();
+        const confirmed = window.confirm("Are you sure you want to approve this request?");
+        if (confirmed) {
+            // Perform the approve action
+            handleClosePopover();
+        }
     };
 
     const handleDeny = () => {
-        handleClosePopover();
+        const confirmed = window.confirm("Are you sure you want to deny this request??");
+        if (confirmed) {
+            // Perform the approve action
+            handleClosePopover();
+        }
     };
 
     const open = Boolean(anchorEl);
@@ -98,9 +107,11 @@ const RequestTable = () => {
                 </TableCell>
             ))}
             <TableCell align="right">
+            {requestObject.status === 'Pending' && (
                 <IconButton onClick={handleOpenPopover}>
                     <FcSettings />
                 </IconButton>
+                 )}
                 <Popover
                     open={open}
                     anchorEl={anchorEl}
