@@ -3,7 +3,7 @@ import API from "../../../API/API_Interface";
 import DateHelper from "../../../Utils/DateHelper";
 import ScheduleTopBar from "../../Generic/ScheduleTopBar";
 import {
-    Box, Button,
+    Box, Button, capitalize,
     Divider,
     IconButton,
     ListItemIcon,
@@ -118,7 +118,8 @@ function AdminDateCell({date, idx}) {
 }
 
 function AdminShiftsCell({currentWeek, shifts, row_idx, col_idx}) {
-    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [employeeAvailable, setEmployeeAvailable] = useState(true);
     const menuOpen = Boolean(anchorEl);
 
     const handleOpen = (event) => {
@@ -142,6 +143,20 @@ function AdminShiftsCell({currentWeek, shifts, row_idx, col_idx}) {
         setAnchorEl(null);
     }
 
+    const getBackgroundColor = () => {
+        if (!employeeAvailable) {
+            // red
+            return "#fbefef"
+        }
+        else if (shift.employee_id === null && shift.date != null) {
+            // yellow
+            return "#fbfbef"
+        }
+        else {
+            return "white"
+        }
+    }
+
     const shiftsForColumn = shifts.filter(s => DateHelper.dateToMySQLDate(DateHelper.textToDate(s.date)) == DateHelper.dateToMySQLDate(currentWeek[col_idx]));
     const shift = row_idx < shiftsForColumn.length ? shiftsForColumn[row_idx] : 0;
 
@@ -160,11 +175,46 @@ function AdminShiftsCell({currentWeek, shifts, row_idx, col_idx}) {
         }
     ]
 
+    useEffect (() => {
+        async function checkAvailability() {
+            try {
+                const api = new API();
+
+                if (shift.employee_id === null) {
+                    // Get list of employees who are trained to work this shift
+                    const trainedEmployeesResponse = await api.employeesTrainedInShift(shift.shift_id);
+                    const trainedEmployees = trainedEmployeesResponse.data.map(obj => obj.employee_id);
+
+                    // If there are no employees trained for this shift, log it and continue to next shift
+                    if(!trainedEmployees.length){
+                        console.log("No Employees Trained for Shift: " + shift.shift_id)
+                        setEmployeeAvailable(false);
+                    }
+
+                    // Get list of employees who are available to work this shift
+                    const availableEmployeesResponse = await api.employeesAvailableForShift(shift.shift_id);
+                    const availableEmployees = availableEmployeesResponse.data.map(obj => obj.employee_id);
+
+                    // If there are no employees available for this shift, log it and continue to next shift
+                    if(!availableEmployees.length){
+                        console.log("No Employees Available for Shift: " + shift.shift_id)
+                        setEmployeeAvailable(false);
+                    }
+                }
+
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+
+        checkAvailability();
+    }, [])
+
     return (
         <TableCell
             key={col_idx}
             align="center"
-            style={{ minWidth: 80, maxWidth: 80, borderLeft: "1px solid rgba(224, 224, 224, 1)" }}
+            style={{ minWidth: 80, maxWidth: 80, borderLeft: "1px solid rgba(224, 224, 224, 1)", backgroundColor: getBackgroundColor()}}
         >
             {
                 cellType === 1 &&
@@ -227,12 +277,13 @@ function AdminShiftsCell({currentWeek, shifts, row_idx, col_idx}) {
                         </Typography>
                         <Typography variant="caption" align="center" component="div" style={{ whiteSpace: "pre-wrap" }}>
                             {
-                                shift.employee_id != -1 ? `${shift.employee_fname} ${shift.employee_lname}` : "Any Employee"
+
+                                shift.employee_id != null ? `${shift.employee_fname} ${shift.employee_lname}` : "Any Employee"
                             }
                         </Typography>
                         <Typography variant="caption" align="center" component="div" style={{ whiteSpace: "pre-wrap" }}>
                             {
-                                shift.department
+                                capitalize(shift.department)
                             }
                         </Typography>
                         <Typography variant="caption" align="center" component="div" style={{ whiteSpace: "pre-wrap" }}>
