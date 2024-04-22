@@ -89,8 +89,6 @@ export async function generate(startDate, endDate) {
                     }
                 });
 
-                console.log(newFilteredEmployees)
-
 
                 // Find the min number of shifts
                 const minShifts = newFilteredEmployees[0].count

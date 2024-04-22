@@ -23,6 +23,8 @@ import ScheduleHelper from "../../../Utils/ScheduleHelper";
 import SampleData from "../../../Utils/SampleData";
 import AddIcon from '@mui/icons-material/Add';
 import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
+import AdminScheduleTopBar from "../Schedules/AdminScheduleTopBar";
+import {generate} from "../../../Utils/ScheduleGeneration";
 
 function AdminDateCell({date, idx}) {
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -273,7 +275,7 @@ function AdminShiftsTable({currentWeek}) {
                 const shiftsResponse = await api.shiftsInRange(DateHelper.dateToMySQLDate(currentWeek[0]), DateHelper.dateToMySQLDate(currentWeek[6]));
                 setShifts(shiftsResponse.data);
 
-                console.log("Shifts: " + JSON.stringify(shiftsResponse.data))
+                //console.log("Shifts: " + JSON.stringify(shiftsResponse.data))
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
@@ -311,6 +313,16 @@ function AdminShiftsTable({currentWeek}) {
 function AdminShifts() {
     const [currentDate, setCurrentDate] = useState(Date.now());
     const [currentWeek, setCurrentWeek] = useState(DateHelper.weekOf(Date.now()));
+    const [startDate, setStartDate] = useState(DateHelper.weekOf(Date.now())[0]);
+    const [endDate, setEndDate] = useState(DateHelper.weekOf(Date.now())[6]);
+
+    const handleSetStartDate = (date) => {
+        setStartDate(date);
+    }
+
+    const handleSetEndDate = (date) => {
+        setEndDate(date);
+    }
 
     const setPrevWeek = () => {
         const newDate = currentDate - DateHelper.millisecondsInDay*7;
@@ -324,8 +336,25 @@ function AdminShifts() {
         setCurrentWeek(DateHelper.weekOf(newDate));
     }
 
+    const generateSchedule = () => {
+        console.log("Generate Schedule Clicked..." )
+        generate(startDate, endDate);
+    }
+
+
     return (
         <Fragment>
+            <AdminScheduleTopBar
+                startDate={startDate}
+                setStartDate={(date) => handleSetStartDate(date)}
+                endDate={endDate}
+                setEndDate={(date) => handleSetEndDate(date)}
+                generateSchedule={() => generateSchedule()}
+            />
+            <Divider sx={{
+                mt: 3,
+                mb: 3
+            }}/>
             <ScheduleTopBar
                 datesLabel={DateHelper.dateRangeFormat(currentWeek[0], currentWeek[6])}
                 setPrevWeek={() => setPrevWeek()}
