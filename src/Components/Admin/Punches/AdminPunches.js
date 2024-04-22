@@ -16,6 +16,7 @@ import Typography from '@mui/material/Typography';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import { FcSettings } from "react-icons/fc";
+import { green, orange, red } from '@mui/material/colors';
 
 const punchTableAttributes = [
     {
@@ -29,18 +30,13 @@ const punchTableAttributes = [
         align: 'left'
     },
     {
-        title: 'Approved',
-        attributeDBName: 'approved',
-        align: 'left'
-    },
-    {
-        title: 'Pending',
-        attributeDBName: 'pending',
-        align: 'left'
-    },
-    {
         title: 'Type',
         attributeDBName: 'punch_type',
+        align: 'left'
+    },
+    {
+        title: 'Status',
+        attributeDBName: 'approved',
         align: 'left'
     }
 ];
@@ -102,14 +98,24 @@ const PunchTable = () => {
     const renderTableRow = (punchObject, index) => (
         <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
             {punchTableAttributes.map((attr, idx) => (
-                <TableCell key={idx} align={attr.align}>
-                    {attr.attributeDBName === 'punchin' ? formatPunchin(punchObject[attr.attributeDBName]) : punchObject[attr.attributeDBName]}
-                </TableCell>
-            ))}
+    <TableCell key={idx} align={attr.align}>
+        {attr.attributeDBName === 'approved' ? (
+            punchObject[attr.attributeDBName] ? (
+                <Typography variant="body1" style={{ color: green[500], fontSize: '0.9rem' }}>Approved</Typography>
+            ) : (
+                <Typography variant="body1" style={{ color: orange[700], fontSize: '0.9rem' }}>Pending</Typography>
+            )
+        ) : (
+            attr.attributeDBName === 'punchin' ? formatPunchin(punchObject[attr.attributeDBName]) : punchObject[attr.attributeDBName]
+        )}
+    </TableCell>
+))}
             <TableCell align="right">
+            {punchObject.approved === 0 ? (
                 <IconButton onClick={(event) => handleGearClick(event, punchObject)}>
                     <FcSettings />
                 </IconButton>
+                ) : null}
                 <Popover
                     open={Boolean(anchorEl)}
                     anchorEl={anchorEl}
