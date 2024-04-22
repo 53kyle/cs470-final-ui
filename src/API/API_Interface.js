@@ -94,11 +94,15 @@ export default class APIInterface {
         return axiosAgent.put(`shifts/update/${employee_id}/${shift_id}`);
     }
 
+    async postShift(shift_id) {
+        return axiosAgent.put(`shifts/post/${shift_id}`);
+    }
+
     async employeesTrainedInShift(shift_id) {
         return axiosAgent.get(`employees/trained/${shift_id}`);
     }
 
-    async employeesAvailableForShift(shift_id, day) {
+    async employeesAvailableForShift(shift_id) {
         return axiosAgent.get(`employees/available/${shift_id}`);
     }
 

@@ -15,6 +15,7 @@ import EditCalendarIcon from '@mui/icons-material/EditCalendar';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import { generate } from "../../../Utils/ScheduleGeneration";
+import { post } from "../../../Utils/PostSchedule";
 
 import {
     Box,
@@ -427,6 +428,7 @@ function AdminSchedules() {
 
     const postSchedule = () => {
         console.log("Post Schedule Clicked...")
+        post(startDate, endDate);
     }
 
     return (
@@ -436,7 +438,6 @@ function AdminSchedules() {
                 setStartDate={(date) => handleSetStartDate(date)}
                 endDate={endDate}
                 setEndDate={(date) => handleSetEndDate(date)}
-                generateSchedule={() => generateSchedule()}
                 postSchedule={() => postSchedule()}
             />
 

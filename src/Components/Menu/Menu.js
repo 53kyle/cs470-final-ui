@@ -96,7 +96,6 @@ function Menu({user, logoutAction}) {
                         ...prevCounts,
                         [type]: notificationCount,
                     }));
-                    console.log(notificationCounts)
                 }
 
             } catch (error) {

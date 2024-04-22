@@ -7,6 +7,7 @@ import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import DateHelper from "../../../Utils/DateHelper";
 
 function AdminScheduleTopBar({startDate, setStartDate, endDate, setEndDate, generateSchedule, postSchedule}) {
+
     const handleStartDateChange = (event) => {
         setStartDate(DateHelper.textToDate(event.target.value)+DateHelper.millisecondsInDay);
     }
@@ -46,15 +47,23 @@ function AdminScheduleTopBar({startDate, setStartDate, endDate, setEndDate, gene
                     sx={{ mr: 2 }}
                 />
 
-                <Button
-                    variant="contained"
-                    endIcon={<EventRepeatIcon />}
-                    onClick={generateSchedule}
-                    sx={{ mr: 2 }}>
-                        Generate Schedule
-                </Button>
+                {generateSchedule &&
+                    <Button
+                        variant="contained"
+                        endIcon={<EventRepeatIcon />}
+                        onClick={generateSchedule}
+                        sx={{ mr: 2 }}>
+                            Generate Schedule
+                    </Button>
+                }
 
-                <Button variant="contained" endIcon={<EventAvailableIcon />} onClick={postSchedule}>Post Schedule </Button>
+                {postSchedule &&
+                    <Button
+                        variant="contained"
+                        endIcon={<EventAvailableIcon />}
+                        onClick={postSchedule}>Post Schedule
+                    </Button>
+                }
             </Box>
         </Fragment>
     )
