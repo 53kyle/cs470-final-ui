@@ -424,25 +424,25 @@ const EmployeeTable = () => {
                     }}
                 >
                     <MenuItem onClick={handleOpenAvailabilityModal}>
-                        <ListItemIcon>
+                        <ListItemIcon style={{ fontSize: '24px'}}>
                             <FcFinePrint />
                         </ListItemIcon>
                         <Typography variant="inherit">View Availability</Typography>
                     </MenuItem>
                     <MenuItem onClick={handleOpenRequestsModal}>
-                        <ListItemIcon>
+                        <ListItemIcon style={{ fontSize: '24px'}}>
                             <FcPlanner />
                         </ListItemIcon>
                         <Typography variant="inherit">View Requests</Typography>
                     </MenuItem>
                     <MenuItem onClick={handleEdit}>
-                        <ListItemIcon>
+                        <ListItemIcon style={{ fontSize: '24px'}}>
                             <FcEditImage />
                         </ListItemIcon>
                         <Typography variant="inherit">Edit</Typography>
                     </MenuItem>
                     <MenuItem onClick={handleRemove}>
-                        <ListItemIcon>
+                        <ListItemIcon style={{ fontSize: '24px'}}>
                             <FcReuse />
                         </ListItemIcon>
                         <Typography variant="inherit">Remove</Typography>
