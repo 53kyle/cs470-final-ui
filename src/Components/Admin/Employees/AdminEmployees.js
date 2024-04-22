@@ -16,6 +16,12 @@ import Typography from '@mui/material/Typography';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
+import { Modal, Button } from '@mui/material';
+import { FcFinePrint } from "react-icons/fc";
+import { FcSettings } from "react-icons/fc";
+import { FcReuse } from "react-icons/fc";
+import { FcEditImage } from "react-icons/fc";
+import { FcOk } from "react-icons/fc";
 
 const employeeTableAttributes = [
     {
@@ -53,7 +59,8 @@ const EmployeeTable = () => {
     const [selectedEmployee, setSelectedEmployee] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [editedEmployee, setEditedEmployee] = useState({});
-
+    const [availabilityData, setAvailabilityData] = useState([]);
+    const [isAvailabilityModalOpen, setIsAvailabilityModalOpen] = useState(false);
     useEffect(() => {
         const fetchEmployees = async () => {
             try {
@@ -66,10 +73,7 @@ const EmployeeTable = () => {
                 setLoading(false);
             }
         };
-        if(!isEditing)
-        {
-            fetchEmployees();
-        }
+                fetchEmployees();
     }, [isEditing]);
 
     const handleGearClick = (event, employee) => {
@@ -119,9 +123,133 @@ const EmployeeTable = () => {
         setIsEditing(false);
     };
 
-    const handleRemove = () => {
+    const handleRemove = async () => {
+
+        if (!selectedEmployee) return;
+
+        //Display a confirmation dialog to the user
+        const confirmed = window.confirm("Are you sure you want to delete this employee?");
+        
+        if (!confirmed) {
+            handleClosePopover();
+            return;
+        }
+
+        setIsEditing(true);
+
+        try {
+            const api = new API();
+            await api.deleteEmployee(selectedEmployee.employee_id);
+            // After successful update, you may want to update the employees list or perform any other actions
+            console.log('Employee removed successfully!');
+            setIsEditing(false); // Exit editing mode
+        } catch (error) {
+            console.error('Error deleting employee:', error);
+        }
+
         handleClosePopover();
-        // Add your deny logic here
+        setIsEditing(false);
+    };
+
+
+    const AvailabilityModal = ({ open, handleClose,}) => {
+
+        console.log('availability data: ', availabilityData);
+        const availabilityArray = availabilityData.data;
+        if (!availabilityData.data || availabilityData.data.length === 0) {
+            return (
+                <Modal
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="modal-title"
+                    aria-describedby="modal-description"
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                    }}
+                >
+                    <div>
+                        <h2 id="modal-title">Availability</h2>
+                        <p id="modal-description">No availability data available.</p>
+                        <Button onClick={handleClose}>Close</Button>
+                    </div>
+                </Modal>
+            );
+        }
+
+        return (
+            <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-title"
+                aria-describedby="modal-description"
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }}
+            >
+                 <div>
+                <TableContainer component={Paper}>
+                    <Table>
+                        <TableHead>
+                        <TableRow>
+                                <TableCell colSpan={3} align="center">
+                                    <h2 id="modal-title">Availability</h2>
+                                </TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell>
+                                    <Typography variant="subtitle1" fontWeight="bold">
+                                        Day of Week
+                                    </Typography>
+                                </TableCell>
+                                <TableCell>
+                                    <Typography variant="subtitle1" fontWeight="bold">
+                                        Start Time
+                                    </Typography>
+                                </TableCell>
+                                <TableCell>
+                                    <Typography variant="subtitle1" fontWeight="bold">
+                                        End Time
+                                    </Typography>
+                                </TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {availabilityData.data.map((availability, index) => (
+                                <TableRow key={index}>
+                                    <TableCell>{availability.day_of_week}</TableCell>
+                                    <TableCell>{availability.start_time}</TableCell>
+                                    <TableCell>{availability.end_time}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <Button onClick={handleClose}>Close</Button>
+            </div>
+        </Modal>
+        );
+    };
+
+    const handleOpenAvailabilityModal = async () => {
+
+        handleClosePopover();
+
+        if (!selectedEmployee) return;
+
+        try {
+            const api = new API();
+            const fetchedAvailabilityData= await api.fetchAvailabilityByID(selectedEmployee.employee_id);
+            setAvailabilityData(fetchedAvailabilityData);
+            setIsAvailabilityModalOpen(true);
+            // After successful update, you may want to update the employees list or perform any other actions
+            console.log('Employee availability fetched successfully!');
+        } catch (error) {
+            console.error('Error fetching availibility:', error);
+        }
     };
 
     const renderTableRow = (employeeObject, index) => (
@@ -133,7 +261,7 @@ const EmployeeTable = () => {
             ))}
             <TableCell align="right">
                 <IconButton onClick={(event) => handleGearClick(event, employeeObject)}>
-                    <SettingsIcon />
+                    <FcSettings />
                 </IconButton>
                 <Popover
                     open={Boolean(anchorEl)}
@@ -148,15 +276,22 @@ const EmployeeTable = () => {
                         horizontal: 'right',
                     }}
                 >
+                    <MenuItem onClick={handleOpenAvailabilityModal}>
+                        <ListItemIcon>
+                            {/* Add an icon for viewing availability */}
+                            <FcFinePrint /> {/* Add your preferred icon for viewing availability */}
+                        </ListItemIcon>
+                        <Typography variant="inherit">View Availability</Typography>
+                    </MenuItem>
                     <MenuItem onClick={handleEdit}>
                         <ListItemIcon>
-                            <EditIcon />
+                            <FcEditImage />
                         </ListItemIcon>
                         <Typography variant="inherit">Edit</Typography>
                     </MenuItem>
                     <MenuItem onClick={handleRemove}>
                         <ListItemIcon>
-                            <DeleteIcon />
+                            <FcReuse />
                         </ListItemIcon>
                         <Typography variant="inherit">Remove</Typography>
                     </MenuItem>
@@ -175,6 +310,10 @@ const EmployeeTable = () => {
 
     return (
         <Fragment>
+            <AvailabilityModal
+                open={isAvailabilityModalOpen}
+                handleClose={() => setIsAvailabilityModalOpen(false)}
+            />
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} aria-label="employees table">
                     <TableHead>
@@ -210,7 +349,7 @@ const EmployeeTable = () => {
                     ))}
                     <TableCell align="right">
                         <IconButton onClick={() => handleSave(employee.employee_id)}>
-                            <SaveIcon />
+                            <FcOk />
                         </IconButton>
                     </TableCell>
                 </TableRow>
