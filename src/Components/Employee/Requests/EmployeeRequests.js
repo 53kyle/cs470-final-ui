@@ -15,6 +15,9 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import Typography from '@mui/material/Typography';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import { FcSettings } from "react-icons/fc";
+import { FcFullTrash } from "react-icons/fc";
+import { FcEditImage } from "react-icons/fc";
 
 const timeOffTableAttributes = [
     {
@@ -132,7 +135,7 @@ const RequestsTable = ({ user }) => {
             ))}
             <TableCell align="right">
                 <IconButton onClick={(event) => handleGearClick(event, requestObject)}>
-                    <SettingsIcon />
+                    <FcSettings />
                 </IconButton>
                 <Popover
                     open={Boolean(anchorEl)}
@@ -149,13 +152,13 @@ const RequestsTable = ({ user }) => {
                 >
                     <MenuItem onClick={handleEdit}>
                         <ListItemIcon>
-                            <EditIcon />
+                            <FcEditImage />
                         </ListItemIcon>
                         <Typography variant="inherit">Edit</Typography>
                     </MenuItem>
                     <MenuItem onClick={handleRemove}>
                         <ListItemIcon>
-                            <DeleteIcon />
+                            <FcFullTrash />
                         </ListItemIcon>
                         <Typography variant="inherit">Remove</Typography>
                     </MenuItem>
@@ -173,7 +176,7 @@ const RequestsTable = ({ user }) => {
             ))}
             <TableCell align="right">
             <IconButton onClick={(event) => handleGearClick(event, requestObject)}>
-                    <SettingsIcon />
+                    <FcSettings />
                 </IconButton>
                 <Popover
                     open={Boolean(anchorEl)}
@@ -190,13 +193,13 @@ const RequestsTable = ({ user }) => {
                 >
                     <MenuItem onClick={handleEdit}>
                         <ListItemIcon>
-                            <EditIcon />
+                            <FcEditImage />
                         </ListItemIcon>
                         <Typography variant="inherit">Edit</Typography>
                     </MenuItem>
                     <MenuItem onClick={handleRemove}>
                         <ListItemIcon>
-                            <DeleteIcon />
+                            <FcFullTrash />
                         </ListItemIcon>
                         <Typography variant="inherit">Remove</Typography>
                     </MenuItem>
