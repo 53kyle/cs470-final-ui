@@ -176,7 +176,7 @@ const RequestsTable = ({ user }) => {
                     {requestObject[attr.attributeDBName]}
                 </TableCell>
             ))}
-            {requestObject.status === 'pending' && (
+            {requestObject.status === 'Pending' && (
             <TableCell align="right">
             <IconButton onClick={(event) => handleGearClick(event, requestObject)}>
                     <FcSettings />
