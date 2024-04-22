@@ -133,6 +133,7 @@ const RequestsTable = ({ user }) => {
                     {attr.attributeDBName ? (attr.attributeDBName.includes('time') ? formatDate(requestObject[attr.attributeDBName]) : requestObject[attr.attributeDBName]) : null}
                 </TableCell>
             ))}
+            {requestObject.status === 'pending' && (
             <TableCell align="right">
                 <IconButton onClick={(event) => handleGearClick(event, requestObject)}>
                     <FcSettings />
@@ -164,6 +165,7 @@ const RequestsTable = ({ user }) => {
                     </MenuItem>
                 </Popover>
             </TableCell>
+            )}
         </TableRow>
     );
 
@@ -174,6 +176,7 @@ const RequestsTable = ({ user }) => {
                     {requestObject[attr.attributeDBName]}
                 </TableCell>
             ))}
+            {requestObject.status === 'pending' && (
             <TableCell align="right">
             <IconButton onClick={(event) => handleGearClick(event, requestObject)}>
                     <FcSettings />
@@ -191,6 +194,7 @@ const RequestsTable = ({ user }) => {
                         horizontal: 'right',
                     }}
                 >
+
                     <MenuItem onClick={handleEdit}>
                         <ListItemIcon>
                             <FcEditImage />
@@ -205,6 +209,7 @@ const RequestsTable = ({ user }) => {
                     </MenuItem>
                 </Popover>
             </TableCell>
+            )}
         </TableRow>
     );
 
