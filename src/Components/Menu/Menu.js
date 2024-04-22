@@ -1,5 +1,22 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import {Badge, Box, Button, Divider, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, styled, Toolbar, Typography, useTheme} from "@mui/material";
+import {
+    Badge,
+    Box,
+    Button,
+    Divider,
+    Drawer,
+    IconButton,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText,
+    Modal,
+    styled,
+    Toolbar,
+    Typography,
+    useTheme
+} from "@mui/material";
 
 import MenuIcon from "@mui/icons-material/Menu";
 import NotificationsIcon from "@mui/icons-material/Notifications"
@@ -10,6 +27,7 @@ import API from "../../API/API_Interface";
 import MuiAppBar from '@mui/material/AppBar';
 
 import {AdminMenuItems, EmployeeMenuItems} from "../../Utils/MenuItems";
+import EmployeeNotifications from "../Employee/Notifications/EmployeeNotifications";
 
 let drawerWidth = 240;
 
@@ -58,6 +76,17 @@ const DrawerHeader = styled('div')(({ theme }) => ({
     justifyContent: 'flex-end',
 }));
 
+const notificationsStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    p: 4,
+};
+
 function Menu({user, logoutAction}) {
     const theme = useTheme();
 
@@ -65,6 +94,20 @@ function Menu({user, logoutAction}) {
     const [selectedMenuItem, setSelectedMenuItem] = useState(0);
     const [numNotifications, setNumNotifications] = useState(0);
     const [notificationCounts, setNotificationCounts] = useState({});
+    const [notifications, setNotifications] = useState([]);
+    const [notificationsOpen, setNotificationsOpen] = React.useState(false);
+
+    const handleOpenNotifications = () => setNotificationsOpen(true);
+    const handleCloseNotifications = () => {
+        const setNotificationsRead = async () => {
+            const api = new API();
+            const notificationsResponse = await api.setNotificationsReadForEmployee(user.employee_id);
+        }
+
+        setNotificationsRead()
+        setNotificationsOpen(false)
+    };
+
     const handleDrawerOpen = () => {
         setOpen(true);
     };
@@ -103,13 +146,31 @@ function Menu({user, logoutAction}) {
             }
         };
 
+        async function fetchData() {
+            try {
+                const api = new API();
+
+                const notificationsResponse = await api.getNotificationsForEmployee(user.employee_id);
+                setNotifications(notificationsResponse.data);
+
+                const unreadNotifications = notificationsResponse.data.filter((notification) => notification.unread === 1);
+                setNumNotifications(unreadNotifications.length);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+
+        if (!notificationsOpen) {
+            fetchData();
+        }
+
         // Fetch notification counts for each menu item
         menuItemsForUser().forEach(item => {
             if (item.notifications) {
                 fetchNotificationCount(item.notifications);
             }
         });
-    }, []);
+    }, [notificationsOpen]);
 
     const menuItemsForUser = () => {
         return user.permission ? AdminMenuItems() : EmployeeMenuItems();
@@ -136,15 +197,19 @@ function Menu({user, logoutAction}) {
                         }
                     </Typography>
                     {!user.permission && (
-                        <IconButton
-                            size="large"
-                            aria-label="show notifications"
-                            color="inherit"
-                        >
-                            <Badge badgeContent={numNotifications} color="error">
-                                <NotificationsIcon />
-                            </Badge>
-                        </IconButton>
+                        <Fragment>
+                            <IconButton
+                                size="large"
+                                aria-label="show notifications"
+                                color="inherit"
+                                onClick={handleOpenNotifications}
+                            >
+                                <Badge badgeContent={numNotifications} color="error">
+                                    <NotificationsIcon />
+                                </Badge>
+                            </IconButton>
+
+                        </Fragment>
                     )}
 
                     <Box sx={{
@@ -218,7 +283,18 @@ function Menu({user, logoutAction}) {
                     ))}
                 </List>
             </Drawer>
+            <Modal
+                open={notificationsOpen}
+                onClose={handleCloseNotifications}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={notificationsStyle}>
+                    <EmployeeNotifications user={user} sx={{
 
+                    }}/>
+                </Box>
+            </Modal>
             <Main open={open}>
                 {
                     React.cloneElement(menuItemsForUser()[selectedMenuItem].component, { user: user })

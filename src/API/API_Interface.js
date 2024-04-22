@@ -133,4 +133,12 @@ export default class APIInterface {
     async fetchAvailabilityByID(employee_id) {
         return axiosAgent.get(`employees/availability/${employee_id}`);
     }
+
+    async getNotificationsForEmployee(employee_id) {
+        return axiosAgent.get(`notifications/all-notifications/${employee_id}`);
+    }
+
+    async setNotificationsReadForEmployee(employee_id) {
+        return axiosAgent.put(`notifications/set-notifications-read/${employee_id}`)
+    }
 }
