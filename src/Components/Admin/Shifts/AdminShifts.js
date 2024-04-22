@@ -149,13 +149,15 @@ function AdminShiftsCell({currentWeek, shifts, row_idx, col_idx}) {
     const cellType = row_idx < shiftsForColumn.length ? 1 : row_idx === shiftsForColumn.length ? 0 : -1;
 
     const getBackgroundColor = () => {
-        if (!employeeAvailable && cellType > 0) {
-            // red
-            return "#fbefef"
-        }
-        else if (shift.employee_id === null && cellType > 0) {
-            // yellow
-            return "#fbfbef"
+        if (shift.employee_id === null && cellType > 0) {
+            if (!employeeAvailable && cellType > 0) {
+                // red
+                return "#fbefef"
+            }
+            else {
+                // yellow
+                return "#fbfbef"
+            }
         }
         else {
             return "white"
