@@ -189,6 +189,29 @@ function mysqlDateToMilliseconds(mysqlDateString) {
     return mysqlDate.getTime();
 }
 
+const formatDateTime = (dateTimeString) => {
+    const options = {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true
+    };
+    const dateTime = new Date(dateTimeString);
+    return dateTime.toLocaleString(undefined, options);
+};
+
+const formatTime = (timeString) => {
+    const options = {
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true // Use 12-hour format
+    };
+    const time = new Date(`2000-01-01T${timeString}`);
+    return time.toLocaleString(undefined, options);
+};
+
 export default {
     millisecondsInMinute: millisecondsInMinute,
     millisecondsInHour: millisecondsInHour,
@@ -211,5 +234,7 @@ export default {
     textToDate: textToDate,
     getPlainWeekday: getPlainWeekday,
     dateToMySQLDate: dateToMySQLDate,
-    mysqlDateToMilliseconds: mysqlDateToMilliseconds
+    mysqlDateToMilliseconds: mysqlDateToMilliseconds,
+    formatDateTime,
+    formatTime
 }

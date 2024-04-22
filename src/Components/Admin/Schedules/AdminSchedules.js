@@ -428,6 +428,7 @@ function AdminSchedules() {
 
     const postSchedule = () => {
         console.log("Post Schedule Clicked...")
+
         post(startDate, endDate);
     }
 
