@@ -80,15 +80,56 @@ function AdminScheduleTopBar({startDate, setStartDate, endDate, setEndDate, gene
                     sx={{ mr: 2 }}
                 />
 
-                {generateSchedule &&
-                    <Button
-                        variant="contained"
-                        endIcon={<EventRepeatIcon />}
-                        onClick={generateSchedule}
-                        sx={{ mr: 2 }}>
-                        Generate Schedule
-                    </Button>
-                }
+                {generateSchedule && (
+                    <>
+                        <Button
+                            variant="contained"
+                            endIcon={<EventAvailableIcon />}
+                            onClick={handleOpen}
+                        >
+                            Generate Schedule
+                        </Button>
+                        {unfilledShifts.length == 0 ? (
+                            <Dialog
+                                open={open}
+                                onClose={handleClose}
+                                aria-labelledby="alert-dialog-title"
+                                aria-describedby="alert-dialog-description"
+                            >
+                                <DialogTitle
+                                    id="alert-dialog-title"
+                                    sx={{
+                                        fontWeight: 'bold',
+                                        color: 'Black'
+                                    }}
+                                >
+                                    {"No shifts to fill"}
+                                </DialogTitle>
+                                <DialogActions sx={{ justifyContent: 'space-between' }}>
+                                    <Button onClick={handleClose}>Close</Button>
+                                </DialogActions>
+                            </Dialog>
+                        ) : (
+                            <Dialog
+                                open={open}
+                                onClose={handleClose}
+                                aria-labelledby="confirmation-dialog-title"
+                                aria-describedby="confirmation-dialog-description"
+                            >
+                                <DialogTitle id="confirmation-dialog-title">Generating Shifts from {DateHelper.formatDateTime(startDate)} - {DateHelper.formatDateTime(endDate)}</DialogTitle>
+                                <DialogTitle id="confirmation-dialog-title">Are you sure you want to Generate {unfilledShifts.length} Shifts?</DialogTitle>
+                                <DialogActions>
+                                    <Button onClick={() => { generateSchedule(); handleClose(); }} color="error">
+                                        Yes
+                                    </Button>
+                                    <Button onClick={handleClose} autoFocus>
+                                        No
+                                    </Button>
+                                </DialogActions>
+                            </Dialog>
+                        )}
+                    </>
+                )}
 
                 {postSchedule && (
                     <>
@@ -134,7 +175,7 @@ function AdminScheduleTopBar({startDate, setStartDate, endDate, setEndDate, gene
                                     </List>
                                 </DialogContent>
                                 <DialogActions sx={{ justifyContent: 'space-between' }}>
-                                    <Button onClick={postSchedule} color="error">
+                                    <Button onClick={() => { postSchedule(); handleClose(); }} color="error">
                                         Post Anyways
                                     </Button>
                                     <Button onClick={handleClose}>Close</Button>
@@ -149,7 +190,7 @@ function AdminScheduleTopBar({startDate, setStartDate, endDate, setEndDate, gene
                             >
                                 <DialogTitle id="confirmation-dialog-title">Are you sure you want to post this schedule? ({shifts.length} Shifts)</DialogTitle>
                                 <DialogActions>
-                                    <Button onClick={postSchedule} color="error">
+                                    <Button onClick={() => { postSchedule(); handleClose(); }} color="error">
                                         Yes
                                     </Button>
                                     <Button onClick={handleClose} autoFocus>
