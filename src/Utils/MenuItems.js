@@ -37,7 +37,8 @@ const AdminMenuItems = (props) => {
         {
             title: 'Availability & Time Off Requests',
             component: <AdminRequests/>,
-            icon: <FcOvertime size="30px"/>
+            icon: <FcOvertime size="30px"/>,
+            notifications: "availabilityTimeOffPendingCount"
         },
         {
             title: 'Shifts',
@@ -47,7 +48,8 @@ const AdminMenuItems = (props) => {
         {
             title: 'Punches',
             component: <AdminPunches/>,
-            icon: <FcClock size="30px"/>
+            icon: <FcClock size="30px"/>,
+            notifications: "punchInPendingCount"
         }
     ];
 };

@@ -105,4 +105,12 @@ export default class APIInterface {
     async employeeCountByShift(start_date, end_date) {
         return axiosAgent.get(`shifts/generator/${start_date}/${end_date}`);
     }
+
+    async availabilityTimeOffPendingCount() {
+        return axiosAgent.get(`notifications/pending-count`);
+    }
+
+    async punchInPendingCount() {
+        return axiosAgent.get(`notifications/punch-pending-count`);
+    }
 }
