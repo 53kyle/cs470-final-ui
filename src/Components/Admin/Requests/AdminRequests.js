@@ -15,6 +15,7 @@ import MenuList from '@mui/material/MenuList';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
+import { FcSettings } from "react-icons/fc";
 
 const requestsTableAttributes = [
     {
@@ -98,7 +99,7 @@ const RequestTable = () => {
             ))}
             <TableCell align="right">
                 <IconButton onClick={handleOpenPopover}>
-                    <SettingsIcon />
+                    <FcSettings />
                 </IconButton>
                 <Popover
                     open={open}
