@@ -247,7 +247,7 @@ const EmployeeTable = () => {
 
     const RequestsModal = ({ open, handleClose}) => {
 
-        if (timeOffData.data.length <=0 && availabilityRequestsData.data.length <=0) {
+        if ((!timeOffData.data && !availabilityRequestsData.data) || (timeOffData.data.length <=0 && availabilityRequestsData.data.length <=0)) {
             return (
                 <Modal
                     open={open}
@@ -282,7 +282,7 @@ const EmployeeTable = () => {
                 }}
             >
                 <div>
-                {timeOffData.data.length > 0 && (
+                {timeOffData.data && timeOffData.data.length > 0 && (
                     <TableContainer component={Paper} style={{ marginBottom: '16px' }}>
                         <Table>
                             <TableHead>
@@ -316,7 +316,7 @@ const EmployeeTable = () => {
                     </TableContainer>
                     )}
     
-                    {availabilityRequestsData.data.length > 0 && (
+                    {availabilityRequestsData.data && availabilityRequestsData.data.length > 0 && (
                     <TableContainer component={Paper}>
                         <Table>
                             <TableHead>
