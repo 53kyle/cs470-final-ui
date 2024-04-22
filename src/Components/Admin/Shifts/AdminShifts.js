@@ -25,6 +25,7 @@ import AddIcon from '@mui/icons-material/Add';
 import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
 import AdminScheduleTopBar from "../Schedules/AdminScheduleTopBar";
 import {generate} from "../../../Utils/ScheduleGeneration";
+import { FcSettings } from "react-icons/fc";
 
 function AdminDateCell({date, idx}) {
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -176,7 +177,7 @@ function AdminShiftsCell({currentWeek, shifts, row_idx, col_idx}) {
                         zIndex: 'tooltip'
                     }}>
                         <IconButton aria-label="menu" size="small" onClick={handleOpen}>
-                            <SettingsIcon fontSize="small" />
+                            <FcSettings/>
                         </IconButton>
                     </Box>
                     <Menu

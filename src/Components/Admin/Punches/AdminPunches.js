@@ -15,6 +15,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import Typography from '@mui/material/Typography';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
+import { FcSettings } from "react-icons/fc";
 
 const punchTableAttributes = [
     {
@@ -107,7 +108,7 @@ const PunchTable = () => {
             ))}
             <TableCell align="right">
                 <IconButton onClick={(event) => handleGearClick(event, punchObject)}>
-                    <SettingsIcon />
+                    <FcSettings />
                 </IconButton>
                 <Popover
                     open={Boolean(anchorEl)}

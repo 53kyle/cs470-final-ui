@@ -16,6 +16,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import { generate } from "../../../Utils/ScheduleGeneration";
 import { post } from "../../../Utils/PostSchedule";
+import { FcSettings } from "react-icons/fc";
 
 import {
     Box,
@@ -192,7 +193,7 @@ function AdminScheduleCell({shift, idx}) {
                 zIndex: 'tooltip'
             }}>
                 <IconButton aria-label="menu" size="small" onClick={handleOpen}>
-                    <SettingsIcon fontSize="small" />
+                    <FcSettings/>
                 </IconButton>
             </Box>
             <Menu
