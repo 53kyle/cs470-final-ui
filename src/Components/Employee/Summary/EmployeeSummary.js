@@ -34,7 +34,8 @@ function EmployeeSummary({ user }) {
                 const api = new API();
 
                 const trainedResponse = await api.trainedSummaryWithID(user.employee_id);
-                setTrainedSummary(trainedResponse.data);
+                const uniqueTrained = [...new Set(trainedResponse.data.map(item => item.department))]
+                setTrainedSummary(uniqueTrained);
 
                 const availabilityResponse = await api.availabilitySummaryWithID(user.employee_id);
                 setAvailabilitySummary(availabilityResponse.data);
@@ -86,9 +87,9 @@ function EmployeeSummary({ user }) {
                     )}
                     <ContentBox title="Trained Departments" content={
                         trainedSummary && (
-                            trainedSummary.map((item, index) => (
+                            trainedSummary.filter((trained, i, self) => i === self.indexOf(trained)).map((item, index) => (
                                 <Typography key={index} variant="h6">
-                                    {capitalize(item.department)}
+                                    {capitalize(item)}
                                 </Typography>
                             ))
                         )}/>
