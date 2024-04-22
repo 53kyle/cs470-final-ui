@@ -1,10 +1,11 @@
 import DateHelper from "./DateHelper";
+import dateFormat from "dateformat";
 
 const getTimesForShift = (shift) => {
     const startHour = new Date(shift.start_time).getHours();
     const endHour = new Date(shift.end_time).getHours();
 
-    return `${startHour % 12 || "12"}${Math.floor(startHour/12) ? "pm" : "am"} - ${endHour % 12 || "12"}${Math.floor(endHour/12) ? "pm" : "am"}`
+    return `${dateFormat(shift.start_time, "h:MM")}${Math.floor(startHour/12) ? "pm" : "am"} - ${dateFormat(shift.end_time, "h:MM")}${Math.floor(endHour/12) ? "pm" : "am"}`
 }
 
 const getMealTimesForShift = (shift) => {
@@ -15,7 +16,7 @@ const getMealTimesForShift = (shift) => {
     const startHour = new Date(shift.meal_start).getHours();
     const endHour = new Date(shift.meal_end).getHours();
 
-    return `${startHour % 12 || "12"}${Math.floor(startHour/12) ? "pm" : "am"} - ${endHour % 12 || "12"}${Math.floor(endHour/12) ? "pm" : "am"}`
+    return `${dateFormat(shift.meal_start, "h:MM")}${Math.floor(startHour/12) ? "pm" : "am"} - ${dateFormat(shift.meal_end, "h:MM")}${Math.floor(endHour/12) ? "pm" : "am"}`
 }
 
 const getHoursForShift = (shift) => {
