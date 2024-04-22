@@ -51,6 +51,14 @@ const employeeTableAttributes = [
     }
 ];
 
+const formatTime = (timeString) => {
+    const time = new Date(timeString);
+    const hours = time.getHours() % 12 || 12; // Convert 0 to 12
+    const minutes = time.getMinutes().toString().padStart(2, '0');
+    const period = time.getHours() >= 12 ? 'PM' : 'AM';
+    return `${hours}:${minutes} ${period}`;
+};
+
 const EmployeeTable = () => {
     const [employees, setEmployees] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -61,6 +69,10 @@ const EmployeeTable = () => {
     const [editedEmployee, setEditedEmployee] = useState({});
     const [availabilityData, setAvailabilityData] = useState([]);
     const [isAvailabilityModalOpen, setIsAvailabilityModalOpen] = useState(false);
+    const [availabilityRequestsData, setAvailabilityRequestsData] = useState([]);
+    const [timeOffData, setTimeOffData] = useState([]);
+    const [isRequestsModalOpen, setIsRequestsModalOpen] = useState(false);
+
     useEffect(() => {
         const fetchEmployees = async () => {
             try {
@@ -152,10 +164,9 @@ const EmployeeTable = () => {
     };
 
 
-    const AvailabilityModal = ({ open, handleClose,}) => {
+    const AvailabilityModal = ({open, handleClose}) => {
 
         console.log('availability data: ', availabilityData);
-        const availabilityArray = availabilityData.data;
         if (!availabilityData.data || availabilityData.data.length === 0) {
             return (
                 <Modal
@@ -234,6 +245,123 @@ const EmployeeTable = () => {
         );
     };
 
+    const RequestsModal = ({ open, handleClose}) => {
+
+        if (timeOffData.data.length <=0 && availabilityRequestsData.data.length <=0) {
+            return (
+                <Modal
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="modal-title"
+                    aria-describedby="modal-description"
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                    }}
+                >
+                    <div>
+                        <h2 id="modal-title">Requests</h2>
+                        <p id="modal-description">No requests available.</p>
+                        <Button onClick={handleClose}>Close</Button>
+                    </div>
+                </Modal>
+            );
+        }
+
+        return (
+            <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-title"
+                aria-describedby="modal-description"
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }}
+            >
+                <div>
+                {timeOffData.data.length > 0 && (
+                    <TableContainer component={Paper} style={{ marginBottom: '16px' }}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell colSpan={3} align="center">
+                                        <Typography variant="h6">Time Off Requests</Typography>
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell>
+                                        <Typography variant="subtitle1" fontWeight="bold">
+                                            Start Time
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography variant="subtitle1" fontWeight="bold">
+                                            End Time
+                                        </Typography>
+                                    </TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {timeOffData.data.map((request, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell>{new Date(request.start_time).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })} - {new Date(request.start_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</TableCell>
+                                        <TableCell>{new Date(request.end_time).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })} - {new Date(request.end_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    )}
+    
+                    {availabilityRequestsData.data.length > 0 && (
+                    <TableContainer component={Paper}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell colSpan={3} align="center">
+                                        <Typography variant="h6">Availability Requests</Typography>
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell>
+                                        <Typography variant="subtitle1" fontWeight="bold">
+                                            Day of Week
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography variant="subtitle1" fontWeight="bold">
+                                            Start Time
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography variant="subtitle1" fontWeight="bold">
+                                            End Time
+                                        </Typography>
+                                    </TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {availabilityRequestsData.data.map((request, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell>{request.day_of_week}</TableCell>
+                                        <TableCell>{request.start_time}</TableCell>
+                                        <TableCell>{request.end_time}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    )}
+    
+                    <Button onClick={handleClose}>Close</Button>
+                </div>
+            </Modal>
+        );
+    };
+
     const handleOpenAvailabilityModal = async () => {
 
         handleClosePopover();
@@ -245,10 +373,28 @@ const EmployeeTable = () => {
             const fetchedAvailabilityData= await api.fetchAvailabilityByID(selectedEmployee.employee_id);
             setAvailabilityData(fetchedAvailabilityData);
             setIsAvailabilityModalOpen(true);
-            // After successful update, you may want to update the employees list or perform any other actions
             console.log('Employee availability fetched successfully!');
         } catch (error) {
             console.error('Error fetching availibility:', error);
+        }
+    };
+    
+    const handleOpenRequestsModal = async () => {
+
+        handleClosePopover();
+
+        if (!selectedEmployee) return;
+
+        try {
+            const api = new API();
+            const fetchedTimeOffData= await api.timeOffRequestByID(selectedEmployee.employee_id);
+            const fetchedAvailabilityRequestData= await api.availabilityRequestsByID(selectedEmployee.employee_id);
+            setTimeOffData(fetchedTimeOffData);
+            setAvailabilityRequestsData(fetchedAvailabilityRequestData);
+            setIsRequestsModalOpen(true);
+            console.log('Employee Requests fetched successfully!');
+        } catch (error) {
+            console.error('Error fetching requests modal:', error);
         }
     };
 
@@ -278,10 +424,15 @@ const EmployeeTable = () => {
                 >
                     <MenuItem onClick={handleOpenAvailabilityModal}>
                         <ListItemIcon>
-                            {/* Add an icon for viewing availability */}
-                            <FcFinePrint /> {/* Add your preferred icon for viewing availability */}
+                            <FcFinePrint />
                         </ListItemIcon>
                         <Typography variant="inherit">View Availability</Typography>
+                    </MenuItem>
+                    <MenuItem onClick={handleOpenRequestsModal}>
+                        <ListItemIcon>
+                            <FcFinePrint />
+                        </ListItemIcon>
+                        <Typography variant="inherit">View Requests</Typography>
                     </MenuItem>
                     <MenuItem onClick={handleEdit}>
                         <ListItemIcon>
@@ -313,6 +464,10 @@ const EmployeeTable = () => {
             <AvailabilityModal
                 open={isAvailabilityModalOpen}
                 handleClose={() => setIsAvailabilityModalOpen(false)}
+            />
+            <RequestsModal
+                open={isRequestsModalOpen}
+                handleClose={() => setIsRequestsModalOpen(false)}
             />
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} aria-label="employees table">
