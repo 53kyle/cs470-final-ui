@@ -143,12 +143,17 @@ function AdminShiftsCell({currentWeek, shifts, row_idx, col_idx}) {
         setAnchorEl(null);
     }
 
+    const shiftsForColumn = shifts.filter(s => DateHelper.dateToMySQLDate(DateHelper.textToDate(s.date)) == DateHelper.dateToMySQLDate(currentWeek[col_idx]));
+    const shift = row_idx < shiftsForColumn.length ? shiftsForColumn[row_idx] : 0;
+
+    const cellType = row_idx < shiftsForColumn.length ? 1 : row_idx === shiftsForColumn.length ? 0 : -1;
+
     const getBackgroundColor = () => {
-        if (!employeeAvailable) {
+        if (!employeeAvailable && cellType > 0) {
             // red
             return "#fbefef"
         }
-        else if (shift.employee_id === null && shift.date != null) {
+        else if (shift.employee_id === null && cellType > 0) {
             // yellow
             return "#fbfbef"
         }
@@ -156,11 +161,6 @@ function AdminShiftsCell({currentWeek, shifts, row_idx, col_idx}) {
             return "white"
         }
     }
-
-    const shiftsForColumn = shifts.filter(s => DateHelper.dateToMySQLDate(DateHelper.textToDate(s.date)) == DateHelper.dateToMySQLDate(currentWeek[col_idx]));
-    const shift = row_idx < shiftsForColumn.length ? shiftsForColumn[row_idx] : 0;
-
-    const cellType = row_idx < shiftsForColumn.length ? 1 : row_idx === shiftsForColumn.length ? 0 : -1;
 
     const scheduledOptions = [
         {
@@ -194,6 +194,8 @@ function AdminShiftsCell({currentWeek, shifts, row_idx, col_idx}) {
                     // Get list of employees who are available to work this shift
                     const availableEmployeesResponse = await api.employeesAvailableForShift(shift.shift_id);
                     const availableEmployees = availableEmployeesResponse.data.map(obj => obj.employee_id);
+
+                    console.log(availableEmployees.data)
 
                     // If there are no employees available for this shift, log it and continue to next shift
                     if(!availableEmployees.length){
