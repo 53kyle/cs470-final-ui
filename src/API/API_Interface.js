@@ -125,4 +125,12 @@ export default class APIInterface {
     async punchInPendingCount() {
         return axiosAgent.get(`notifications/punch-pending-count`);
     }
+    
+    async deleteEmployee(employee_id) {
+        return axiosAgent.delete(`employees/delete/${employee_id}`);
+    }
+
+    async fetchAvailabilityByID(employee_id) {
+        return axiosAgent.get(`employees/availability/${employee_id}`);
+    }
 }
