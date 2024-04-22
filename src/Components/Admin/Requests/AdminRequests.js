@@ -16,6 +16,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import { FcSettings } from "react-icons/fc";
+import Typography from '@mui/material/Typography';
 
 const requestsTableAttributes = [
     {
@@ -99,11 +100,45 @@ const RequestTable = () => {
         return new Date(dateString).toLocaleDateString('en-US', options);
     };
 
+    const getStatusColor = (status) => {
+        switch (status) {
+            case 'Approved':
+                return 'green';
+            case 'Pending':
+                return 'orange';
+            case 'Denied':
+                return 'red';
+            default:
+                return 'inherit';
+        }
+    };
+    
+    const getStatusText = (status) => {
+        switch (status) {
+            case 'Approved':
+                return 'Approved';
+            case 'Pending':
+                return 'Pending';
+            case 'Denied':
+                return 'Denied';
+            default:
+                return 'Unknown';
+        }
+    };
+
     const renderTableRow = (requestObject, index) => (
         <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
             {requestsTableAttributes.map((attr, idx) => (
                 <TableCell key={idx} align={attr.align}>
-                    {attr.attributeDBName ? (attr.attributeDBName.includes('time') ? formatDate(requestObject[attr.attributeDBName]) : requestObject[attr.attributeDBName]) : null}
+                    {attr.attributeDBName === 'status' ? (
+                    <Typography variant="body1" style={{ color: getStatusColor(requestObject[attr.attributeDBName]), fontSize: '0.9rem' }}>
+                        {getStatusText(requestObject[attr.attributeDBName])}
+                    </Typography>
+                ) : (
+                    attr.attributeDBName && attr.attributeDBName.includes('time') 
+                        ? formatDate(requestObject[attr.attributeDBName]) 
+                        : requestObject[attr.attributeDBName]
+                )}
                 </TableCell>
             ))}
             <TableCell align="right">
