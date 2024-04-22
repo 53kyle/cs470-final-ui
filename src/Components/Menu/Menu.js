@@ -1,10 +1,11 @@
-import React, { useState, Fragment } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import {Badge, Box, Button, Divider, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, styled, Toolbar, Typography, useTheme} from "@mui/material";
 
 import MenuIcon from "@mui/icons-material/Menu";
 import NotificationsIcon from "@mui/icons-material/Notifications"
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import API from "../../API/API_Interface";
 
 import MuiAppBar from '@mui/material/AppBar';
 
@@ -63,7 +64,7 @@ function Menu({user, logoutAction}) {
     const [open, setOpen] = useState(false);
     const [selectedMenuItem, setSelectedMenuItem] = useState(0);
     const [numNotifications, setNumNotifications] = useState(0);
-
+    const [notificationCounts, setNotificationCounts] = useState({});
     const handleDrawerOpen = () => {
         setOpen(true);
     };
@@ -75,6 +76,41 @@ function Menu({user, logoutAction}) {
     const handleSelectMenuItem = (idx) => {
         setSelectedMenuItem(idx);
     }
+
+    useEffect(() => {
+        const fetchNotificationCount = async (type) => {
+            try {
+                const api = new API();
+                if(type === "availabilityTimeOffPendingCount"){
+                    const response = await api.availabilityTimeOffPendingCount();
+                    const notificationCount = response.data[0].total_pending_count;
+                    setNotificationCounts(prevCounts => ({
+                        ...prevCounts,
+                        [type]: notificationCount,
+                    }));
+                }
+                else if(type === "punchInPendingCount"){
+                    const response = await api.punchInPendingCount();
+                    const notificationCount = response.data[0].count;
+                    setNotificationCounts(prevCounts => ({
+                        ...prevCounts,
+                        [type]: notificationCount,
+                    }));
+                    console.log(notificationCounts)
+                }
+
+            } catch (error) {
+                console.error('Error fetching notification count:', error);
+            }
+        };
+
+        // Fetch notification counts for each menu item
+        menuItemsForUser().forEach(item => {
+            if (item.notifications) {
+                fetchNotificationCount(item.notifications);
+            }
+        });
+    }, []);
 
     const menuItemsForUser = () => {
         return user.permission ? AdminMenuItems() : EmployeeMenuItems();
@@ -163,10 +199,21 @@ function Menu({user, logoutAction}) {
                             <ListItemButton
                                 onClick={ () => handleSelectMenuItem(index) }
                             >
-                                <ListItemIcon>
+                                <ListItemIcon sx={{ color: 'primary' }}>
                                     {item.icon}
                                 </ListItemIcon>
                                 <ListItemText primary={item.title} />
+                                {item.notifications && (
+                                    <Badge
+                                        badgeContent={notificationCounts[item.notifications]}
+                                        color="error"
+                                        sx={{
+                                            fontSize: 16,
+                                        }}
+                                    >
+                                        <NotificationsIcon />
+                                    </Badge>
+                                )}
                             </ListItemButton>
                         </ListItem>
                     ))}
