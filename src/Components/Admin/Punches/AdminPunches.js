@@ -16,6 +16,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
 import { FcSettings } from "react-icons/fc";
 import { green, orange, red } from "@mui/material/colors";
+import notificationSound from '../../../Utils/notification.wav';
 
 const punchTableAttributes = [
   {
@@ -73,7 +74,13 @@ const PunchTable = () => {
     setAnchorEl(null);
   };
 
+  const playNotificationSound = () => {
+    const sound = new Audio(notificationSound);
+    sound.play();
+  };
+
   const handleApprove = async () => {
+    playNotificationSound();
     const confirmed = window.confirm(
       "Are you sure you want to approve this punch?"
     );
@@ -106,6 +113,7 @@ const PunchTable = () => {
   };
 
   const handleDeny = async () => {
+    playNotificationSound();
     const confirmed = window.confirm(
       "Are you sure you want to deny this punch?"
     );
