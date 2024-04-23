@@ -4,7 +4,40 @@ import {capitalize, CircularProgress, Divider, Paper, Typography} from "@mui/mat
 import Box from "@mui/material/Box";
 import DateHelper from "../../../Utils/DateHelper";
 import ScheduleHelper from "../../../Utils/ScheduleHelper";
-import ContentBox from "../../Generic/ContentBox";
+import { FcLeave } from "react-icons/fc";
+import { FcHighPriority } from "react-icons/fc";
+import { FcAlarmClock } from "react-icons/fc";
+import { FcCalendar } from "react-icons/fc";
+import { FcDepartment } from "react-icons/fc";
+import { FcClock } from "react-icons/fc";
+import { FcPlanner } from "react-icons/fc";
+import { FcOvertime } from "react-icons/fc";
+
+const ContentBox = ({title, content}) => {
+    return <Paper elevation={3} sx={{ mb: 2 , width: "100%"}}>
+        <Box sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "start",
+            alignItems: "start",
+            m: 3
+        }}>
+            <Typography component="div" variant='h5'>
+                {
+                    title
+                }
+            </Typography>
+            <Divider orientation="horizontal" flexItem sx={{ mt: 2, mb: 2 }} />
+            {
+                content == null &&
+                <CircularProgress />
+            }
+            {
+                content
+            }
+        </Box>
+    </Paper>
+}
 
 function AdminSummary({ user }) {
     const [mainSummary, setMainSummary] = useState(null);
@@ -34,8 +67,7 @@ function AdminSummary({ user }) {
                 const api = new API();
 
                 const trainedResponse = await api.trainedSummaryWithID(user.employee_id);
-                const uniqueTrained = [...new Set(trainedResponse.data.map(item => item.department))]
-                setTrainedSummary(uniqueTrained);
+                setTrainedSummary(trainedResponse.data);
 
                 const availabilityResponse = await api.availabilitySummaryWithID(user.employee_id);
                 setAvailabilitySummary(availabilityResponse.data);
@@ -83,7 +115,7 @@ function AdminSummary({ user }) {
                 >
                     {user && (
                         <Box mb={3}>
-                            <Typography variant="h4">
+                            <Typography variant="h4" style={{ fontWeight: 'bold' }}>
                                 {user.first_name} {user.middle_name} {user.last_name}
                             </Typography>
                             <Typography variant="h6">
@@ -91,15 +123,29 @@ function AdminSummary({ user }) {
                             </Typography>
                         </Box>
                     )}
-                    <ContentBox title="Trained Departments" content={
+                    <ContentBox title={
+                            <Box display="flex" alignItems="center">
+                                <FcDepartment style={{ marginRight: '10px', fontSize: '35px' }} />
+                                <Typography variant="h5">
+                                    {"Trained Departments"}
+                                </Typography>
+                            </Box>
+                        } content={
                         trainedSummary && (
                             trainedSummary.map((item, index) => (
                                 <Typography key={index} variant="h6">
-                                    {capitalize(item)}
+                                    {capitalize(item.department)}
                                 </Typography>
                             ))
                         )}/>
-                    <ContentBox title="Current Availability" content={
+                    <ContentBox title={
+                            <Box display="flex" alignItems="center">
+                                <FcCalendar style={{ marginRight: '10px', fontSize: '35px' }} />
+                                <Typography variant="h5">
+                                    {"Current Availability"}
+                                </Typography>
+                            </Box>
+                        } content={
                         availabilitySummary && (
                             ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"].map((item) => (
                                 <Box key={item} width="100%">
@@ -128,7 +174,7 @@ function AdminSummary({ user }) {
                     alignItems="center"
                     textAlign="start"
                 >
-                    <Typography variant="h6">
+                    <Typography variant="h6" >
                         {"Today's Date"}
                     </Typography>
                     <Typography variant="h4" fontWeight="medium" mb={3}>
@@ -136,7 +182,14 @@ function AdminSummary({ user }) {
                     </Typography>
                     {
                         (availabilityTimeOffPendingCount || punchInPendingCount) &&
-                        <ContentBox title="Needs Attention" content={
+                        <ContentBox  title={
+                            <Box display="flex" alignItems="center">
+                                <FcHighPriority style={{ marginRight: '10px', fontSize: '35px' }} />
+                                <Typography variant="h5">
+                                    {"Needs Attention"}
+                                </Typography>
+                            </Box>
+                        } content={
                             <Box
                                 width="100%"
                                 display="flex"
@@ -149,6 +202,7 @@ function AdminSummary({ user }) {
                                     alignItems="center"
                                 >
                                     <Typography variant="h6">
+                                    <FcLeave style={{ fontSize: '27px', marginRight: '10px', verticalAlign: 'middle' }} />
                                         {"Availability & Time Off Requests"}
                                     </Typography>
                                     <Typography variant="h4">
@@ -166,6 +220,7 @@ function AdminSummary({ user }) {
                                     alignItems="center"
                                 >
                                     <Typography variant="h6">
+                                    <FcAlarmClock style={{ fontSize: '27px', marginRight: '10px', verticalAlign: 'middle' }}/>
                                         {
                                             "Punches"
                                         }
@@ -182,7 +237,14 @@ function AdminSummary({ user }) {
                     }
                     {
                         lastPunch &&
-                        <ContentBox title="Last Punch" content={
+                        <ContentBox title={
+                            <Box display="flex" alignItems="center">
+                                <FcClock style={{ marginRight: '10px', fontSize: '35px' }} />
+                                <Typography variant="h5">
+                                    {"Last Punch"}
+                                </Typography>
+                            </Box>
+                        } content={
                             lastPunch.length > 0 ?
                                 <Box
                                     width="100%"
@@ -201,7 +263,14 @@ function AdminSummary({ user }) {
                     }
                     {
                         nextShift &&
-                        <ContentBox title="Next Upcoming Shift" content={
+                        <ContentBox  title={
+                            <Box display="flex" alignItems="center">
+                                <FcPlanner style={{ marginRight: '10px', fontSize: '35px' }} />
+                                <Typography variant="h5">
+                                    {"Next Upcoming Shift"}
+                                </Typography>
+                            </Box>
+                        } content={
                             nextShift.length > 0 ?
                                 <Box
                                     width="100%"
@@ -226,7 +295,14 @@ function AdminSummary({ user }) {
                     }
                     {
                         requestsSummary &&
-                        <ContentBox title="Upcoming Time Off" content={
+                        <ContentBox title={
+                            <Box display="flex" alignItems="center">
+                                <FcOvertime style={{ marginRight: '10px', fontSize: '35px' }} />
+                                <Typography variant="h5">
+                                    {"Upcoming Time Off"}
+                                </Typography>
+                            </Box>
+                        } content={
                             requestsSummary.filter((request) => request.status === "Approved").length > 0 ? (
                                 requestsSummary.filter((request) => request.status === "Approved").map((item, index) => (
                                     <Box key={index} width="100%">
