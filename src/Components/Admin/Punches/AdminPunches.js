@@ -46,6 +46,7 @@ const PunchTable = () => {
   const [error, setError] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedPunch, setSelectedPunch] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     const fetchPunches = async () => {
@@ -61,7 +62,7 @@ const PunchTable = () => {
     };
 
     fetchPunches();
-  }, []);
+  }, [isEditing]);
 
   const handleOpenPopover = (event, punch) => {
     setAnchorEl(event.currentTarget);
@@ -72,24 +73,68 @@ const PunchTable = () => {
     setAnchorEl(null);
   };
 
-  const handleApprove = () => {
+  const handleApprove = async () => {
     const confirmed = window.confirm(
-        "Are you sure you want to approve this punch?"
-      );
-      if (confirmed) {
-        // Perform the approve action
-      }
+      "Are you sure you want to approve this punch?"
+    );
+    if (!confirmed) {
       handleClosePopover();
+      return;
+    }
+    setIsEditing(true);
+
+    try {
+      const api = new API();
+      const utcDate = new Date(selectedPunch.punchin);
+      const localDate = new Date(
+        utcDate.getTime() - utcDate.getTimezoneOffset() * 60000
+      );
+      const formattedPunchin = localDate
+        .toISOString()
+        .slice(0, 19)
+        .replace("T", " ")
+        .trim();
+      await api.setPunchApproved(selectedPunch.employee_id, formattedPunchin);
+      console.log("Punch approved successfully!");
+      setIsEditing(false); // Exit editing mode
+    } catch (error) {
+      console.error("Error approving punch:", error);
+    }
+
+    handleClosePopover();
+    setIsEditing(false);
   };
 
-  const handleDeny = () => {
+  const handleDeny = async () => {
     const confirmed = window.confirm(
-        "Are you sure you want to deny this punch?"
-      );
-      if (confirmed) {
-        // Perform the approve action
-      }
+      "Are you sure you want to deny this punch?"
+    );
+    if (!confirmed) {
       handleClosePopover();
+      return;
+    }
+    setIsEditing(true);
+
+    try {
+      const api = new API();
+      const utcDate = new Date(selectedPunch.punchin);
+      const localDate = new Date(
+        utcDate.getTime() - utcDate.getTimezoneOffset() * 60000
+      );
+      const formattedPunchin = localDate
+        .toISOString()
+        .slice(0, 19)
+        .replace("T", " ")
+        .trim();
+      await api.setPunchDenied(selectedPunch.employee_id, formattedPunchin);
+      console.log("Punch denied successfully!");
+      setIsEditing(false); // Exit editing mode
+    } catch (error) {
+      console.error("Error denying punch:", error);
+    }
+
+    handleClosePopover();
+    setIsEditing(false);
   };
 
   const formatPunchin = (punchin) => {
@@ -112,12 +157,20 @@ const PunchTable = () => {
       {punchTableAttributes.map((attr, idx) => (
         <TableCell key={idx} align={attr.align}>
           {attr.attributeDBName === "approved" ? (
-            punchObject[attr.attributeDBName] ? (
+            punchObject[attr.attributeDBName] === 1 ? (
               <Typography
                 variant="body1"
                 style={{ color: green[500], fontSize: "0.9rem" }}
               >
                 Approved
+              </Typography>
+            ) : punchObject[attr.attributeDBName] === 0 &&
+              punchObject["pending"] === 0 ? (
+              <Typography
+                variant="body1"
+                style={{ color: red[500], fontSize: "0.9rem" }}
+              >
+                Denied
               </Typography>
             ) : (
               <Typography
@@ -135,15 +188,17 @@ const PunchTable = () => {
         </TableCell>
       ))}
       <TableCell align="right">
-      {punchObject.approved === 0 ? (
-    <IconButton onClick={(event) => handleOpenPopover(event, punchObject)}>
-      <FcSettings />
-    </IconButton>
-  ) : (
-    <IconButton disabled>
-      <FcSettings />
-    </IconButton>
-  )}
+        {punchObject.approved === 0 ? (
+          <IconButton
+            onClick={(event) => handleOpenPopover(event, punchObject)}
+          >
+            <FcSettings />
+          </IconButton>
+        ) : (
+          <IconButton disabled>
+            <FcSettings />
+          </IconButton>
+        )}
         <Popover
           open={Boolean(anchorEl)}
           anchorEl={anchorEl}
