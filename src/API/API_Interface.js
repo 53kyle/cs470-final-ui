@@ -73,9 +73,14 @@ export default class APIInterface {
         return axiosAgent.get(`punchin/last-punch/${employee_id}`);
     }
 
-    async allRequests()
+    async allTimeoffRequests()
     {
-        return axiosAgent.get(`employees/all-requests`);
+        return axiosAgent.get(`employees/all-requests/timeoff`);
+    }
+
+    async allAvailabilityRequests()
+    {
+        return axiosAgent.get(`employees/all-requests/availability`);
     }
 
     async timeOffRequestByID(employee_id) {
@@ -134,11 +139,13 @@ export default class APIInterface {
         return axiosAgent.get(`employees/availability/${employee_id}`);
     }
 
-    async getNotificationsForEmployee(employee_id) {
-        return axiosAgent.get(`notifications/all-notifications/${employee_id}`);
+    async setPunchApproved( employee_id, punchin)
+    {
+        return axiosAgent.put(`punchin/set-approved/${employee_id}/${punchin}`);
     }
 
-    async setNotificationsReadForEmployee(employee_id) {
-        return axiosAgent.put(`notifications/set-notifications-read/${employee_id}`)
+    async setPunchDenied( employee_id, punchin)
+    {
+        return axiosAgent.put(`punchin/set-denied/${employee_id}/${punchin}`);
     }
 }
