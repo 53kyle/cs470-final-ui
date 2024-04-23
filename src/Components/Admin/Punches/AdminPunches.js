@@ -104,6 +104,7 @@ const PunchTable = () => {
 
   const handleApprove = async () => {
     setIsEditing(true);
+    handleCloseApproveDialog();
 
     try {
       const api = new API();
@@ -128,6 +129,7 @@ const PunchTable = () => {
   };
 
   const handleDeny = async () => {
+    handleCloseDenyDialog();
     setIsEditing(true);
 
     try {
