@@ -80,6 +80,8 @@ const RequestTable = () => {
   const [error, setError] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorE2, setAnchorE2] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [selectedRequest, setSelectedRequest] = useState(null);
 
   useEffect(() => {
     const fetchRequests = async () => {
@@ -97,14 +99,16 @@ const RequestTable = () => {
     };
 
     fetchRequests();
-  }, []);
+  }, [isEditing]);
 
   const handleOpenPopover1 = (event, request) => {
     setAnchorEl(event.currentTarget);
+    setSelectedRequest(request);
   };
 
   const handleOpenPopover2 = (event, request) => {
     setAnchorE2(event.currentTarget);
+    setSelectedRequest(request);
   };
 
   const handleClosePopover = () => {
@@ -112,24 +116,98 @@ const RequestTable = () => {
     setAnchorE2(null);
   };
 
-  const handleApprove = () => {
-    handleClosePopover();
+  const handleApprove = async () => {
     const confirmed = window.confirm(
-      "Are you sure you want to approve this request?"
+      "Are you sure you want to approve this punch?"
     );
-    if (confirmed) {
-      // Perform the approve action
+    if (!confirmed) {
+      handleClosePopover();
+      return;
     }
+    setIsEditing(true);
+
+    if (!selectedRequest.day_of_week) {
+      try {
+        const api = new API();
+        selectedRequest.status = "Approved";
+        const utcDate = new Date(selectedRequest.start_time);
+        const localDate = new Date(
+          utcDate.getTime() - utcDate.getTimezoneOffset() * 60000
+        );
+        const formattedRequest = localDate
+          .toISOString()
+          .slice(0, 19)
+          .replace("T", " ")
+          .trim();
+
+        selectedRequest.start_time = formattedRequest;
+        console.log("date:", formattedRequest);
+        console.log("selected request:", selectedRequest);
+        await api.updateTimeoff(selectedRequest);
+        setIsEditing(false);
+      } catch (error) {
+        console.error("Error approving timeoff:", error);
+      }
+    } else {
+      try {
+        const api = new API();
+        selectedRequest.status = "Approved";
+        await api.updateAvailabilityRequest(selectedRequest);
+        setIsEditing(false);
+      } catch (error) {
+        console.error("Error approving availability request:", error);
+      }
+    }
+
+    handleClosePopover();
+    setIsEditing(false);
   };
 
-  const handleDeny = () => {
-    handleClosePopover();
+  const handleDeny = async () => {
     const confirmed = window.confirm(
-      "Are you sure you want to deny this request??"
+      "Are you sure you want to approve this punch?"
     );
-    if (confirmed) {
-      // Perform the approve action
+    if (!confirmed) {
+      handleClosePopover();
+      return;
     }
+    setIsEditing(true);
+
+    if (!selectedRequest.day_of_week) {
+      try {
+        const api = new API();
+        selectedRequest.status = "Denied";
+        const utcDate = new Date(selectedRequest.start_time);
+        const localDate = new Date(
+          utcDate.getTime() - utcDate.getTimezoneOffset() * 60000
+        );
+        const formattedRequest = localDate
+          .toISOString()
+          .slice(0, 19)
+          .replace("T", " ")
+          .trim();
+
+        selectedRequest.start_time = formattedRequest;
+        console.log("date:", formattedRequest);
+        console.log("selected request:", selectedRequest);
+        await api.updateTimeoff(selectedRequest);
+        setIsEditing(false);
+      } catch (error) {
+        console.error("Error denying timeoff:", error);
+      }
+    } else {
+      try {
+        const api = new API();
+        selectedRequest.status = "Denied";
+        await api.updateAvailabilityRequest(selectedRequest);
+        setIsEditing(false);
+      } catch (error) {
+        console.error("Error denying availability request:", error);
+      }
+    }
+
+    handleClosePopover();
+    setIsEditing(false);
   };
 
   // Function to format date in desired format
@@ -206,40 +284,40 @@ const RequestTable = () => {
             <FcSettings />
           </IconButton>
         )}
-          <Popover
-            open={Boolean(anchorEl)}
-            anchorEl={anchorEl}
-            onClose={handleClosePopover}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "left",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            PaperProps={{
-              sx: {
-                boxShadow: "1px 1px 3px rgba(0, 0, 0, 0.2)",
-              },
-            }}
-          >
-            <MenuList>
-              <MenuItem onClick={handleApprove}>
-                <ListItemIcon sx={{ color: "green" }}>
-                  <CheckIcon />
-                </ListItemIcon>
-                Approve
-              </MenuItem>
-              <MenuItem onClick={handleDeny}>
-                <ListItemIcon sx={{ color: "red" }}>
-                  <ClearIcon />
-                </ListItemIcon>
-                Deny
-              </MenuItem>
-            </MenuList>
-          </Popover>
-        </TableCell>
+        <Popover
+          open={Boolean(anchorEl)}
+          anchorEl={anchorEl}
+          onClose={handleClosePopover}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+          PaperProps={{
+            sx: {
+              boxShadow: "1px 1px 3px rgba(0, 0, 0, 0.2)",
+            },
+          }}
+        >
+          <MenuList>
+            <MenuItem onClick={handleApprove}>
+              <ListItemIcon sx={{ color: "green" }}>
+                <CheckIcon />
+              </ListItemIcon>
+              Approve
+            </MenuItem>
+            <MenuItem onClick={handleDeny}>
+              <ListItemIcon sx={{ color: "red" }}>
+                <ClearIcon />
+              </ListItemIcon>
+              Deny
+            </MenuItem>
+          </MenuList>
+        </Popover>
+      </TableCell>
     </TableRow>
   );
 
