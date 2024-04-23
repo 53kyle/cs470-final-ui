@@ -11,6 +11,8 @@ import { FcClock } from "react-icons/fc";
 import { FcPlanner } from "react-icons/fc";
 import { FcOvertime } from "react-icons/fc";
 import { FcDepartment } from "react-icons/fc";
+import { FcExpired } from "react-icons/fc";
+import Tooltip from "@mui/material/Tooltip"
 
 const ContentBox = ({title, content}) => {
     return <Paper elevation={3} sx={{ mb: 2 , width: "100%"}}>
@@ -188,7 +190,18 @@ function EmployeeSummary({ user }) {
                                     flexDirection="column"
                                 >
                                     <Typography variant="h6">
-                                        {`${DateHelper.shortDateFormat(DateHelper.textToDate(lastPunch[0].punchin))} at ${DateHelper.friendlyTimeFormat(DateHelper.textToDate(lastPunch[0].punchin))}${lastPunch[0].approved ? "" : "*"}`}
+                                        {`${DateHelper.shortDateFormat(DateHelper.textToDate(lastPunch[0].punchin))} at ${DateHelper.friendlyTimeFormat(DateHelper.textToDate(lastPunch[0].punchin))}`}
+                                        {!lastPunch[0].approved && (
+                                    <Tooltip title="Pending approval" arrow>
+                                    <FcExpired
+                                        style={{
+                                        verticalAlign: "middle",
+                                        marginLeft: "4px",
+                                        fontSize: "24px",
+                                        }}
+                                    />
+                                    </Tooltip>
+                                )}
                                     </Typography>
                                     <Typography variant="body" mb={0.5}>
                                         {capitalize(lastPunch[0].punch_type)}
