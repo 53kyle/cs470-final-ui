@@ -188,7 +188,7 @@ const PunchTable = () => {
         </TableCell>
       ))}
       <TableCell align="right">
-        {punchObject.approved === 0 ? (
+        {punchObject.pending === 1 ? (
           <IconButton
             onClick={(event) => handleOpenPopover(event, punchObject)}
           >
