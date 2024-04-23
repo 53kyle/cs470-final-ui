@@ -16,7 +16,8 @@ import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
 import { FcSettings } from "react-icons/fc";
 import { green, orange, red } from "@mui/material/colors";
-import notificationSound from '../../../Utils/notification.wav';
+import notificationSound from "../../../Utils/notification.wav";
+import { Dialog, DialogTitle, DialogActions, Button } from "@mui/material";
 
 const punchTableAttributes = [
   {
@@ -48,6 +49,8 @@ const PunchTable = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedPunch, setSelectedPunch] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [open1, setOpen1] = useState(false);
 
   useEffect(() => {
     const fetchPunches = async () => {
@@ -74,20 +77,32 @@ const PunchTable = () => {
     setAnchorEl(null);
   };
 
+  const handleOpenApproveDialog = () => {
+    playNotificationSound();
+    handleClosePopover();
+    setOpen(true);
+  };
+
+  const handleCloseApproveDialog = () => {
+    setOpen(false);
+  };
+
+  const handleOpenDenyDialog = () => {
+    playNotificationSound();
+    handleClosePopover();
+    setOpen1(true);
+  };
+
+  const handleCloseDenyDialog = () => {
+    setOpen1(false);
+  };
+
   const playNotificationSound = () => {
     const sound = new Audio(notificationSound);
     sound.play();
   };
 
   const handleApprove = async () => {
-    playNotificationSound();
-    const confirmed = window.confirm(
-      "Are you sure you want to approve this punch?"
-    );
-    if (!confirmed) {
-      handleClosePopover();
-      return;
-    }
     setIsEditing(true);
 
     try {
@@ -113,14 +128,6 @@ const PunchTable = () => {
   };
 
   const handleDeny = async () => {
-    playNotificationSound();
-    const confirmed = window.confirm(
-      "Are you sure you want to deny this punch?"
-    );
-    if (!confirmed) {
-      handleClosePopover();
-      return;
-    }
     setIsEditing(true);
 
     try {
@@ -221,13 +228,13 @@ const PunchTable = () => {
             },
           }}
         >
-          <MenuItem onClick={handleApprove}>
+          <MenuItem onClick={handleOpenApproveDialog}>
             <ListItemIcon sx={{ color: "green" }}>
               <CheckIcon />
             </ListItemIcon>
             <Typography variant="inherit">Approve</Typography>
           </MenuItem>
-          <MenuItem onClick={handleDeny}>
+          <MenuItem onClick={handleOpenDenyDialog}>
             <ListItemIcon sx={{ color: "red" }}>
               <ClearIcon />
             </ListItemIcon>
@@ -248,6 +255,42 @@ const PunchTable = () => {
 
   return (
     <Fragment>
+      <Dialog
+        open={open}
+        onClose={handleCloseApproveDialog}
+        aria-labelledby="confirmation-dialog-title"
+        aria-describedby="confirmation-dialog-description"
+      >
+        <DialogTitle id="confirmation-dialog-title">
+          Are you sure you want to approve this punch?
+        </DialogTitle>
+        <DialogActions>
+          <Button onClick={handleApprove} color="success">
+            Yes
+          </Button>
+          <Button onClick={handleCloseApproveDialog} color="error">
+            No
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={open1}
+        onClose={handleCloseDenyDialog}
+        aria-labelledby="confirmation-dialog-title"
+        aria-describedby="confirmation-dialog-description"
+      >
+        <DialogTitle id="confirmation-dialog-title">
+          Are you sure you want to deny this punch?
+        </DialogTitle>
+        <DialogActions>
+          <Button onClick={handleDeny} color="success">
+            Yes
+          </Button>
+          <Button onClick={handleCloseDenyDialog} color="error">
+            No
+          </Button>
+        </DialogActions>
+      </Dialog>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="punches table">
           <TableHead>
