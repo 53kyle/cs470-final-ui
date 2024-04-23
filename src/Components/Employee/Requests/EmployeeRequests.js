@@ -136,6 +136,32 @@ const RequestsTable = ({ user }) => {
     return new Date(dateString).toLocaleDateString("en-US", options);
   };
 
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Approved":
+        return "green";
+      case "Pending":
+        return "orange";
+      case "Denied":
+        return "red";
+      default:
+        return "inherit";
+    }
+  };
+
+  const getStatusText = (status) => {
+    switch (status) {
+      case "Approved":
+        return "Approved";
+      case "Pending":
+        return "Pending";
+      case "Denied":
+        return "Denied";
+      default:
+        return "Unknown";
+    }
+  };
+
   const renderTimeOffTableRow = (requestObject, index) => (
     <TableRow
       key={index}
@@ -143,7 +169,17 @@ const RequestsTable = ({ user }) => {
     >
       {timeOffTableAttributes.map((attr, idx) => (
         <TableCell key={idx} align={attr.align}>
-          {attr.attributeDBName
+          {attr.attributeDBName === "status" ? (
+            <Typography
+              variant="body1"
+              style={{
+                color: getStatusColor(requestObject[attr.attributeDBName]),
+                fontSize: "0.9rem",
+              }}
+            >
+              {getStatusText(requestObject[attr.attributeDBName])}
+            </Typography>
+          ) :attr.attributeDBName
             ? attr.attributeDBName.includes("time")
               ? formatDate(requestObject[attr.attributeDBName])
               : requestObject[attr.attributeDBName]
@@ -195,7 +231,17 @@ const RequestsTable = ({ user }) => {
     >
       {availabilityRequestsTableAttributes.map((attr, idx) => (
         <TableCell key={idx} align={attr.align}>
-          {requestObject[attr.attributeDBName]}
+          {attr.attributeDBName === "status" ? (
+            <Typography
+              variant="body1"
+              style={{
+                color: getStatusColor(requestObject[attr.attributeDBName]),
+                fontSize: "0.9rem",
+              }}
+            >
+              {getStatusText(requestObject[attr.attributeDBName])}
+            </Typography>
+          ) : (requestObject[attr.attributeDBName])}
         </TableCell>
       ))}
       {requestObject.status === "Pending" && (
