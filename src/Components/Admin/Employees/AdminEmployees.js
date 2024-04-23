@@ -481,7 +481,9 @@ const EmployeeTable = () => {
                         <TableRow>
                             {employeeTableAttributes.map((attr, idx) => (
                                 <TableCell key={idx} align={attr.align}>
-                                    {attr.title}
+                                    <Typography variant="subtitle1" fontWeight="bold">
+                    {attr.title}
+                  </Typography>
                                 </TableCell>
                             ))}
                             <TableCell align="right"></TableCell>
