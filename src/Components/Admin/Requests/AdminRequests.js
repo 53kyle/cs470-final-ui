@@ -16,6 +16,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
 import { FcSettings } from "react-icons/fc";
 import Typography from "@mui/material/Typography";
+import notificationSound from '../../../Utils/notification.wav';
 
 const requestsTableAttributes = [
   {
@@ -116,7 +117,13 @@ const RequestTable = () => {
     setAnchorE2(null);
   };
 
+  const playNotificationSound = () => {
+    const sound = new Audio(notificationSound);
+    sound.play();
+  };
+
   const handleApprove = async () => {
+    playNotificationSound();
     const confirmed = window.confirm(
       "Are you sure you want to approve this punch?"
     );
@@ -164,6 +171,7 @@ const RequestTable = () => {
   };
 
   const handleDeny = async () => {
+    playNotificationSound();
     const confirmed = window.confirm(
       "Are you sure you want to approve this punch?"
     );
