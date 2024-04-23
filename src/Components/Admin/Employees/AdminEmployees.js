@@ -422,6 +422,11 @@ const EmployeeTable = () => {
                         vertical: 'top',
                         horizontal: 'right',
                     }}
+                    PaperProps={{
+                        sx: {
+                          boxShadow: "1px 1px 4px rgba(0, 0, 0, 0.3)",
+                        },
+                      }}
                 >
                     <MenuItem onClick={handleOpenAvailabilityModal}>
                         <ListItemIcon style={{ fontSize: '26px'}}>
