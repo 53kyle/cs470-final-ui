@@ -197,7 +197,7 @@ const RequestTable = () => {
       <TableCell align="right">
         {requestObject.status === "Pending" ? (
           <IconButton
-            onClick={(event) => handleOpenPopover2(event, requestObject)}
+            onClick={(event) => handleOpenPopover1(event, requestObject)}
           >
             <FcSettings />
           </IconButton>
