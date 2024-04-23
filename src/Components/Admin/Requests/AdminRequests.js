@@ -194,13 +194,18 @@ const RequestTable = () => {
           )}
         </TableCell>
       ))}
-      {requestObject.status === "Pending" && (
-        <TableCell align="right">
+      <TableCell align="right">
+        {requestObject.status === "Pending" ? (
           <IconButton
-            onClick={(event) => handleOpenPopover1(event, requestObject)}
+            onClick={(event) => handleOpenPopover2(event, requestObject)}
           >
             <FcSettings />
           </IconButton>
+        ) : (
+          <IconButton disabled>
+            <FcSettings />
+          </IconButton>
+        )}
           <Popover
             open={Boolean(anchorEl)}
             anchorEl={anchorEl}
@@ -210,9 +215,9 @@ const RequestTable = () => {
               horizontal: "left",
             }}
             transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
+              vertical: "top",
+              horizontal: "right",
+            }}
             PaperProps={{
               sx: {
                 boxShadow: "1px 1px 3px rgba(0, 0, 0, 0.2)",
@@ -235,7 +240,6 @@ const RequestTable = () => {
             </MenuList>
           </Popover>
         </TableCell>
-      )}
     </TableRow>
   );
 
@@ -261,41 +265,45 @@ const RequestTable = () => {
           )}
         </TableCell>
       ))}
-      {requestObject.status === "Pending" && (
-        <TableCell align="right">
+      <TableCell align="right">
+        {requestObject.status === "Pending" ? (
           <IconButton
             onClick={(event) => handleOpenPopover2(event, requestObject)}
           >
             <FcSettings />
           </IconButton>
-          <Popover
-            open={Boolean(anchorE2)}
-            anchorEl={anchorE2}
-            onClose={handleClosePopover}
-            anchorOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-          >
-            <MenuItem onClick={handleApprove}>
-              <ListItemIcon sx={{ color: "green" }}>
-                <CheckIcon />
-              </ListItemIcon>
-              Approve
-            </MenuItem>
-            <MenuItem onClick={handleDeny}>
-              <ListItemIcon sx={{ color: "red" }}>
-                <ClearIcon />
-              </ListItemIcon>
-              Deny
-            </MenuItem>
-          </Popover>
-        </TableCell>
-      )}
+        ) : (
+          <IconButton disabled>
+            <FcSettings />
+          </IconButton>
+        )}
+        <Popover
+          open={Boolean(anchorE2)}
+          anchorEl={anchorE2}
+          onClose={handleClosePopover}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+        >
+          <MenuItem onClick={handleApprove}>
+            <ListItemIcon sx={{ color: "green" }}>
+              <CheckIcon />
+            </ListItemIcon>
+            Approve
+          </MenuItem>
+          <MenuItem onClick={handleDeny}>
+            <ListItemIcon sx={{ color: "red" }}>
+              <ClearIcon />
+            </ListItemIcon>
+            Deny
+          </MenuItem>
+        </Popover>
+      </TableCell>
     </TableRow>
   );
 
