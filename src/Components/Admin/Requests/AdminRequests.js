@@ -45,8 +45,37 @@ const requestsTableAttributes = [
   },
 ];
 
+const availabilityRequestsTableAttributes = [
+  {
+    title: "Name",
+    attributeDBName: "name",
+    align: "left",
+  },
+  {
+    title: "Day",
+    attributeDBName: "day_of_week",
+    align: "left",
+  },
+  {
+    title: "Start Time",
+    attributeDBName: "start_time",
+    align: "left",
+  },
+  {
+    title: "End Time",
+    attributeDBName: "end_time",
+    align: "left",
+  },
+  {
+    title: "Status",
+    attributeDBName: "status",
+    align: "left",
+  },
+];
+
 const RequestTable = () => {
-  const [requests, setRequests] = useState([]);
+  const [timeoffRequests, setTimeoffRequests] = useState([]);
+  const [availabilityRequests, setAvailabilityRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -55,8 +84,10 @@ const RequestTable = () => {
     const fetchRequests = async () => {
       try {
         const api = new API();
-        const requestsJSONString = await api.allRequests();
-        setRequests(requestsJSONString.data);
+        const timeoffRequestsJSON = await api.allTimeoffRequests();
+        const availabilityRequestsJSON = await api.allAvailabilityRequests();
+        setTimeoffRequests(timeoffRequestsJSON.data);
+        setAvailabilityRequests(availabilityRequestsJSON.data);
         setLoading(false);
       } catch (error) {
         setError(error);
@@ -198,6 +229,66 @@ const RequestTable = () => {
     </TableRow>
   );
 
+  const renderAvailabilityTableRow = (requestObject, index) => (
+    <TableRow
+      key={index}
+      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+    >
+      {availabilityRequestsTableAttributes.map((attr, idx) => (
+        <TableCell key={idx} align={attr.align}>
+          {attr.attributeDBName === "status" ? (
+            <Typography
+              variant="body1"
+              style={{
+                color: getStatusColor(requestObject[attr.attributeDBName]),
+                fontSize: "0.9rem",
+              }}
+            >
+              {getStatusText(requestObject[attr.attributeDBName])}
+            </Typography>
+          ) : (
+            requestObject[attr.attributeDBName]
+          )}
+        </TableCell>
+      ))}
+      {requestObject.status === "Pending" && (
+        <TableCell align="right">
+          <IconButton
+            onClick={(event) => handleOpenPopover(event, requestObject)}
+          >
+            <FcSettings />
+          </IconButton>
+          <Popover
+            open={Boolean(anchorEl)}
+            anchorEl={anchorEl}
+            onClose={handleClosePopover}
+            anchorOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+          >
+            <MenuItem onClick={handleApprove}>
+              <ListItemIcon sx={{ color: "green" }}>
+                <CheckIcon />
+              </ListItemIcon>
+              Approve
+            </MenuItem>
+            <MenuItem onClick={handleDeny}>
+              <ListItemIcon sx={{ color: "red" }}>
+                <ClearIcon />
+              </ListItemIcon>
+              Deny
+            </MenuItem>
+          </Popover>
+        </TableCell>
+      )}
+    </TableRow>
+  );
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -208,19 +299,50 @@ const RequestTable = () => {
 
   return (
     <Fragment>
-      <TableContainer component={Paper}>
+      <Typography variant="h6" gutterBottom component="div">
+        Time off Requests
+      </Typography>
+      <TableContainer component={Paper} sx={{ marginBottom: 4 }}>
         <Table sx={{ minWidth: 650 }} aria-label="requests table">
           <TableHead>
             <TableRow>
               {requestsTableAttributes.map((attr, idx) => (
                 <TableCell key={idx} align={attr.align}>
-                  {attr.title}
+                  <Typography variant="subtitle1" fontWeight="bold">
+                    {attr.title}
+                  </Typography>
                 </TableCell>
               ))}
             </TableRow>
           </TableHead>
           <TableBody>
-            {requests.map((request, idx) => renderTableRow(request, idx))}
+            {timeoffRequests.map((request, idx) =>
+              renderTableRow(request, idx)
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <Typography variant="h6" gutterBottom component="div">
+        Availability Requests
+      </Typography>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }} aria-label="availability requests table">
+          <TableHead>
+            <TableRow>
+              {availabilityRequestsTableAttributes.map((attr, idx) => (
+                <TableCell key={idx} align={attr.align}>
+                  <Typography variant="subtitle1" fontWeight="bold">
+                    {attr.title}
+                  </Typography>
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {availabilityRequests.map((request, idx) =>
+              renderAvailabilityTableRow(request, idx)
+            )}
           </TableBody>
         </Table>
       </TableContainer>
