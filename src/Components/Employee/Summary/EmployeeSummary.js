@@ -6,7 +6,37 @@ import Box from '@mui/material/Box';
 import {capitalize, CircularProgress, Divider, Paper} from "@mui/material";
 import DateHelper from "../../../Utils/DateHelper";
 import ScheduleHelper from "../../../Utils/ScheduleHelper";
-import ContentBox from "../../Generic/ContentBox";
+import { FcCalendar } from "react-icons/fc";
+import { FcClock } from "react-icons/fc";
+import { FcPlanner } from "react-icons/fc";
+import { FcOvertime } from "react-icons/fc";
+import { FcDepartment } from "react-icons/fc";
+
+const ContentBox = ({title, content}) => {
+    return <Paper elevation={3} sx={{ mb: 2 , width: "100%"}}>
+        <Box sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "start",
+            alignItems: "start",
+            m: 3
+        }}>
+            <Typography component="div" variant='h5'>
+                {
+                    title
+                }
+            </Typography>
+            <Divider orientation="horizontal" flexItem sx={{ mt: 2, mb: 2 }} />
+            {
+                content == null &&
+                <CircularProgress />
+            }
+            {
+                content
+            }
+        </Box>
+    </Paper>
+}
 
 function EmployeeSummary({ user }) {
     const [mainSummary, setMainSummary] = useState(null);
@@ -34,8 +64,7 @@ function EmployeeSummary({ user }) {
                 const api = new API();
 
                 const trainedResponse = await api.trainedSummaryWithID(user.employee_id);
-                const uniqueTrained = [...new Set(trainedResponse.data.map(item => item.department))]
-                setTrainedSummary(uniqueTrained);
+                setTrainedSummary(trainedResponse.data);
 
                 const availabilityResponse = await api.availabilitySummaryWithID(user.employee_id);
                 setAvailabilitySummary(availabilityResponse.data);
@@ -77,7 +106,7 @@ function EmployeeSummary({ user }) {
                 >
                     {user && (
                         <Box mb={3}>
-                            <Typography variant="h4">
+                            <Typography variant="h4" style={{ fontWeight: 'bold' }}>
                                 {user.first_name} {user.middle_name} {user.last_name}
                             </Typography>
                             <Typography variant="h6">
@@ -85,15 +114,29 @@ function EmployeeSummary({ user }) {
                             </Typography>
                         </Box>
                     )}
-                    <ContentBox title="Trained Departments" content={
+                    <ContentBox title={
+                            <Box display="flex" alignItems="center">
+                                <FcDepartment style={{ marginRight: '10px', fontSize: '35px' }} />
+                                <Typography variant="h5">
+                                    {"Trained Departments"}
+                                </Typography>
+                            </Box>
+                        } content={
                         trainedSummary && (
-                            trainedSummary.filter((trained, i, self) => i === self.indexOf(trained)).map((item, index) => (
+                            trainedSummary.map((item, index) => (
                                 <Typography key={index} variant="h6">
-                                    {capitalize(item)}
+                                    {capitalize(item.department)}
                                 </Typography>
                             ))
                         )}/>
-                    <ContentBox title="Current Availability" content={
+                    <ContentBox title={
+                            <Box display="flex" alignItems="center">
+                                <FcCalendar style={{ marginRight: '10px', fontSize: '35px' }} />
+                                <Typography variant="h5">
+                                    {"Current Availability"}
+                                </Typography>
+                            </Box>
+                        } content={
                         availabilitySummary && (
                             ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"].map((item) => (
                                 <Box key={item} width="100%">
@@ -102,7 +145,7 @@ function EmployeeSummary({ user }) {
                                     </Typography>
                                     <Typography variant="body">
                                         {
-                                             availabilityForWeekday(item) && availabilityForWeekday(item).length > 0 ? `${DateHelper.formatTime(availabilityForWeekday(item)[0].start_time)} - ${DateHelper.formatTime(availabilityForWeekday(item)[0].end_time)}` : "OFF"
+                                             availabilityForWeekday(item) && availabilityForWeekday(item).length > 0 ? `${availabilityForWeekday(item)[0].start_time} - ${availabilityForWeekday(item)[0].end_time}` : "OFF"
                                         }
                                     </Typography>
                                     {
@@ -130,7 +173,14 @@ function EmployeeSummary({ user }) {
                     </Typography>
                     {
                         lastPunch &&
-                        <ContentBox title="Last Punch" content={
+                        <ContentBox title={
+                            <Box display="flex" alignItems="center">
+                                <FcClock style={{ marginRight: '10px', fontSize: '35px' }} />
+                                <Typography variant="h5">
+                                    {"Last Punch"}
+                                </Typography>
+                            </Box>
+                        } content={
                             lastPunch.length > 0 ?
                                 <Box
                                     width="100%"
@@ -149,7 +199,14 @@ function EmployeeSummary({ user }) {
                     }
                     {
                         nextShift &&
-                        <ContentBox title="Next Upcoming Shift" content={
+                        <ContentBox title={
+                            <Box display="flex" alignItems="center">
+                                <FcPlanner style={{ marginRight: '10px', fontSize: '35px' }} />
+                                <Typography variant="h5">
+                                    {"Next Upcoming Shift"}
+                                </Typography>
+                            </Box>
+                        } content={
                             nextShift.length > 0 ?
                                 <Box
                                     width="100%"
@@ -174,7 +231,14 @@ function EmployeeSummary({ user }) {
                     }
                     {
                         requestsSummary &&
-                        <ContentBox title="Upcoming Time Off" content={
+                        <ContentBox title={
+                            <Box display="flex" alignItems="center">
+                                <FcOvertime style={{ marginRight: '10px', fontSize: '35px' }} />
+                                <Typography variant="h5">
+                                    {"Upcoming Time Off"}
+                                </Typography>
+                            </Box>
+                        } content={
                         requestsSummary.filter((request) => request.status === "Approved").length > 0 ? (
                             requestsSummary.filter((request) => request.status === "Approved").map((item, index) => (
                                 <Box key={index} width="100%">
