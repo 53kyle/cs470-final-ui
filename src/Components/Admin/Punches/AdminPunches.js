@@ -63,7 +63,7 @@ const PunchTable = () => {
     fetchPunches();
   }, []);
 
-  const handleGearClick = (event, punch) => {
+  const handleOpenPopover = (event, punch) => {
     setAnchorEl(event.currentTarget);
     setSelectedPunch(punch);
   };
@@ -135,11 +135,15 @@ const PunchTable = () => {
         </TableCell>
       ))}
       <TableCell align="right">
-        {punchObject.approved === 0 ? (
-          <IconButton onClick={(event) => handleGearClick(event, punchObject)}>
-            <FcSettings />
-          </IconButton>
-        ) : null}
+      {punchObject.approved === 0 ? (
+    <IconButton onClick={(event) => handleOpenPopover(event, punchObject)}>
+      <FcSettings />
+    </IconButton>
+  ) : (
+    <IconButton disabled>
+      <FcSettings />
+    </IconButton>
+  )}
         <Popover
           open={Boolean(anchorEl)}
           anchorEl={anchorEl}
