@@ -79,6 +79,7 @@ const RequestTable = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorE2, setAnchorE2] = useState(null);
 
   useEffect(() => {
     const fetchRequests = async () => {
@@ -98,35 +99,38 @@ const RequestTable = () => {
     fetchRequests();
   }, []);
 
-  const handleOpenPopover = (event) => {
+  const handleOpenPopover1 = (event, request) => {
     setAnchorEl(event.currentTarget);
+  };
+
+  const handleOpenPopover2 = (event, request) => {
+    setAnchorE2(event.currentTarget);
   };
 
   const handleClosePopover = () => {
     setAnchorEl(null);
+    setAnchorE2(null);
   };
 
   const handleApprove = () => {
+    handleClosePopover();
     const confirmed = window.confirm(
       "Are you sure you want to approve this request?"
     );
     if (confirmed) {
       // Perform the approve action
-      handleClosePopover();
     }
   };
 
   const handleDeny = () => {
+    handleClosePopover();
     const confirmed = window.confirm(
       "Are you sure you want to deny this request??"
     );
     if (confirmed) {
       // Perform the approve action
-      handleClosePopover();
     }
   };
-
-  const open = Boolean(anchorEl);
 
   // Function to format date in desired format
   const formatDate = (dateString) => {
@@ -166,7 +170,7 @@ const RequestTable = () => {
     }
   };
 
-  const renderTableRow = (requestObject, index) => (
+  const renderTimeOffTableRow = (requestObject, index) => (
     <TableRow
       key={index}
       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -190,42 +194,48 @@ const RequestTable = () => {
           )}
         </TableCell>
       ))}
-      <TableCell align="right">
-        {requestObject.status === "Pending" && (
-          <IconButton onClick={handleOpenPopover}>
+      {requestObject.status === "Pending" && (
+        <TableCell align="right">
+          <IconButton
+            onClick={(event) => handleOpenPopover1(event, requestObject)}
+          >
             <FcSettings />
           </IconButton>
-        )}
-        <Popover
-          open={open}
-          anchorEl={anchorEl}
-          onClose={handleClosePopover}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "left",
-          }}
-          PaperProps={{
-            sx: {
-              boxShadow: "1px 1px 3px rgba(0, 0, 0, 0.2)", // Customize the boxShadow property
-            },
-          }}
-        >
-          <MenuList>
-            <MenuItem onClick={handleApprove}>
-              <ListItemIcon sx={{ color: "green" }}>
-                <CheckIcon />
-              </ListItemIcon>
-              Approve
-            </MenuItem>
-            <MenuItem onClick={handleDeny}>
-              <ListItemIcon sx={{ color: "red" }}>
-                <ClearIcon />
-              </ListItemIcon>
-              Deny
-            </MenuItem>
-          </MenuList>
-        </Popover>
-      </TableCell>
+          <Popover
+            open={Boolean(anchorEl)}
+            anchorEl={anchorEl}
+            onClose={handleClosePopover}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "left",
+            }}
+            transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+            PaperProps={{
+              sx: {
+                boxShadow: "1px 1px 3px rgba(0, 0, 0, 0.2)",
+              },
+            }}
+          >
+            <MenuList>
+              <MenuItem onClick={handleApprove}>
+                <ListItemIcon sx={{ color: "green" }}>
+                  <CheckIcon />
+                </ListItemIcon>
+                Approve
+              </MenuItem>
+              <MenuItem onClick={handleDeny}>
+                <ListItemIcon sx={{ color: "red" }}>
+                  <ClearIcon />
+                </ListItemIcon>
+                Deny
+              </MenuItem>
+            </MenuList>
+          </Popover>
+        </TableCell>
+      )}
     </TableRow>
   );
 
@@ -254,22 +264,22 @@ const RequestTable = () => {
       {requestObject.status === "Pending" && (
         <TableCell align="right">
           <IconButton
-            onClick={(event) => handleOpenPopover(event, requestObject)}
+            onClick={(event) => handleOpenPopover2(event, requestObject)}
           >
             <FcSettings />
           </IconButton>
           <Popover
-            open={Boolean(anchorEl)}
-            anchorEl={anchorEl}
+            open={Boolean(anchorE2)}
+            anchorEl={anchorE2}
             onClose={handleClosePopover}
             anchorOrigin={{
               vertical: "top",
               horizontal: "right",
             }}
             transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
+                vertical: "top",
+                horizontal: "right",
+              }}
           >
             <MenuItem onClick={handleApprove}>
               <ListItemIcon sx={{ color: "green" }}>
@@ -317,7 +327,7 @@ const RequestTable = () => {
           </TableHead>
           <TableBody>
             {timeoffRequests.map((request, idx) =>
-              renderTableRow(request, idx)
+              renderTimeOffTableRow(request, idx)
             )}
           </TableBody>
         </Table>
