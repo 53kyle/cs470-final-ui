@@ -23,6 +23,7 @@ import { FcReuse } from "react-icons/fc";
 import { FcEditImage } from "react-icons/fc";
 import { FcOk } from "react-icons/fc";
 import { FcPlanner } from "react-icons/fc";
+import notificationSound from '../../../Utils/notification.wav';
 
 const employeeTableAttributes = [
     {
@@ -113,6 +114,11 @@ const EmployeeTable = () => {
         }));
     };
 
+    const playNotificationSound = () => {
+        const sound = new Audio(notificationSound);
+        sound.play();
+      };
+
     const handleSave = async () => {
         // Ensure selectedEmployee and editedEmployee are not null before proceeding
         if (!selectedEmployee || !editedEmployee) return;
@@ -137,6 +143,7 @@ const EmployeeTable = () => {
     };
 
     const handleRemove = async () => {
+        playNotificationSound();
 
         if (!selectedEmployee) return;
 
