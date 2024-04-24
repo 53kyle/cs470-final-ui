@@ -36,6 +36,7 @@ function AdminDateCell({date, idx}) {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const menuOpen = Boolean(anchorEl);
     const theme = useTheme();
+    const iconColor = theme.palette.mode === 'dark' ? theme.palette.primary.light : theme.palette.primary.dark;
 
     const handleOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -93,7 +94,7 @@ function AdminDateCell({date, idx}) {
                     zIndex: 'tooltip'
                 }}>
                     <IconButton aria-label="menu" size="small" onClick={handleOpen}>
-                        <InfoIcon fontSize="small" />
+                        <InfoIcon fontSize="small" style={{ fontSize: "20px" , color: '#f0f0f0'}} />
                     </IconButton>
                 </Box>
                 <Menu
