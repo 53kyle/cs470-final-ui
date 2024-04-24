@@ -195,14 +195,6 @@ function Menu({ user, logoutAction }) {
             </Button>
           </Toolbar>
         </AppBar>
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', paddingRight: 2 }}>
-        <Typography variant="body1" sx={{ marginRight: .4, marginTop: '6px'}}>Dark Mode</Typography>
-    <Switch
-      checked={themeMode === 'darkTheme'}
-      onChange={toggleThemeMode}
-      inputProps={{ 'aria-label': 'controlled' }}
-    />
-  </Box>
         <Drawer
           sx={{
             width: drawerWidth,
@@ -217,6 +209,17 @@ function Menu({ user, logoutAction }) {
           open={open}
         >
           <DrawerHeader>
+          <Typography
+            variant="body1"
+            sx={{ marginRight: 0.4 }}
+          >
+            Dark Mode
+          </Typography>
+          <Switch
+            checked={themeMode === "darkTheme"}
+            onChange={toggleThemeMode}
+            inputProps={{ "aria-label": "controlled" }}
+          />
             <IconButton onClick={handleDrawerClose}>
               {theme.direction === "ltr" ? (
                 <ChevronLeftIcon />
