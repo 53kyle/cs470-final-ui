@@ -20,6 +20,7 @@ import { FcPlanner } from "react-icons/fc";
 import { FcOvertime } from "react-icons/fc";
 import { FcExpired } from "react-icons/fc";
 import Tooltip from "@mui/material/Tooltip";
+import { useTheme } from '@mui/material/styles';
 
 const ContentBox = ({ title, content }) => {
   return (
@@ -54,6 +55,9 @@ function AdminSummary({ user }) {
   const [availabilityTimeOffPendingCount, setAvailabilityTimeOffPendingCount] =
     useState(null);
   const [punchInPendingCount, setPunchInPendingCount] = useState(null);
+
+  const theme = useTheme();
+  const iconColor = theme.palette.mode === 'dark' ? theme.palette.primary.light : theme.palette.primary.dark;
 
   const todaysDate = () => {
     const dateAsDate = new Date();
@@ -146,7 +150,7 @@ function AdminSummary({ user }) {
             title={
               <Box display="flex" alignItems="center">
                 <FcDepartment
-                  style={{ marginRight: "10px", fontSize: "35px" }}
+                  style={{ marginRight: "10px", fontSize: "35px" , color: iconColor}}
                 />
                 <Typography variant="h5">{"Trained Departments"}</Typography>
               </Box>
@@ -163,7 +167,7 @@ function AdminSummary({ user }) {
           <ContentBox
             title={
               <Box display="flex" alignItems="center">
-                <FcCalendar style={{ marginRight: "10px", fontSize: "35px" }} />
+                <FcCalendar style={{ marginRight: "10px", fontSize: "35px" , color: iconColor}} />
                 <Typography variant="h5">{"Current Availability"}</Typography>
               </Box>
             }
@@ -220,7 +224,7 @@ function AdminSummary({ user }) {
               title={
                 <Box display="flex" alignItems="center">
                   <FcHighPriority
-                    style={{ marginRight: "10px", fontSize: "35px" }}
+                    style={{ marginRight: "10px", fontSize: "35px" , color: iconColor}}
                   />
                   <Typography variant="h5">{"Needs Attention"}</Typography>
                 </Box>
@@ -239,6 +243,7 @@ function AdminSummary({ user }) {
                           fontSize: "27px",
                           marginRight: "10px",
                           verticalAlign: "middle",
+                          color: iconColor
                         }}
                       />
                       {"Availability & Time Off Requests"}
@@ -266,6 +271,7 @@ function AdminSummary({ user }) {
                           fontSize: "27px",
                           marginRight: "10px",
                           verticalAlign: "middle",
+                          color: iconColor
                         }}
                       />
                       {"Punches"}
@@ -284,7 +290,7 @@ function AdminSummary({ user }) {
             <ContentBox
               title={
                 <Box display="flex" alignItems="center">
-                  <FcClock style={{ marginRight: "10px", fontSize: "35px" }} />
+                  <FcClock style={{ marginRight: "10px", fontSize: "35px", color: iconColor}} />
                   <Typography variant="h5">{"Last Punch"}</Typography>
                 </Box>
               }
@@ -298,12 +304,13 @@ function AdminSummary({ user }) {
                         DateHelper.textToDate(lastPunch[0].punchin)
                       )}`}
                       {!lastPunch[0].approved && (
-                        <Tooltip title="Pending approval" arrow>
+                        <Tooltip title="Pending approval" arrow style={{ zIndex: 9999 }}>
                           <FcExpired
                             style={{
                               verticalAlign: "middle",
                               marginLeft: "4px",
                               fontSize: "24px",
+                              color: iconColor
                             }}
                           />
                         </Tooltip>
@@ -324,7 +331,7 @@ function AdminSummary({ user }) {
               title={
                 <Box display="flex" alignItems="center">
                   <FcPlanner
-                    style={{ marginRight: "10px", fontSize: "35px" }}
+                    style={{ marginRight: "10px", fontSize: "35px" , color: iconColor}}
                   />
                   <Typography variant="h5">{"Next Upcoming Shift"}</Typography>
                 </Box>
@@ -360,7 +367,7 @@ function AdminSummary({ user }) {
               title={
                 <Box display="flex" alignItems="center">
                   <FcOvertime
-                    style={{ marginRight: "10px", fontSize: "35px" }}
+                    style={{ marginRight: "10px", fontSize: "35px" , color: iconColor}}
                   />
                   <Typography variant="h5">{"Upcoming Time Off"}</Typography>
                 </Box>
