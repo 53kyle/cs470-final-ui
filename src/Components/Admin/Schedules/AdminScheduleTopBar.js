@@ -10,6 +10,8 @@ import { post } from "../../../Utils/PostSchedule";
 
 import API from "../../../API/API_Interface";
 
+import notificationSound from "../../../Utils/notification.wav";
+
 const style = {
     width: 400,
     bgcolor: 'background.paper',
@@ -23,7 +25,13 @@ function AdminScheduleTopBar({startDate, setStartDate, endDate, setEndDate, gene
     const [open, setOpen] = React.useState(false);
     const [unfilledShifts, setUnfilledShifts] = useState([]);
     const [shifts, setShifts] = useState([]);
+    const playNotificationSound = () => {
+        const sound = new Audio(notificationSound);
+        sound.play();
+      };
+
     const handleOpen = async () => {
+        playNotificationSound();
         setOpen(true);
         await fetchUnfilledShifts();
     }
