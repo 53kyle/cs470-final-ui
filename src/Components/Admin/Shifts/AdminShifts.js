@@ -4,7 +4,7 @@ import DateHelper from "../../../Utils/DateHelper";
 import ScheduleTopBar from "../../Generic/ScheduleTopBar";
 import {
   Box,
-  Button,
+  Button, capitalize,
   Divider,
   IconButton,
   ListItemIcon,
@@ -254,7 +254,7 @@ function AdminShiftsCell({ currentWeek, shifts, row_idx, col_idx }) {
               component="div"
               style={{ whiteSpace: "pre-wrap" }}
             >
-              {shift.employee_id != -1
+              {shift.employee_id != null
                 ? `${shift.employee_fname} ${shift.employee_lname}`
                 : "Any Employee"}
             </Typography>
@@ -264,7 +264,7 @@ function AdminShiftsCell({ currentWeek, shifts, row_idx, col_idx }) {
               component="div"
               style={{ whiteSpace: "pre-wrap" }}
             >
-              {shift.department}
+              {capitalize(shift.department)}
             </Typography>
             <Typography
               variant="caption"

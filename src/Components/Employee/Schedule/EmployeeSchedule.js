@@ -6,7 +6,7 @@ import ScheduleHelper from "../../../Utils/ScheduleHelper";
 import SampleData from "../../../Utils/SampleData";
 import ScheduleTopBar from "../../Generic/ScheduleTopBar";
 import {
-  Box,
+  Box, capitalize,
   Divider,
   Paper,
   Table,
@@ -159,12 +159,12 @@ function EmployeeScheduleTable({ user, currentWeek }) {
                         component="div"
                       >
                         {
-                          shifts.filter(
+                          capitalize(shifts.filter(
                             (s) =>
                               DateHelper.dateToMySQLDate(
                                 DateHelper.textToDate(s.date)
                               ) == DateHelper.dateToMySQLDate(date)
-                          )[0].department
+                          )[0].department)
                         }
                       </Typography>
                       <Typography

@@ -148,4 +148,12 @@ export default class APIInterface {
     {
         return axiosAgent.put(`punchin/set-denied/${employee_id}/${punchin}`);
     }
+
+    async getNotificationsForEmployee(employee_id) {
+        return axiosAgent.get(`notifications/all-notifications/${employee_id}`);
+    }
+
+    async setNotificationsReadForEmployee(employee_id) {
+        return axiosAgent.put(`notifications/set-notifications-read/${employee_id}`)
+    }
 }
