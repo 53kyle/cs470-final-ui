@@ -10,7 +10,7 @@ import {
   ListItem,
   ListItemButton,
   ListItemIcon,
-  ListItemText,
+  ListItemText, Modal,
   styled,
   Toolbar,
   Typography,
@@ -30,6 +30,7 @@ import { AdminMenuItems, EmployeeMenuItems } from "../../Utils/MenuItems";
 import Switch from "@mui/material/Switch";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { lightTheme, darkTheme } from "../../Utils/theme";
+import EmployeeNotifications from "../Employee/Notifications/EmployeeNotifications";
 
 let drawerWidth = 240;
 
@@ -78,6 +79,17 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-end",
 }));
 
+const notificationsStyle = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  boxShadow: 24,
+  p: 4,
+};
+
 function Menu({ user, logoutAction }) {
   const [themeMode, setThemeMode] = useState("lightTheme");
   const theme = useTheme();
@@ -86,6 +98,19 @@ function Menu({ user, logoutAction }) {
   const [selectedMenuItem, setSelectedMenuItem] = useState(0);
   const [numNotifications, setNumNotifications] = useState(0);
   const [notificationCounts, setNotificationCounts] = useState({});
+  const [notifications, setNotifications] = useState([]);
+  const [notificationsOpen, setNotificationsOpen] = React.useState(false);
+
+  const handleOpenNotifications = () => setNotificationsOpen(true);
+  const handleCloseNotifications = () => {
+    const setNotificationsRead = async () => {
+      const api = new API();
+      const notificationsResponse = await api.setNotificationsReadForEmployee(user.employee_id);
+    }
+
+    setNotificationsRead()
+    setNotificationsOpen(false)
+  };
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -97,6 +122,58 @@ function Menu({ user, logoutAction }) {
   const handleSelectMenuItem = (idx) => {
     setSelectedMenuItem(idx);
   };
+
+  useEffect(() => {
+    const fetchNotificationCount = async (type) => {
+      try {
+        const api = new API();
+        if(type === "availabilityTimeOffPendingCount"){
+          const response = await api.availabilityTimeOffPendingCount();
+          const notificationCount = response.data[0].total_pending_count;
+          setNotificationCounts(prevCounts => ({
+            ...prevCounts,
+            [type]: notificationCount,
+          }));
+        }
+        else if(type === "punchInPendingCount"){
+          const response = await api.punchInPendingCount();
+          const notificationCount = response.data[0].count;
+          setNotificationCounts(prevCounts => ({
+            ...prevCounts,
+            [type]: notificationCount,
+          }));
+        }
+
+      } catch (error) {
+        console.error('Error fetching notification count:', error);
+      }
+    };
+
+    async function fetchData() {
+      try {
+        const api = new API();
+
+        const notificationsResponse = await api.getNotificationsForEmployee(user.employee_id);
+        setNotifications(notificationsResponse.data);
+
+        const unreadNotifications = notificationsResponse.data.filter((notification) => notification.unread === 1);
+        setNumNotifications(unreadNotifications.length);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+
+    if (!notificationsOpen) {
+      fetchData();
+    }
+
+    // Fetch notification counts for each menu item
+    menuItemsForUser().forEach(item => {
+      if (item.notifications) {
+        fetchNotificationCount(item.notifications);
+      }
+    });
+  }, [notificationsOpen]);
 
   const toggleThemeMode = () => {
     const newThemeMode =
@@ -161,15 +238,19 @@ function Menu({ user, logoutAction }) {
               {menuItemsForUser()[selectedMenuItem].title}
             </Typography>
             {!user.permission && (
-              <IconButton
-                size="large"
-                aria-label="show notifications"
-                color="inherit"
-              >
-                <Badge badgeContent={numNotifications} color="error">
-                  <NotificationsIcon />
-                </Badge>
-              </IconButton>
+                <Fragment>
+                  <IconButton
+                      size="large"
+                      aria-label="show notifications"
+                      color="inherit"
+                      onClick={handleOpenNotifications}
+                  >
+                    <Badge badgeContent={numNotifications} color="error">
+                      <NotificationsIcon />
+                    </Badge>
+                  </IconButton>
+
+                </Fragment>
             )}
 
             <Box
@@ -259,7 +340,18 @@ function Menu({ user, logoutAction }) {
             ))}
           </List>
         </Drawer>
+        <Modal
+            open={notificationsOpen}
+            onClose={handleCloseNotifications}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+        >
+          <Box sx={notificationsStyle}>
+            <EmployeeNotifications user={user} sx={{
 
+            }}/>
+          </Box>
+        </Modal>
         <Main open={open}>
           {React.cloneElement(menuItemsForUser()[selectedMenuItem].component, {
             user: user,

@@ -19,7 +19,7 @@ import { FcSettings } from "react-icons/fc";
 import { useTheme } from '@mui/material/styles'
 
 import {
-    Box,
+    Box, capitalize,
     Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem,
     Paper,
     Table,
@@ -259,7 +259,7 @@ function AdminScheduleCell({shift, idx}) {
                         <Typography variant="caption" align="center" component="div" style={{ whiteSpace: "pre-wrap" }}>
                             {
                                 shift.length > 0 ?
-                                    shift[0].department : " "
+                                    capitalize(shift[0].department) : " "
                             }
                         </Typography>
                         <Typography variant="caption" align="center" component="div" style={{ whiteSpace: "pre-wrap" }}>
