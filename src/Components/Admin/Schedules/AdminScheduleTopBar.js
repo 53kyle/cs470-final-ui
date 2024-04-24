@@ -3,6 +3,7 @@ import {Box, Button, TextField, Typography, Dialog, DialogActions, DialogContent
 
 import EventRepeatIcon from '@mui/icons-material/EventRepeat';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 
 import DateHelper from "../../../Utils/DateHelper";
 
@@ -20,8 +21,7 @@ const style = {
     p: 4,
 };
 
-function AdminScheduleTopBar({startDate, setStartDate, endDate, setEndDate, generateSchedule, postSchedule}) {
-
+function AdminScheduleTopBar({startDate, setStartDate, endDate, setEndDate, currentWeek, generateSchedule, postSchedule}) {
     const [open, setOpen] = React.useState(false);
     const [unfilledShifts, setUnfilledShifts] = useState([]);
     const [shifts, setShifts] = useState([]);
@@ -42,6 +42,11 @@ function AdminScheduleTopBar({startDate, setStartDate, endDate, setEndDate, gene
 
     const handleEndDateChange = (event) => {
         setEndDate(DateHelper.textToDate(event.target.value)+DateHelper.millisecondsInDay);
+    }
+
+    const handleCurrentWeek = () => {
+        setStartDate(currentWeek[0]);
+        setEndDate(currentWeek[6]);
     }
 
     const fetchUnfilledShifts = async () => {
@@ -66,6 +71,15 @@ function AdminScheduleTopBar({startDate, setStartDate, endDate, setEndDate, gene
                 alignItems: "center",
                 justifyContent: "center"
             }}>
+                <Button
+                    variant="contained"
+                    endIcon={<CalendarTodayIcon />}
+                    onClick={handleCurrentWeek}
+                    sx={{ mr: 2 }}
+                >
+                    Current Week
+                </Button>
+
                 <TextField
                     id="outlined-number"
                     type="date"
@@ -107,11 +121,10 @@ function AdminScheduleTopBar({startDate, setStartDate, endDate, setEndDate, gene
                                 <DialogTitle
                                     id="alert-dialog-title"
                                     sx={{
-                                        fontWeight: 'bold',
-                                        color: 'Black'
+                                        fontWeight: 'bold'
                                     }}
                                 >
-                                    {"No shifts to fill"}
+                                    {"No shifts to fill!"}
                                 </DialogTitle>
                                 <DialogActions sx={{ justifyContent: 'space-between' }}>
                                     <Button onClick={handleClose}>Close</Button>
@@ -124,7 +137,18 @@ function AdminScheduleTopBar({startDate, setStartDate, endDate, setEndDate, gene
                                 aria-labelledby="confirmation-dialog-title"
                                 aria-describedby="confirmation-dialog-description"
                             >
-                                <DialogTitle id="confirmation-dialog-title">Generating Shifts from {DateHelper.formatDateTime(startDate)} - {DateHelper.formatDateTime(endDate)}</DialogTitle>
+                                <Typography variant="h5" align="center" component="div" mt={4}>
+                                    Generating Shifts:
+                                </Typography>
+                                <Typography variant="h5" align="center" component="div">
+                                    {DateHelper.formatDateTime(startDate)}
+                                </Typography>
+                                <Typography variant="h5" align="center" component="div">
+                                    -
+                                </Typography>
+                                <Typography variant="h5" align="center" component="div">
+                                    {DateHelper.formatDateTime(endDate)}
+                                </Typography>
                                 <DialogTitle id="confirmation-dialog-title">Are you sure you want to Generate {unfilledShifts.length} Shifts?</DialogTitle>
                                 <DialogActions>
                                     <Button onClick={() => { generateSchedule(); handleClose(); }} color="error">

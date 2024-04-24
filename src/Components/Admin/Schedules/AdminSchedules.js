@@ -444,6 +444,7 @@ function AdminSchedules() {
                 endDate={endDate}
                 setEndDate={(date) => handleSetEndDate(date)}
                 postSchedule={() => postSchedule()}
+                currentWeek={currentWeek}
             />
 
             <Divider sx={{

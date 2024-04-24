@@ -125,9 +125,65 @@ function AdminDateCell({ date, idx }) {
 }
 
 function AdminShiftsCell({ currentWeek, shifts, row_idx, col_idx }) {
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [employeeAvailable, setEmployeeAvailable] = useState(true);
+  const [backgroundColor, setBackgroundColor] = useState("rgba(0, 0, 0, 0)");
   const menuOpen = Boolean(anchorEl);
   const theme = useTheme();
+
+  const shiftsForColumn = shifts.filter(
+      (s) =>
+          DateHelper.dateToMySQLDate(DateHelper.textToDate(s.date)) ===
+          DateHelper.dateToMySQLDate(currentWeek[col_idx])
+  );
+  const shift = row_idx < shiftsForColumn.length ? shiftsForColumn[row_idx] : 0;
+
+  const cellType =
+      row_idx < shiftsForColumn.length
+          ? 1
+          : row_idx === shiftsForColumn.length
+              ? 0
+              : -1;
+
+  useEffect (() => {
+    async function checkAvailability() {
+      try {
+        const api = new API();
+
+        if (shift.employee_id === null) {
+          // Get list of employees who are trained to work this shift
+          const trainedEmployeesResponse = await api.employeesTrainedInShift(shift.shift_id);
+          const trainedEmployees = trainedEmployeesResponse.data.map(obj => obj.employee_id);
+
+          // Get list of employees who are available to work this shift
+          const availableEmployeesResponse = await api.employeesAvailableForShift(shift.shift_id);
+          const availableEmployees = availableEmployeesResponse.data.map(obj => obj.employee_id);
+
+          // If there are no employees available for this shift, log it and continue to next shift
+          if (cellType > -1 && (!availableEmployees.length || !trainedEmployees.length)){
+            //console.log("No Employees Available for Shift: " + shift.shift_id)
+            // red
+            setBackgroundColor("rgba(255, 0, 0, 0.1)");
+          }
+          else if (cellType > -1) {
+            // yellow
+            setBackgroundColor("rgba(255, 255, 0, 0.1)");
+          }
+          else {
+            setBackgroundColor("rgba(0, 0, 0, 0)");
+          }
+        }
+        else {
+          setBackgroundColor("rgba(0, 0, 0, 0)");
+        }
+
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+
+    checkAvailability();
+  }, [currentWeek, shifts])
 
   const handleOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -150,20 +206,6 @@ function AdminShiftsCell({ currentWeek, shifts, row_idx, col_idx }) {
     setAnchorEl(null);
   };
 
-  const shiftsForColumn = shifts.filter(
-    (s) =>
-      DateHelper.dateToMySQLDate(DateHelper.textToDate(s.date)) ==
-      DateHelper.dateToMySQLDate(currentWeek[col_idx])
-  );
-  const shift = row_idx < shiftsForColumn.length ? shiftsForColumn[row_idx] : 0;
-
-  const cellType =
-    row_idx < shiftsForColumn.length
-      ? 1
-      : row_idx === shiftsForColumn.length
-      ? 0
-      : -1;
-
   const scheduledOptions = [
     {
       title: "Edit Shift",
@@ -185,6 +227,7 @@ function AdminShiftsCell({ currentWeek, shifts, row_idx, col_idx }) {
         minWidth: 80,
         maxWidth: 80,
         borderLeft: "1px solid rgba(224, 224, 224, 1)",
+        backgroundColor: backgroundColor
       }}
     >
       {cellType === 1 && (
@@ -301,12 +344,13 @@ function AdminShiftsRow({ currentWeek, shifts, row_idx }) {
   );
 }
 
-function AdminShiftsTable({ currentWeek }) {
+function AdminShiftsTable({ currentWeek, render }) {
   const [shifts, setShifts] = useState([]);
   const theme = useTheme();
 
   useEffect(() => {
     async function fetchData() {
+      console.log("fetching shifts");
       try {
         const api = new API();
 
@@ -323,7 +367,7 @@ function AdminShiftsTable({ currentWeek }) {
     }
 
     fetchData();
-  }, [currentWeek]);
+  }, [currentWeek, render]);
 
   return (
     <Paper
@@ -360,6 +404,7 @@ function AdminShifts() {
   const [currentWeek, setCurrentWeek] = useState(DateHelper.weekOf(Date.now()));
   const [startDate, setStartDate] = useState(DateHelper.weekOf(Date.now())[0]);
   const [endDate, setEndDate] = useState(DateHelper.weekOf(Date.now())[6]);
+  const [render, setRender] = useState(false);
   const theme = useTheme();
 
   const handleSetStartDate = (date) => {
@@ -382,9 +427,19 @@ function AdminShifts() {
     setCurrentWeek(DateHelper.weekOf(newDate));
   };
 
-  const generateSchedule = () => {
+  async function generateSchedule(){
     console.log("Generate Schedule Clicked...");
-    generate(startDate, endDate);
+
+    try {
+      const generatedSchedule = await generate(startDate, endDate);
+
+      if (generatedSchedule) {
+        console.log(generatedSchedule);
+        setRender(!render);
+      }
+    } catch (error) {
+      console.error("Error generating schedule:", error);
+    }
   };
 
   return (
@@ -395,6 +450,7 @@ function AdminShifts() {
         endDate={endDate}
         setEndDate={(date) => handleSetEndDate(date)}
         generateSchedule={() => generateSchedule()}
+        currentWeek={currentWeek}
       />
       <Divider
         sx={{
@@ -413,7 +469,7 @@ function AdminShifts() {
         }}
       />
 
-      <AdminShiftsTable currentWeek={currentWeek} />
+      <AdminShiftsTable currentWeek={currentWeek} render={render} />
     </Fragment>
   );
 }

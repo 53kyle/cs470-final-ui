@@ -23,7 +23,7 @@ export async function generate(startDate, endDate) {
 
 
         // Assign empty shifts to employees
-        shiftData.data.forEach(async shift => {
+        const shiftPromises = shiftData.data.map(async shift => {
             // Only look at a shift if it has no employee assigned to it
 
             if (shift.employee_id === null) {
@@ -106,6 +106,8 @@ export async function generate(startDate, endDate) {
 
             }
         });
+
+        await Promise.all(shiftPromises);
 
         return { employeeData: employeeData.data, shiftData: shiftData.data };
     } catch (error) {
