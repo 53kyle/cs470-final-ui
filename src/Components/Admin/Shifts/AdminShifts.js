@@ -94,7 +94,7 @@ function AdminDateCell({ date, idx }) {
           }}
         >
           <IconButton aria-label="menu" size="small" onClick={handleOpen}>
-            <InfoIcon fontSize="small" />
+            <InfoIcon fontSize="small" style={{ fontSize: "20px" , color: '#f0f0f0'}} />
           </IconButton>
         </Box>
         <Menu
@@ -320,7 +320,7 @@ function AdminShiftsCell({ currentWeek, shifts, row_idx, col_idx }) {
           </Box>
         )}
         {cellType === 0 && (
-          <Button endIcon={<AddIcon />} onClick={addShift}>
+          <Button endIcon={<AddIcon />} onClick={addShift} sx={{  fontWeight: theme.palette.type === 'dark' ? 'bold' : 'normal', fontSize: '16px', textShadow: theme.palette.type === 'dark' ? '1px 2px 2px rgba(0,0,0,0.5)' : null }}>
             Add Shift
           </Button>
         )}
