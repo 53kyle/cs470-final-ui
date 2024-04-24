@@ -17,6 +17,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import { FcSettings } from "react-icons/fc";
 import Typography from "@mui/material/Typography";
 import notificationSound from '../../../Utils/notification.wav';
+import { Dialog, DialogTitle, DialogActions, Button } from "@mui/material";
 
 const requestsTableAttributes = [
   {
@@ -83,6 +84,9 @@ const RequestTable = () => {
   const [anchorE2, setAnchorE2] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [open1, setOpen1] = useState(false);
+
 
   useEffect(() => {
     const fetchRequests = async () => {
@@ -117,20 +121,33 @@ const RequestTable = () => {
     setAnchorE2(null);
   };
 
+  const handleOpenApproveDialog = () => {
+    playNotificationSound();
+    handleClosePopover();
+    setOpen(true);
+  };
+
+  const handleCloseApproveDialog = () => {
+    setOpen(false);
+  };
+
+  const handleOpenDenyDialog = () => {
+    playNotificationSound();
+    handleClosePopover();
+    setOpen1(true);
+  };
+
+  const handleCloseDenyDialog = () => {
+    setOpen1(false);
+  };
+
   const playNotificationSound = () => {
     const sound = new Audio(notificationSound);
     sound.play();
   };
 
   const handleApprove = async () => {
-    playNotificationSound();
-    const confirmed = window.confirm(
-      "Are you sure you want to approve this punch?"
-    );
-    if (!confirmed) {
-      handleClosePopover();
-      return;
-    }
+    handleCloseApproveDialog();
     setIsEditing(true);
 
     if (!selectedRequest.day_of_week) {
@@ -171,14 +188,7 @@ const RequestTable = () => {
   };
 
   const handleDeny = async () => {
-    playNotificationSound();
-    const confirmed = window.confirm(
-      "Are you sure you want to approve this punch?"
-    );
-    if (!confirmed) {
-      handleClosePopover();
-      return;
-    }
+    handleCloseDenyDialog();
     setIsEditing(true);
 
     if (!selectedRequest.day_of_week) {
@@ -311,13 +321,13 @@ const RequestTable = () => {
           }}
         >
           <MenuList>
-            <MenuItem onClick={handleApprove}>
+            <MenuItem onClick={handleOpenApproveDialog}>
               <ListItemIcon sx={{ color: "green" }}>
                 <CheckIcon />
               </ListItemIcon>
               Approve
             </MenuItem>
-            <MenuItem onClick={handleDeny}>
+            <MenuItem onClick={handleOpenDenyDialog}>
               <ListItemIcon sx={{ color: "red" }}>
                 <ClearIcon />
               </ListItemIcon>
@@ -403,6 +413,42 @@ const RequestTable = () => {
 
   return (
     <Fragment>
+        <Dialog
+        open={open}
+        onClose={handleCloseApproveDialog}
+        aria-labelledby="confirmation-dialog-title"
+        aria-describedby="confirmation-dialog-description"
+      >
+        <DialogTitle id="confirmation-dialog-title">
+          Are you sure you want to approve this request?
+        </DialogTitle>
+        <DialogActions>
+          <Button onClick={handleApprove} color="success">
+            Yes
+          </Button>
+          <Button onClick={handleCloseApproveDialog} color="error">
+            No
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={open1}
+        onClose={handleCloseDenyDialog}
+        aria-labelledby="confirmation-dialog-title"
+        aria-describedby="confirmation-dialog-description"
+      >
+        <DialogTitle id="confirmation-dialog-title">
+          Are you sure you want to deny this request?
+        </DialogTitle>
+        <DialogActions>
+          <Button onClick={handleDeny} color="success">
+            Yes
+          </Button>
+          <Button onClick={handleCloseDenyDialog} color="error">
+            No
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Typography variant="h6" gutterBottom component="div">
         Time off Requests
       </Typography>
