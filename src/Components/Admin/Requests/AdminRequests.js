@@ -16,7 +16,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
 import { FcSettings } from "react-icons/fc";
 import Typography from "@mui/material/Typography";
-import notificationSound from '../../../Utils/notification.wav';
+import notificationSound from "../../../Utils/notification.wav";
 import { Dialog, DialogTitle, DialogActions, Button } from "@mui/material";
 
 const requestsTableAttributes = [
@@ -84,9 +84,10 @@ const RequestTable = () => {
   const [anchorE2, setAnchorE2] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [selectedRow2, setSelectedRow2] = useState(null);
   const [open, setOpen] = useState(false);
   const [open1, setOpen1] = useState(false);
-
 
   useEffect(() => {
     const fetchRequests = async () => {
@@ -106,19 +107,23 @@ const RequestTable = () => {
     fetchRequests();
   }, [isEditing]);
 
-  const handleOpenPopover1 = (event, request) => {
+  const handleOpenPopover = (event, index, requestObject) => {
     setAnchorEl(event.currentTarget);
-    setSelectedRequest(request);
+    setSelectedRequest(requestObject);
+    setSelectedRow(index);
   };
 
-  const handleOpenPopover2 = (event, request) => {
+  const handleOpenPopover2 = (event, index, requestObject) => {
     setAnchorE2(event.currentTarget);
-    setSelectedRequest(request);
+    setSelectedRequest(requestObject);
+    setSelectedRow2(index);
   };
 
   const handleClosePopover = () => {
     setAnchorEl(null);
     setAnchorE2(null);
+    setSelectedRow(null);
+    setSelectedRow2(null);
   };
 
   const handleOpenApproveDialog = () => {
@@ -150,6 +155,7 @@ const RequestTable = () => {
     handleCloseApproveDialog();
     setIsEditing(true);
 
+    console.log("selected request:", selectedRequest);
     if (!selectedRequest.day_of_week) {
       try {
         const api = new API();
@@ -292,9 +298,7 @@ const RequestTable = () => {
       ))}
       <TableCell align="right">
         {requestObject.status === "Pending" ? (
-          <IconButton
-            onClick={(event) => handleOpenPopover1(event, requestObject)}
-          >
+          <IconButton onClick={(event) => handleOpenPopover(event, index, requestObject)}>
             <FcSettings />
           </IconButton>
         ) : (
@@ -303,7 +307,7 @@ const RequestTable = () => {
           </IconButton>
         )}
         <Popover
-          open={Boolean(anchorEl)}
+          open={selectedRow === index}
           anchorEl={anchorEl}
           onClose={handleClosePopover}
           anchorOrigin={{
@@ -313,11 +317,6 @@ const RequestTable = () => {
           transformOrigin={{
             vertical: "top",
             horizontal: "right",
-          }}
-          PaperProps={{
-            sx: {
-              boxShadow: "1px 1px 3px rgba(0, 0, 0, 0.2)",
-            },
           }}
         >
           <MenuList>
@@ -363,9 +362,7 @@ const RequestTable = () => {
       ))}
       <TableCell align="right">
         {requestObject.status === "Pending" ? (
-          <IconButton
-            onClick={(event) => handleOpenPopover2(event, requestObject)}
-          >
+          <IconButton onClick={(event) => handleOpenPopover2(event, index, requestObject)}>
             <FcSettings />
           </IconButton>
         ) : (
@@ -374,7 +371,7 @@ const RequestTable = () => {
           </IconButton>
         )}
         <Popover
-          open={Boolean(anchorE2)}
+          open={selectedRow2 === index}
           anchorEl={anchorE2}
           onClose={handleClosePopover}
           anchorOrigin={{
@@ -413,7 +410,7 @@ const RequestTable = () => {
 
   return (
     <Fragment>
-        <Dialog
+      <Dialog
         open={open}
         onClose={handleCloseApproveDialog}
         aria-labelledby="confirmation-dialog-title"
