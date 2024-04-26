@@ -51,6 +51,7 @@ const PunchTable = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [open, setOpen] = useState(false);
   const [open1, setOpen1] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
 
   useEffect(() => {
     const fetchPunches = async () => {
@@ -68,13 +69,15 @@ const PunchTable = () => {
     fetchPunches();
   }, [isEditing]);
 
-  const handleOpenPopover = (event, punch) => {
+  const handleOpenPopover = (event, index, punchObject) => {
+    setSelectedRow(index);
+    setSelectedPunch(punchObject);
     setAnchorEl(event.currentTarget);
-    setSelectedPunch(punch);
   };
 
   const handleClosePopover = () => {
     setAnchorEl(null);
+  setSelectedRow(null);
   };
 
   const handleOpenApproveDialog = () => {
@@ -207,7 +210,7 @@ const PunchTable = () => {
       <TableCell align="right">
         {punchObject.pending === 1 ? (
           <IconButton
-            onClick={(event) => handleOpenPopover(event, punchObject)}
+          onClick={(event) => handleOpenPopover(event, index, punchObject)}
           >
             <FcSettings />
           </IconButton>
@@ -217,17 +220,12 @@ const PunchTable = () => {
           </IconButton>
         )}
         <Popover
-          open={Boolean(anchorEl)}
+          open={selectedRow === index}
           anchorEl={anchorEl}
           onClose={handleClosePopover}
           anchorOrigin={{
             vertical: "top",
             horizontal: "right",
-          }}
-          PaperProps={{
-            sx: {
-              boxShadow: "1px 1px 3px rgba(0, 0, 0, 0.08)", // Customize the boxShadow property
-            },
           }}
         >
           <MenuItem onClick={handleOpenApproveDialog}>
