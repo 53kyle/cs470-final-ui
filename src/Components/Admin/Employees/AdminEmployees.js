@@ -63,6 +63,7 @@ const EmployeeTable = () => {
   const [error, setError] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [selectedRow, setSelectedRow] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editedEmployee, setEditedEmployee] = useState({});
   const [availabilityData, setAvailabilityData] = useState([]);
@@ -87,13 +88,15 @@ const EmployeeTable = () => {
     fetchEmployees();
   }, [isEditing]);
 
-  const handleGearClick = (event, employee) => {
+  const handleGearClick = (event, index, employeeObject) => {
     setAnchorEl(event.currentTarget);
-    setSelectedEmployee(employee);
+    setSelectedRow(index);
+    setSelectedEmployee(employeeObject);
   };
 
   const handleClosePopover = () => {
     setAnchorEl(null);
+    setSelectedRow(null);
   };
 
   const handleOpenDialog = () => {
@@ -130,9 +133,6 @@ const EmployeeTable = () => {
     // Ensure selectedEmployee and editedEmployee are not null before proceeding
     if (!selectedEmployee || !editedEmployee) return;
 
-    console.log(selectedEmployee);
-    console.log(editedEmployee);
-
     try {
       const api = new API();
       await api.updateEmployee(editedEmployee);
@@ -167,7 +167,6 @@ const EmployeeTable = () => {
   };
 
   const AvailabilityModal = ({ open, handleClose }) => {
-    console.log("availability data: ", availabilityData);
     if (!availabilityData.data || availabilityData.data.length === 0) {
       return (
         <Modal
@@ -440,11 +439,11 @@ const EmployeeTable = () => {
         </TableCell>
       ))}
       <TableCell align="right">
-        <IconButton onClick={(event) => handleGearClick(event, employeeObject)}>
+        <IconButton onClick={(event) => handleGearClick(event, index, employeeObject)}>
           <FcSettings />
         </IconButton>
         <Popover
-          open={Boolean(anchorEl)}
+          open={selectedRow === index}
           anchorEl={anchorEl}
           onClose={handleClosePopover}
           anchorOrigin={{
@@ -454,11 +453,6 @@ const EmployeeTable = () => {
           transformOrigin={{
             vertical: "top",
             horizontal: "right",
-          }}
-          PaperProps={{
-            sx: {
-              boxShadow: "1px 1px 4px rgba(0, 0, 0, 0.3)",
-            },
           }}
         >
           <MenuItem onClick={handleOpenAvailabilityModal}>
