@@ -23,7 +23,9 @@ const getHoursForShift = (shift) => {
     const startHour = new Date(shift.start_time).getHours();
     const endHour = new Date(shift.end_time).getHours();
     const mealLength = new Date(shift.meal_end).getHours() - new Date(shift.meal_start).getHours();
-    return (endHour - startHour - mealLength);
+
+    let hours = (endHour - startHour - mealLength)
+    return hours < 0 ? hours + 24 : hours;
 }
 
 const getHoursForSchedule = (schedule) => {

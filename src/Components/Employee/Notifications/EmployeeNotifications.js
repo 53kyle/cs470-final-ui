@@ -7,30 +7,7 @@ import Typography from "@mui/material/Typography";
 import DateHelper from "../../../Utils/DateHelper";
 import ScheduleHelper from "../../../Utils/ScheduleHelper";
 import CircleIcon from '@mui/icons-material/Circle';
-
-const NotificationsContentBox = ({title, content}) => {
-    return <Box sx={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "start",
-        alignItems: "start",
-        width: "100%"
-    }}>
-        <Typography component="div" variant='h5'>
-            {
-                title
-            }
-        </Typography>
-        <Divider orientation="horizontal" flexItem sx={{ mt: 2, mb: 2 }} />
-        {
-            content == null &&
-            <CircularProgress />
-        }
-        {
-            content
-        }
-    </Box>
-};
+import SegueContentBox from "../../Generic/SegueContentBox";
 
 function EmployeeNotifications({user}) {
     const [notifications, setNotifications] = useState([]);
@@ -54,7 +31,7 @@ function EmployeeNotifications({user}) {
     }, [user]);
 
     return (
-        <NotificationsContentBox title="Notifications" content={
+        <SegueContentBox title="Notifications" content={
             notifications.length > 0 ? notifications.map((item, index) => (
                 <Fragment key={index}>
                     <Box

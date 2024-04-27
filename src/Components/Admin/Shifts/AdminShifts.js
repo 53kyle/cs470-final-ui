@@ -10,7 +10,7 @@ import {
   ListItemIcon,
   ListItemText,
   Menu,
-  MenuItem,
+  MenuItem, Modal,
   Paper,
   Table,
   TableBody,
@@ -34,6 +34,19 @@ import AdminScheduleTopBar from "../Schedules/AdminScheduleTopBar";
 import { generate } from "../../../Utils/ScheduleGeneration";
 import { FcSettings } from "react-icons/fc";
 import { useTheme } from "@mui/material/styles";
+import EmployeeNotifications from "../../Employee/Notifications/EmployeeNotifications";
+import AddShift from "./AddShift";
+
+const segueStyle = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  boxShadow: 24,
+  p: 4,
+};
 
 function AdminDateCell({ date, idx }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -124,7 +137,7 @@ function AdminDateCell({ date, idx }) {
   );
 }
 
-function AdminShiftsCell({ currentWeek, shifts, row_idx, col_idx }) {
+function AdminShiftsCell({ currentWeek, shifts, row_idx, col_idx, addShiftOpen, setAddShiftOpen, setSelectedDate }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [employeeAvailable, setEmployeeAvailable] = useState(true);
   const [backgroundColor, setBackgroundColor] = useState("rgba(0, 0, 0, 0)");
@@ -193,7 +206,8 @@ function AdminShiftsCell({ currentWeek, shifts, row_idx, col_idx }) {
   };
 
   const addShift = () => {
-    console.log("Add Shift Clicked...");
+    setAddShiftOpen(true);
+    setSelectedDate(currentWeek[col_idx])
   };
 
   const editShift = () => {
@@ -329,7 +343,7 @@ function AdminShiftsCell({ currentWeek, shifts, row_idx, col_idx }) {
   );
 }
 
-function AdminShiftsRow({ currentWeek, shifts, row_idx }) {
+function AdminShiftsRow({ currentWeek, shifts, row_idx, addShiftOpen, setAddShiftOpen, setSelectedDate }) {
   return (
     <TableRow tabIndex={-1} key={1}>
       {currentWeek.map((date, col_idx) => (
@@ -338,13 +352,16 @@ function AdminShiftsRow({ currentWeek, shifts, row_idx }) {
           shifts={shifts}
           row_idx={row_idx}
           col_idx={col_idx}
+          addShiftOpen={addShiftOpen}
+          setAddShiftOpen={setAddShiftOpen}
+          setSelectedDate={setSelectedDate}
         />
       ))}
     </TableRow>
   );
 }
 
-function AdminShiftsTable({ currentWeek, render }) {
+function AdminShiftsTable({ currentWeek, render, addShiftOpen, setAddShiftOpen, setSelectedDate }) {
   const [shifts, setShifts] = useState([]);
   const theme = useTheme();
 
@@ -367,7 +384,7 @@ function AdminShiftsTable({ currentWeek, render }) {
     }
 
     fetchData();
-  }, [currentWeek, render]);
+  }, [currentWeek, render, addShiftOpen]);
 
   return (
     <Paper
@@ -389,6 +406,9 @@ function AdminShiftsTable({ currentWeek, render }) {
                   currentWeek={currentWeek}
                   shifts={shifts}
                   row_idx={row_idx}
+                  addShiftOpen={addShiftOpen}
+                  setAddShiftOpen={setAddShiftOpen}
+                  setSelectedDate={setSelectedDate}
                 />
               )
             )}
@@ -402,9 +422,11 @@ function AdminShiftsTable({ currentWeek, render }) {
 function AdminShifts() {
   const [currentDate, setCurrentDate] = useState(Date.now());
   const [currentWeek, setCurrentWeek] = useState(DateHelper.weekOf(Date.now()));
+  const [selectedDate, setSelectedDate] = useState(null);
   const [startDate, setStartDate] = useState(DateHelper.weekOf(Date.now())[0]);
   const [endDate, setEndDate] = useState(DateHelper.weekOf(Date.now())[6]);
   const [render, setRender] = useState(false);
+  const [addShiftOpen, setAddShiftOpen] = useState(false);
   const theme = useTheme();
 
   const handleSetStartDate = (date) => {
@@ -427,6 +449,10 @@ function AdminShifts() {
     setCurrentWeek(DateHelper.weekOf(newDate));
   };
 
+  const handleCloseAddShift = () => {
+    setAddShiftOpen(false)
+  };
+
   async function generateSchedule(){
     console.log("Generate Schedule Clicked...");
 
@@ -444,6 +470,18 @@ function AdminShifts() {
 
   return (
     <Fragment>
+      <Modal
+          open={addShiftOpen}
+          onClose={handleCloseAddShift}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+      >
+        <Box sx={segueStyle}>
+          <AddShift date={selectedDate} setAddShiftOpen={setAddShiftOpen} sx={{
+
+          }}/>
+        </Box>
+      </Modal>
       <AdminScheduleTopBar
         startDate={startDate}
         setStartDate={(date) => handleSetStartDate(date)}
@@ -469,7 +507,13 @@ function AdminShifts() {
         }}
       />
 
-      <AdminShiftsTable currentWeek={currentWeek} render={render} />
+      <AdminShiftsTable
+          currentWeek={currentWeek}
+          render={render}
+          addShiftOpen={addShiftOpen}
+          setAddShiftOpen={setAddShiftOpen}
+          setSelectedDate={setSelectedDate}
+      />
     </Fragment>
   );
 }

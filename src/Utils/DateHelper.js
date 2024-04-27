@@ -146,6 +146,14 @@ const dateToMySQLDateTime = (date) => {
     return dateFormat(dateAsDate, "yyyy-mm-ddThh:MM:ss");
 }
 
+const dateTimeToMySQLDateTime = (date, time) => {
+    const dateAsDate = new Date(date);
+    const dateAsString = dateFormat(dateAsDate, "yyyy-mm-dd");
+    const timeAsString = `${time}:00`;
+
+    return `${dateAsString}T${timeAsString}`;
+}
+
 /*
     dateTimeToText accepts a date as a string in the form,
     "YYYY-MM-DD" or "YYYY-MM-DDThh:mm:ss" and returns a
@@ -234,6 +242,7 @@ export default {
     textToDate: textToDate,
     getPlainWeekday: getPlainWeekday,
     dateToMySQLDate: dateToMySQLDate,
+    dateTimeToMySQLDateTime: dateTimeToMySQLDateTime,
     mysqlDateToMilliseconds: mysqlDateToMilliseconds,
     formatDateTime,
     formatTime

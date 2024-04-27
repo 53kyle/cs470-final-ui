@@ -156,4 +156,12 @@ export default class APIInterface {
     async setNotificationsReadForEmployee(employee_id) {
         return axiosAgent.put(`notifications/set-notifications-read/${employee_id}`)
     }
+
+    async addShift(shiftData){
+        return axiosAgent.post(`shifts/add-shift`, shiftData);
+    }
+
+    async getTrained() {
+        return axiosAgent.get(`shifts/trained-departments`);
+    }
 }
