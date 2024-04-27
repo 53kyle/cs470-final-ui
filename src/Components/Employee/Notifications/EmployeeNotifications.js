@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 import DateHelper from "../../../Utils/DateHelper";
 import ScheduleHelper from "../../../Utils/ScheduleHelper";
 import CircleIcon from '@mui/icons-material/Circle';
-import SegueContentBox from "../../Generic/SegueContentBox";
+import ModalContentBox from "../../Generic/ModalContentBox";
 
 function EmployeeNotifications({user}) {
     const [notifications, setNotifications] = useState([]);
@@ -31,7 +31,7 @@ function EmployeeNotifications({user}) {
     }, [user]);
 
     return (
-        <SegueContentBox title="Notifications" content={
+        <ModalContentBox title="Notifications" content={
             notifications.length > 0 ? notifications.map((item, index) => (
                 <Fragment key={index}>
                     <Box

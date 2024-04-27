@@ -161,6 +161,14 @@ export default class APIInterface {
         return axiosAgent.post(`shifts/add-shift`, shiftData);
     }
 
+    async editShift(shiftData){
+        return axiosAgent.put(`shifts/edit-shift`, shiftData);
+    }
+
+    async deleteShift(shift_id){
+        return axiosAgent.delete(`shifts/delete-shift/${shift_id}`);
+    }
+
     async getTrained() {
         return axiosAgent.get(`shifts/trained-departments`);
     }

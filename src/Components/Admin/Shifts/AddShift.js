@@ -17,22 +17,39 @@ import Typography from "@mui/material/Typography";
 import DateHelper from "../../../Utils/DateHelper";
 import ScheduleHelper from "../../../Utils/ScheduleHelper";
 import CircleIcon from '@mui/icons-material/Circle';
-import SegueContentBox from "../../Generic/SegueContentBox";
+import ModalContentBox from "../../Generic/ModalContentBox";
 import CheckIcon from '@mui/icons-material/Check';
+import dateFormat from "dateformat";
 
-function AddShift({date, setAddShiftOpen}) {
+function AddShift({editShift, date, setAddShiftOpen}) {
     const [departments, setDepartments] = useState([]);
     const [selectedDepartment, setSelectedDepartment] = useState(null);
     const [employees, setEmployees] = useState([]);
     const [selectedEmployee, setSelectedEmployee] = useState(null);
     const [startTime, setStartTime] = useState("09:00");
     const [endTime, setEndTime] = useState("17:00");
-    const [meal, setMeal] = useState(false);
+    const [meal, setMeal] = useState(true);
     const [mealStart, setMealStart] = useState("12:30");
     const [mealEnd, setMealEnd] = useState("13:30");
 
     useEffect(() => {
+        if (editShift) {
+            setSelectedDepartment(editShift.department);
+            setSelectedEmployee(editShift.employee_id);
 
+            const startTimeAsDate = new Date(editShift.start_time);
+            const endTimeAsDate = new Date(editShift.end_time);
+            setStartTime(dateFormat(startTimeAsDate, "HH:MM"))
+            setEndTime(dateFormat(endTimeAsDate, "HH:MM"))
+
+            setMeal(editShift.meal);
+            if (editShift.meal) {
+                const mealStartAsDate = new Date(editShift.meal_start);
+                const mealEndAsDate = new Date(editShift.meal_end);
+                setMealStart(dateFormat(mealStartAsDate, "HH:MM"))
+                setMealEnd(dateFormat(mealEndAsDate, "HH:MM"))
+            }
+        }
         async function fetchData() {
 
             try {
@@ -43,7 +60,7 @@ function AddShift({date, setAddShiftOpen}) {
 
                 const trainedResponse = await api.getTrained();
                 setDepartments(trainedResponse.data.map((trained) => trained.department));
-                if (trainedResponse.data.length > 0) {
+                if (trainedResponse.data.length > 0 && !editShift) {
                     setSelectedDepartment(trainedResponse.data.map((trained) => trained.department)[0]);
                 }
 
@@ -94,7 +111,7 @@ function AddShift({date, setAddShiftOpen}) {
             endDate += DateHelper.millisecondsInDay;
         }
 
-        const shift = {
+        let shift = {
             department: selectedDepartment,
             employee_id: selectedEmployee || null,
             start_time: DateHelper.dateTimeToMySQLDateTime(startDate, startTime),
@@ -107,18 +124,32 @@ function AddShift({date, setAddShiftOpen}) {
 
         console.log(shift)
 
-        try {
-            const api = new API();
-            await api.addShift(shift);
+        if (editShift) {
+            shift = {...shift, shift_id: editShift.shift_id}
+            try {
+                const api = new API();
+                await api.editShift(shift);
 
-            setAddShiftOpen(false);
-        } catch (error) {
-            console.error("Error updating employee:", error);
+                setAddShiftOpen(false);
+            } catch (error) {
+                console.error("Error editing shift:", error);
+            }
         }
+        else {
+            try {
+                const api = new API();
+                await api.addShift(shift);
+
+                setAddShiftOpen(false);
+            } catch (error) {
+                console.error("Error adding shift:", error);
+            }
+        }
+
     }
 
     return (
-        <SegueContentBox title={`Add Shift for ${DateHelper.shortDateFormat(date)}`} content={
+        <ModalContentBox title={editShift ? "Edit Shift" : `Add Shift for ${DateHelper.shortDateFormat(date)}`} content={
             <Fragment>
                 <Typography
                     variant="body"

@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import React from "react";
 
-const SegueContentBox = ({title, content}) => {
+const ModalContentBox = ({title, content}) => {
     return <Box sx={{
         display: "flex",
         flexDirection: "column",
@@ -27,4 +27,4 @@ const SegueContentBox = ({title, content}) => {
     </Box>
 };
 
-export default SegueContentBox;
+export default ModalContentBox;
