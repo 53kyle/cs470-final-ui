@@ -1,22 +1,16 @@
 import React, {useState, useEffect, Fragment} from 'react';
 import API from "../../../API/API_Interface";
-import ContentBox from "../../Generic/ContentBox";
+
 import {
     Button,
-    capitalize,
     Checkbox,
-    CircularProgress,
-    Divider,
     MenuItem,
-    Paper,
     Select,
     TextField
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import DateHelper from "../../../Utils/DateHelper";
-import ScheduleHelper from "../../../Utils/ScheduleHelper";
-import CircleIcon from '@mui/icons-material/Circle';
 import ModalContentBox from "../../Generic/ModalContentBox";
 import CheckIcon from '@mui/icons-material/Check';
 import dateFormat from "dateformat";
@@ -29,8 +23,8 @@ function AddShift({editShift, date, setAddShiftOpen}) {
     const [startTime, setStartTime] = useState("09:00");
     const [endTime, setEndTime] = useState("17:00");
     const [meal, setMeal] = useState(true);
-    const [mealStart, setMealStart] = useState("12:30");
-    const [mealEnd, setMealEnd] = useState("13:30");
+    const [mealStart, setMealStart] = useState("12:00");
+    const [mealEnd, setMealEnd] = useState("13:00");
 
     useEffect(() => {
         if (editShift) {
@@ -167,7 +161,8 @@ function AddShift({editShift, date, setAddShiftOpen}) {
                     onChange={handleDepartmentChange}
                     sx={{
                         mt: 1,
-                        mb: 2
+                        mb: 2,
+                        width: "100%"
                     }}
                 >
                     {
@@ -192,7 +187,8 @@ function AddShift({editShift, date, setAddShiftOpen}) {
                     onChange={handleEmployeeChange}
                     sx={{
                         mt: 1,
-                        mb: 2
+                        mb: 2,
+                        width: "100%"
                     }}
                 >
                     <MenuItem value={null}>{"Any Employee"}</MenuItem>
@@ -226,15 +222,22 @@ function AddShift({editShift, date, setAddShiftOpen}) {
                         size="small"
                         value={startTime}
                         onChange={handleStartTimeChange}
-                        sx={{ mr: 2 }}
+                        sx={{ mr: 2, width: "100%"}}
                     />
+                    <Typography
+                        variant="body"
+                        align="center"
+                        component="div"
+                    >
+                        -
+                    </Typography>
                     <TextField
                         id="outlined-number"
                         type="time"
                         size="small"
                         value={endTime}
                         onChange={handleEndTimeChange}
-                        sx={{ mr: 2 }}
+                        sx={{ ml: 2, width: "100%" }}
                     />
                 </Box>
                 <Box
@@ -244,6 +247,7 @@ function AddShift({editShift, date, setAddShiftOpen}) {
                     alignItems="center"
                     textAlign="center"
                     width="100%"
+                    mb={2}
                 >
                     <Checkbox
                         checked={meal}
@@ -283,16 +287,23 @@ function AddShift({editShift, date, setAddShiftOpen}) {
                         size="small"
                         value={mealStart}
                         onChange={handleMealStartChange}
-                        sx={{ mr: 2 }}
+                        sx={{ mr: 2, width: "100%" }}
                         disabled={!meal}
                     />
+                    <Typography
+                        variant="body"
+                        align="center"
+                        component="div"
+                    >
+                        -
+                    </Typography>
                     <TextField
                         id="outlined-number"
                         type="time"
                         size="small"
                         value={mealEnd}
                         onChange={handleMealEndChange}
-                        sx={{ mr: 2 }}
+                        sx={{ ml: 2, width: "100%" }}
                         disabled={!meal}
                     />
                 </Box>

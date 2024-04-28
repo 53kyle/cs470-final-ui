@@ -122,6 +122,12 @@ const dateToTextField = (date) => {
     return dateFormat(dateAsDate, "yyyy-mm-dd");
 }
 
+const dateToAdvancedTextField = (date) => {
+    const dateAsDate = new Date(date);
+
+    return `${dateFormat(dateAsDate, "yyyy-mm-dd")}T${dateFormat(dateAsDate, "HH:MM:ss")}`;
+}
+
 /*
     dateToMySQLDateTime accepts a date as a number of milliseconds since epoch,
     and returns a string in the format "YYYY-MM-DD".
@@ -143,7 +149,7 @@ const dateToMySQLDate = (date) => {
 const dateToMySQLDateTime = (date) => {
     const dateAsDate = new Date(date);
 
-    return dateFormat(dateAsDate, "yyyy-mm-ddThh:MM:ss");
+    return `${dateFormat(dateAsDate, "yyyy-mm-dd")}T${dateFormat(dateAsDate, "HH:MM:ss")}`;
 }
 
 const dateTimeToMySQLDateTime = (date, time) => {
@@ -152,6 +158,14 @@ const dateTimeToMySQLDateTime = (date, time) => {
     const timeAsString = `${time}:00`;
 
     return `${dateAsString}T${timeAsString}`;
+}
+
+const timeToMySQLTime = (time) => {
+    return `${time}:00`;
+}
+
+const timeToDateTime = (time) => {
+    return `1979-01-31T${time}:00`;
 }
 
 /*
@@ -239,10 +253,14 @@ export default {
     shorterDateFormat: shorterDateFormat,
     dateRangeFormat: dateRangeFormat,
     dateToTextField: dateToTextField,
+    dateToAdvancedTextField: dateToAdvancedTextField,
     textToDate: textToDate,
     getPlainWeekday: getPlainWeekday,
     dateToMySQLDate: dateToMySQLDate,
+    dateToMySQLDateTime: dateToMySQLDateTime,
     dateTimeToMySQLDateTime: dateTimeToMySQLDateTime,
+    timeToMySQLTime: timeToMySQLTime,
+    timeToDateTime: timeToDateTime,
     mysqlDateToMilliseconds: mysqlDateToMilliseconds,
     formatDateTime,
     formatTime

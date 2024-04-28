@@ -18,6 +18,11 @@ import EditIcon from "@mui/icons-material/Edit";
 import { FcSettings } from "react-icons/fc";
 import { FcFullTrash } from "react-icons/fc";
 import { FcEditImage } from "react-icons/fc";
+import AddIcon from "@mui/icons-material/Add";
+import {Box, Button, Modal} from "@mui/material";
+import AddEmployee from "../../Admin/Employees/AddEmployee";
+import AddTimeOffRequest from "./AddTimeOffRequest";
+import AddAvailabilityRequest from "./AddAvailabilityRequest";
 
 const timeOffTableAttributes = [
   {
@@ -65,6 +70,17 @@ const availabilityRequestsTableAttributes = [
   },
 ];
 
+const modalStyle = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  boxShadow: 24,
+  p: 4,
+};
+
 const RequestsTable = ({ user }) => {
   const [timeOffRequests, setTimeOff] = useState([]);
   const [availabilityRequests, setAvailability] = useState([]);
@@ -72,6 +88,8 @@ const RequestsTable = ({ user }) => {
   const [error, setError] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedRequest, setselectedRequest] = useState(null);
+  const [addTimeOffOpen, setAddTimeOffOpen] = useState(false);
+  const [addAvailabilityOpen, setAddAvailabilityOpen] = useState(false);
 
   useEffect(() => {
     const fetchTimeOff = async () => {
@@ -104,7 +122,23 @@ const RequestsTable = ({ user }) => {
 
     fetchTimeOff();
     fetchAvailability();
-  }, []);
+  }, [addTimeOffOpen, addAvailabilityOpen]);
+
+  const handleOpenAddTimeOff = () => {
+    setAddTimeOffOpen(true);
+  }
+
+  const handleCloseAddTimeOff = () => {
+    setAddTimeOffOpen(false);
+  }
+
+  const handleOpenAddAvailability = () => {
+    setAddAvailabilityOpen(true);
+  }
+
+  const handleCloseAddAvailability = () => {
+    setAddAvailabilityOpen(false);
+  }
 
   const handleGearClick = (event, request) => {
     setAnchorEl(event.currentTarget);
@@ -292,8 +326,50 @@ const RequestsTable = ({ user }) => {
 
   return (
     <Fragment>
+      <Box flexDirection="row">
+        <Button
+            variant="contained"
+            endIcon={<AddIcon />}
+            onClick={handleOpenAddTimeOff}
+            sx={{ mb: 3, mr: 2 }}
+        >
+          Request Time Off
+        </Button>
+        <Button
+            variant="contained"
+            endIcon={<AddIcon />}
+            onClick={handleOpenAddAvailability}
+            sx={{ mb: 3 }}
+        >
+          Request Availability
+        </Button>
+      </Box>
+      <Modal
+          open={addTimeOffOpen}
+          onClose={handleCloseAddTimeOff}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+      >
+        <Box sx={modalStyle}>
+          <AddTimeOffRequest employee_id={user.employee_id} setAddTimeOffOpen={setAddTimeOffOpen} sx={{
+
+          }}/>
+        </Box>
+      </Modal>
+      <Modal
+          open={addAvailabilityOpen}
+          onClose={handleCloseAddAvailability}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+      >
+        <Box sx={modalStyle}>
+          <AddAvailabilityRequest employee_id={user.employee_id} setAddAvailabilityOpen={setAddAvailabilityOpen} sx={{
+
+          }}/>
+        </Box>
+      </Modal>
       <Typography variant="h6" gutterBottom component="div">
-        Time off Requests
+        Time Off Requests
       </Typography>
       <TableContainer component={Paper} sx={{ marginBottom: 4 }}>
         <Table sx={{ minWidth: 650 }} aria-label="time-off requests table">
