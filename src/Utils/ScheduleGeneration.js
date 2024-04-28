@@ -6,6 +6,7 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export async function generate(startDate, endDate) {
     try {
+        endDate = endDate + DateHelper.millisecondsInDay
         const api = new API();
         // Fetch data from the API route
         const employeeData = await api.allEmployees();
