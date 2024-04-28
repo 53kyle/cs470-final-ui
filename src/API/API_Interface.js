@@ -73,6 +73,10 @@ export default class APIInterface {
         return axiosAgent.get(`punchin/last-punch/${employee_id}`);
     }
 
+    async punchesOnDayForEmployee(employee_id, start_date, end_date) {
+        return axiosAgent.get(`punchin/all-punch/${employee_id}/${start_date}/${end_date}`);
+    }
+
     async allTimeoffRequests()
     {
         return axiosAgent.get(`employees/all-requests/timeoff`);
@@ -109,6 +113,10 @@ export default class APIInterface {
 
     async employeesAvailableForShift(shift_id) {
         return axiosAgent.get(`employees/available/${shift_id}`);
+    }
+
+    async conflictingEmployeeForShift(shift_id) {
+        return axiosAgent.get(`employees/conflict/${shift_id}`);
     }
 
     async employeeHoursInRange(start_date, end_date) {

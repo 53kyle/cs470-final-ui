@@ -54,8 +54,14 @@ export async function generate(startDate, endDate) {
                 // Narrows down employee selection from both the trained and available employees
                 const intersectionArray = trainedEmployees.filter(element => availableEmployees.includes(element));
 
+                const nonConflictingEmployeesResponse = await api.conflictingEmployeeForShift(shift.shift_id);
+                const nonConflictingEmployees = nonConflictingEmployeesResponse.data.map(obj => obj.employee_id);
+
+                // Narrow down by employees who are not currently working on this shifts date:
+                const nonConflicting = nonConflictingEmployees.filter(element => intersectionArray.includes(element));
+
                 // Filters employees shift count by eligible employees
-                const filteredData = employeeShiftCount.data.filter(item => intersectionArray.includes(item.employee_id));
+                const filteredData = employeeShiftCount.data.filter(item => nonConflicting.includes(item.employee_id));
 
                 // If there is no employee who is available and trained, log and continue to next shift
                 if(!filteredData.length){
