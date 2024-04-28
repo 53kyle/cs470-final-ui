@@ -1,6 +1,9 @@
 import API from "../API/API_Interface";
 import DateHelper from "./DateHelper";
 
+
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 export async function generate(startDate, endDate) {
     try {
         const api = new API();
@@ -23,7 +26,8 @@ export async function generate(startDate, endDate) {
 
 
         // Assign empty shifts to employees
-        const shiftPromises = shiftData.data.map(async shift => {
+        const shiftPromises = [];
+        for (const shift of shiftData.data) {
             // Only look at a shift if it has no employee assigned to it
 
             if (shift.employee_id === null) {
@@ -54,6 +58,7 @@ export async function generate(startDate, endDate) {
                 // Narrows down employee selection from both the trained and available employees
                 const intersectionArray = trainedEmployees.filter(element => availableEmployees.includes(element));
 
+                // Get employees who are not already working on this shifts date
                 const nonConflictingEmployeesResponse = await api.conflictingEmployeeForShift(shift.shift_id);
                 const nonConflictingEmployees = nonConflictingEmployeesResponse.data.map(obj => obj.employee_id);
 
@@ -109,9 +114,8 @@ export async function generate(startDate, endDate) {
                 const randomID = employeesWithMinShifts[randomIndex].employee_id;
 
                 await api.updateShift(randomID, shift.shift_id);
-
             }
-        });
+        };
 
         await Promise.all(shiftPromises);
 
