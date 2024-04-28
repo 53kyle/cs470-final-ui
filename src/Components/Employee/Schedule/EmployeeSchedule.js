@@ -1,5 +1,6 @@
 import React, { useState, useEffect, Fragment } from "react";
 import API from "../../../API/API_Interface";
+import {List, ListItem} from "@mui/material";
 
 import DateHelper from "../../../Utils/DateHelper";
 import ScheduleHelper from "../../../Utils/ScheduleHelper";
@@ -21,6 +22,7 @@ import { useTheme } from "@mui/material/styles";
 
 function EmployeeScheduleTable({ user, currentWeek }) {
   const [shifts, setShifts] = useState([]);
+  const [punchIns, setPunchIns] = useState([]);
   const theme = useTheme();
 
 
@@ -36,8 +38,18 @@ function EmployeeScheduleTable({ user, currentWeek }) {
         );
         setShifts(shiftsResponse.data);
 
-        console.log("Shifts: " + JSON.stringify(shiftsResponse.data));
-        console.log(new Date(shiftsResponse.data[0].date));
+        const punchResponse = await api.punchesOnDayForEmployee(
+            user.employee_id,
+            DateHelper.dateToMySQLDate(currentWeek[0]),
+            DateHelper.dateToMySQLDate(currentWeek[6])
+        );
+        setPunchIns(punchResponse.data);
+
+        if(shiftsResponse.data.length > 0){
+          console.log("Shifts: " + JSON.stringify(shiftsResponse.data));
+          console.log(new Date(shiftsResponse.data[0].date));
+          console.log("Punch: " + JSON.stringify(punchResponse.data));
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -208,6 +220,58 @@ function EmployeeScheduleTable({ user, currentWeek }) {
                 </Typography>
               </TableCell>
             </TableRow>
+
+            <TableRow tabIndex={-1} key={2}>
+              {currentWeek.map((date, idx) => (
+                  <TableCell
+                      key={idx}
+                      align="center"
+                      style={{
+                        minWidth: 80,
+                        maxWidth: 80,
+                        borderLeft: "1px solid rgba(224, 224, 224, 1)",
+                      }}
+                  >
+                    <List>
+                      {punchIns.filter(
+                          punch => DateHelper.dateToMySQLDate(punch.punchin) === DateHelper.dateToMySQLDate(date)
+                      ).length === 0 ? (
+                          <ListItem>
+                            <Typography variant="body1">
+                              No Punches
+                            </Typography>
+                          </ListItem>
+                      ) : (
+                          punchIns
+                              .filter(punch => DateHelper.dateToMySQLDate(punch.punchin) === DateHelper.dateToMySQLDate(date))
+                              .map((punch, index) => (
+                                  <Fragment key={index}>
+                                    <ListItem>
+                                      <Typography variant="subtitle1" align="center" component="div">
+                                        {punch.punch_type}: {DateHelper.shortTimeFormat(punch.punchin)}
+                                      </Typography>
+                                    </ListItem>
+                                  </Fragment>
+                              ))
+                      )}
+                    </List>
+
+
+                  </TableCell>
+              ))}
+              <TableCell
+                  key={9}
+                  align="center"
+                  style={{
+                    minWidth: 50,
+                    maxWidth: 50,
+                    borderLeft: "1px solid rgba(224, 224, 224, 1)",
+                  }}
+                  >
+              </TableCell>
+            </TableRow>
+
+
           </TableBody>
         </Table>
       </TableContainer>
