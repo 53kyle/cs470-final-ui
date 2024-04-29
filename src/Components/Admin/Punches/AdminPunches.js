@@ -302,6 +302,7 @@ const PunchTable = () => {
                   </Typography>
                 </TableCell>
               ))}
+              <TableCell align="right"></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
