@@ -4,7 +4,7 @@ import DateHelper from "./DateHelper";
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export async function generate(startDate, endDate) {
+export async function generate(startDate, endDate, setNumShiftsFilled) {
     try {
         endDate = endDate + DateHelper.millisecondsInDay
         const api = new API();
@@ -25,13 +25,15 @@ export async function generate(startDate, endDate) {
             shiftsCountByEmployee[shift.employee_id]++;
         });
 
-
+        let numShiftsFilled = 0;
         // Assign empty shifts to employees
         const shiftPromises = [];
         for (const shift of shiftData.data) {
             // Only look at a shift if it has no employee assigned to it
 
             if (shift.employee_id === null) {
+                numShiftsFilled += 1;
+                setNumShiftsFilled(numShiftsFilled);
 
                 // Get list of employees who are trained to work this shift
                 const trainedEmployeesResponse = await api.employeesTrainedInShift(shift.shift_id);
@@ -119,6 +121,8 @@ export async function generate(startDate, endDate) {
         };
 
         await Promise.all(shiftPromises);
+
+        setNumShiftsFilled(0);
 
         return { employeeData: employeeData.data, shiftData: shiftData.data };
     } catch (error) {

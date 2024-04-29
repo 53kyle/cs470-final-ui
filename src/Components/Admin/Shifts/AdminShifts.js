@@ -471,6 +471,8 @@ function AdminShifts() {
   const [render, setRender] = useState(false);
   const [addShiftOpen, setAddShiftOpen] = useState(false);
   const [editShift, setEditShift] = useState(null);
+  const [numShifts, setNumShifts] = useState(1);
+  const [numShiftsFilled, setNumShiftsFilled] = useState(0);
   const theme = useTheme();
 
   const handleSetStartDate = (date) => {
@@ -501,7 +503,7 @@ function AdminShifts() {
     console.log("Generate Schedule Clicked...");
 
     try {
-      const generatedSchedule = await generate(startDate, endDate);
+      const generatedSchedule = await generate(startDate, endDate, setNumShiftsFilled);
 
       if (generatedSchedule) {
         console.log(generatedSchedule);
@@ -533,6 +535,9 @@ function AdminShifts() {
         setEndDate={(date) => handleSetEndDate(date)}
         generateSchedule={() => generateSchedule()}
         currentWeek={currentWeek}
+        numShifts={numShifts}
+        numShiftsFilled={numShiftsFilled}
+        setNumShifts={setNumShifts}
       />
       <Divider
         sx={{
