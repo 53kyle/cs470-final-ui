@@ -227,37 +227,39 @@ function EmployeeScheduleTable({ user, currentWeek }) {
                       key={idx}
                       align="center"
                       style={{
-                        minWidth: 80,
-                        maxWidth: 80,
-                        borderLeft: "1px solid rgba(224, 224, 224, 1)",
+                          minWidth: 80,
+                          maxWidth: 80,
+                          borderLeft: "1px solid rgba(224, 224, 224, 1)",
+                          paddingLeft: 0,
+                          paddingRight: 0,
                       }}
                   >
-                    <List>
-                      {punchIns.filter(
-                          punch => DateHelper.dateToMySQLDate(punch.punchin) === DateHelper.dateToMySQLDate(date)
-                      ).length === 0 ? (
-                          <ListItem>
-                            <Typography variant="body1">
-                              No Punches
-                            </Typography>
-                          </ListItem>
-                      ) : (
-                          punchIns
-                              .filter(punch => DateHelper.dateToMySQLDate(punch.punchin) === DateHelper.dateToMySQLDate(date))
-                              .map((punch, index) => (
-                                  <Fragment key={index}>
-                                    <ListItem>
-                                      <Typography variant="subtitle1" align="center" component="div">
-                                        {punch.punch_type}: {DateHelper.shortTimeFormat(punch.punchin)}
-                                      </Typography>
-                                    </ListItem>
-                                  </Fragment>
-                              ))
-                      )}
-                    </List>
-
-
+                      <List style={{ alignItems: 'flex-start' }}> {/* Updated alignment */}
+                          {punchIns.filter(
+                              punch => DateHelper.dateToMySQLDate(punch.punchin) === DateHelper.dateToMySQLDate(date)
+                          ).length === 0 ? (
+                              <ListItem style={{ verticalAlign: 'top' }}>
+                                  <Typography variant="body2" color="text.secondary" style={{ margin: 0 }}>
+                                      No Punches
+                                  </Typography>
+                              </ListItem>
+                          ) : (
+                              punchIns
+                                  .filter(punch => DateHelper.dateToMySQLDate(punch.punchin) === DateHelper.dateToMySQLDate(date))
+                                  .map((punch, index) => (
+                                      <Fragment key={index}>
+                                          <ListItem>
+                                              <Typography variant="body2" align="center" color="text.primary">
+                                                  {punch.punch_type}: {DateHelper.shortTimeFormat(punch.punchin)}
+                                              </Typography>
+                                          </ListItem>
+                                      </Fragment>
+                                  ))
+                          )}
+                      </List>
                   </TableCell>
+
+
               ))}
               <TableCell
                   key={9}
