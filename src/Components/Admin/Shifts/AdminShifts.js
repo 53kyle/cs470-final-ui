@@ -173,8 +173,12 @@ function AdminShiftsCell({ currentWeek, render, setRender, shifts, row_idx, col_
           const availableEmployeesResponse = await api.employeesAvailableForShift(shift.shift_id);
           const availableEmployees = availableEmployeesResponse.data.map(obj => obj.employee_id);
 
+          const intersectionArray = trainedEmployees.filter(element => availableEmployees.includes(element));
+
+          console.log(availableEmployees.length, trainedEmployees.length)
+
           // If there are no employees available for this shift, log it and continue to next shift
-          if (cellType > -1 && (!availableEmployees.length || !trainedEmployees.length)){
+          if (cellType > -1 && (intersectionArray.length === 0)) {
             //console.log("No Employees Available for Shift: " + shift.shift_id)
             // red
             setBackgroundColor("rgba(255, 0, 0, 0.1)");
