@@ -185,6 +185,10 @@ export default class APIInterface {
         return axiosAgent.post(`employees/add-employee`, employeeData);
     }
 
+    async updateAvailabilityRequest(employeeData) {
+        return axiosAgent.post(`employees/update-availability-request`, employeeData);
+    }
+
     async addTimeOff(employee_id, start_time, end_time, reason) {
         return axiosAgent.post(`employees/requests/add-time-off/${employee_id}/${start_time}/${end_time}/${reason}`);
     }
@@ -207,5 +211,13 @@ export default class APIInterface {
 
     async updateTimeoff(requestData) {
         return axiosAgent.put(`employees/update-timeoff`, requestData);
+    }
+
+    async updatePassword(password_hash, employee_id) {
+        return axiosAgent.put(`employees/update-password/${password_hash}/${employee_id}`);
+    }
+
+    async employeeHash(employee_id) {
+        return axiosAgent.get(`employees/hash/${employee_id}`);
     }
 }

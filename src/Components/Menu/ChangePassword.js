@@ -86,7 +86,7 @@ function ChangePassword({ user, handleClose }) {
                     onChange={(e) => setConfirmNewPassword(e.target.value)}
                     variant="outlined"
                     margin="normal"
-                    error={!!confirmPasswordError}
+                    error={confirmPasswordError}
                     helperText={confirmPasswordError}
                 />
 
