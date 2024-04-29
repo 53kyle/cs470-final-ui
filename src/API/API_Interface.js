@@ -192,4 +192,8 @@ export default class APIInterface {
     async addAvailability(employee_id, day_of_week, start_time, end_time) {
         return axiosAgent.post(`employees/requests/add-availability/${employee_id}/${day_of_week}/${start_time}/${end_time}/`);
     }
+
+    async addTrained(employee_id, department) {
+        return axiosAgent.post(`employees/add-trained/${employee_id}/${department}`);
+    }
 }

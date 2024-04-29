@@ -25,7 +25,7 @@ import {
   FcSettings,
   FcReuse,
   FcEditImage,
-  FcOk,
+  FcOk, FcDepartment,
 } from "react-icons/fc";
 import notificationSound from "../../../Utils/notification.wav";
 import AddShift from "../Shifts/AddShift";
@@ -34,6 +34,7 @@ import AddEmployee from "./AddEmployee";
 import AddIcon from "@mui/icons-material/Add";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import CheckIcon from "@mui/icons-material/Check";
+import EditTraining from "./EditTraining";
 
 const employeeTableAttributes = [
   {
@@ -90,6 +91,7 @@ const EmployeeTable = () => {
   const [isRequestsModalOpen, setIsRequestsModalOpen] = useState(false);
   const [open, setOpen] = useState(false);
   const [addEmployeeOpen, setAddEmployeeOpen] = useState(false);
+  const [editTrainingOpen, setEditTrainingOpen] = useState(null);
 
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -113,6 +115,10 @@ const EmployeeTable = () => {
   const handleCloseAddEmployee = () => {
     setAddEmployeeOpen(false);
   }
+
+  const handleCloseEditTraining = () => {
+    setEditTrainingOpen(false);
+  };
 
   const handleGearClick = (event, index, employeeObject) => {
     setAnchorEl(event.currentTarget);
@@ -141,6 +147,12 @@ const EmployeeTable = () => {
     //Set the edited employee object with the selected employee's information
     setEditedEmployee(selectedEmployee);
   };
+
+  const handleEditTraining = () => {
+    handleClosePopover();
+
+    setEditTrainingOpen(true);
+  }
 
   const handleEditChange = (e) => {
     const { name, value } = e.target;
@@ -499,6 +511,12 @@ const EmployeeTable = () => {
             </ListItemIcon>
             <Typography variant="inherit">Edit</Typography>
           </MenuItem>
+          <MenuItem onClick={handleEditTraining}>
+            <ListItemIcon style={{ fontSize: "26px" }}>
+              <FcDepartment />
+            </ListItemIcon>
+            <Typography variant="inherit">Training</Typography>
+          </MenuItem>
           <MenuItem onClick={handleOpenDialog}>
             <ListItemIcon style={{ fontSize: "26px" }}>
               <FcReuse />
@@ -520,6 +538,18 @@ const EmployeeTable = () => {
 
   return (
     <Fragment>
+      <Modal
+          open={editTrainingOpen}
+          onClose={handleCloseEditTraining}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+      >
+        <Box sx={modalStyle}>
+          <EditTraining employee={selectedEmployee} setEditTrainingOpen={setEditTrainingOpen} sx={{
+
+          }}/>
+        </Box>
+      </Modal>
       <Modal
           open={addEmployeeOpen}
           onClose={handleCloseAddEmployee}
