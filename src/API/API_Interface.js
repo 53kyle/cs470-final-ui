@@ -156,4 +156,12 @@ export default class APIInterface {
     async setNotificationsReadForEmployee(employee_id) {
         return axiosAgent.put(`notifications/set-notifications-read/${employee_id}`)
     }
+
+    async updateAvailabilityRequest(requestData) {
+        return axiosAgent.put(`employees/update-availability-request`, requestData);
+    }
+
+    async updateTimeoff(requestData) {
+        return axiosAgent.put(`employees/update-timeoff`, requestData);
+    }
 }
