@@ -17,7 +17,7 @@ import {
   Button,
   Dialog,
   DialogTitle,
-  DialogActions,
+  DialogActions, Box,
 } from "@mui/material";
 import {
   FcFinePrint,
@@ -25,9 +25,16 @@ import {
   FcSettings,
   FcReuse,
   FcEditImage,
-  FcOk,
+  FcOk, FcDepartment,
 } from "react-icons/fc";
 import notificationSound from "../../../Utils/notification.wav";
+import AddShift from "../Shifts/AddShift";
+import addEmployee from "./AddEmployee";
+import AddEmployee from "./AddEmployee";
+import AddIcon from "@mui/icons-material/Add";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import CheckIcon from "@mui/icons-material/Check";
+import EditTraining from "./EditTraining";
 
 const employeeTableAttributes = [
   {
@@ -57,6 +64,17 @@ const employeeTableAttributes = [
   },
 ];
 
+const modalStyle = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  boxShadow: 24,
+  p: 4,
+};
+
 const EmployeeTable = () => {
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -72,6 +90,8 @@ const EmployeeTable = () => {
   const [timeOffData, setTimeOffData] = useState([]);
   const [isRequestsModalOpen, setIsRequestsModalOpen] = useState(false);
   const [open, setOpen] = useState(false);
+  const [addEmployeeOpen, setAddEmployeeOpen] = useState(false);
+  const [editTrainingOpen, setEditTrainingOpen] = useState(null);
 
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -86,7 +106,19 @@ const EmployeeTable = () => {
       }
     };
     fetchEmployees();
-  }, [isEditing]);
+  }, [isEditing, addEmployeeOpen]);
+
+  const handleOpenAddEmployee = () => {
+    setAddEmployeeOpen(true);
+  }
+
+  const handleCloseAddEmployee = () => {
+    setAddEmployeeOpen(false);
+  }
+
+  const handleCloseEditTraining = () => {
+    setEditTrainingOpen(false);
+  };
 
   const handleGearClick = (event, index, employeeObject) => {
     setAnchorEl(event.currentTarget);
@@ -115,6 +147,12 @@ const EmployeeTable = () => {
     //Set the edited employee object with the selected employee's information
     setEditedEmployee(selectedEmployee);
   };
+
+  const handleEditTraining = () => {
+    handleClosePopover();
+
+    setEditTrainingOpen(true);
+  }
 
   const handleEditChange = (e) => {
     const { name, value } = e.target;
@@ -473,6 +511,12 @@ const EmployeeTable = () => {
             </ListItemIcon>
             <Typography variant="inherit">Edit</Typography>
           </MenuItem>
+          <MenuItem onClick={handleEditTraining}>
+            <ListItemIcon style={{ fontSize: "26px" }}>
+              <FcDepartment />
+            </ListItemIcon>
+            <Typography variant="inherit">Training</Typography>
+          </MenuItem>
           <MenuItem onClick={handleOpenDialog}>
             <ListItemIcon style={{ fontSize: "26px" }}>
               <FcReuse />
@@ -494,6 +538,30 @@ const EmployeeTable = () => {
 
   return (
     <Fragment>
+      <Modal
+          open={editTrainingOpen}
+          onClose={handleCloseEditTraining}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+      >
+        <Box sx={modalStyle}>
+          <EditTraining employee={selectedEmployee} setEditTrainingOpen={setEditTrainingOpen} sx={{
+
+          }}/>
+        </Box>
+      </Modal>
+      <Modal
+          open={addEmployeeOpen}
+          onClose={handleCloseAddEmployee}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+      >
+        <Box sx={modalStyle}>
+          <AddEmployee setAddEmployeeOpen={setAddEmployeeOpen} sx={{
+
+          }}/>
+        </Box>
+      </Modal>
       <Dialog
         open={open}
         onClose={handleCloseDialog}
@@ -520,6 +588,14 @@ const EmployeeTable = () => {
         open={isRequestsModalOpen}
         handleClose={() => setIsRequestsModalOpen(false)}
       />
+      <Button
+          variant="contained"
+          endIcon={<AddIcon />}
+          onClick={handleOpenAddEmployee}
+          sx={{ mb: 3 }}
+      >
+        Add Employee
+      </Button>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="employees table">
           <TableHead>

@@ -180,4 +180,20 @@ export default class APIInterface {
     async getTrained() {
         return axiosAgent.get(`shifts/trained-departments`);
     }
+
+    async addEmployee(employeeData) {
+        return axiosAgent.post(`employees/add-employee`, employeeData);
+    }
+
+    async addTimeOff(employee_id, start_time, end_time, reason) {
+        return axiosAgent.post(`employees/requests/add-time-off/${employee_id}/${start_time}/${end_time}/${reason}`);
+    }
+
+    async addAvailability(employee_id, day_of_week, start_time, end_time) {
+        return axiosAgent.post(`employees/requests/add-availability/${employee_id}/${day_of_week}/${start_time}/${end_time}/`);
+    }
+
+    async addTrained(employee_id, department) {
+        return axiosAgent.post(`employees/add-trained/${employee_id}/${department}`);
+    }
 }
