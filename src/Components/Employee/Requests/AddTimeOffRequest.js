@@ -63,7 +63,7 @@ function AddTimeOffRequest({employee_id, setAddTimeOffOpen}) {
     }
 
     return (
-        <ModalContentBox title={'Request Time Off'} content={
+        <ModalContentBox handleClose={() => setAddTimeOffOpen(false)} title={'Request Time Off'} content={
             <Fragment>
                 <Typography
                     variant="body"

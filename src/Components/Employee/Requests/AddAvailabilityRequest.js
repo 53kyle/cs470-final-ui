@@ -63,7 +63,7 @@ function AddAvailabilityRequest({employee_id, setAddAvailabilityOpen}) {
     }
 
     return (
-        <ModalContentBox title={'Add Availability Request'} content={
+        <ModalContentBox handleClose={() => setAddAvailabilityOpen(false)} title={'Add Availability Request'} content={
             <Fragment>
                 <Typography
                     variant="body"

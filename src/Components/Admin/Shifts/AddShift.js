@@ -143,7 +143,7 @@ function AddShift({editShift, date, setAddShiftOpen}) {
     }
 
     return (
-        <ModalContentBox title={editShift ? "Edit Shift" : `Add Shift for ${DateHelper.shortDateFormat(date)}`} content={
+        <ModalContentBox handleClose={() => setAddShiftOpen(false)} title={editShift ? "Edit Shift" : `Add Shift for ${DateHelper.shortDateFormat(date)}`} content={
             <Fragment>
                 <Typography
                     variant="body"

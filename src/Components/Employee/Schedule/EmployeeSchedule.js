@@ -239,7 +239,7 @@ function EmployeeScheduleTable({ user, currentWeek }) {
                               punch => DateHelper.dateToMySQLDate(punch.punchin) === DateHelper.dateToMySQLDate(date)
                           ).length === 0 ? (
                               <ListItem style={{ verticalAlign: 'top' }}>
-                                  <Typography variant="body2" color="text.secondary" style={{ margin: 0 }}>
+                                  <Typography variant="body2" align="center" color="text.secondary" width="100%" style={{ margin: 0 }}>
                                       No Punches
                                   </Typography>
                               </ListItem>
@@ -249,7 +249,7 @@ function EmployeeScheduleTable({ user, currentWeek }) {
                                   .map((punch, index) => (
                                       <Fragment key={index}>
                                           <ListItem>
-                                              <Typography variant="body2" align="center" color="text.primary">
+                                              <Typography variant="body2" align="center" color="text.primary" width="100%">
                                                   {punch.punch_type}: {DateHelper.shortTimeFormat(punch.punchin)}
                                               </Typography>
                                           </ListItem>

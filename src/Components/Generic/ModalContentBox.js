@@ -1,9 +1,11 @@
-import {CircularProgress, Divider, Paper} from "@mui/material";
+import {CircularProgress, Divider, IconButton, Paper} from "@mui/material";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import React from "react";
 
-const ModalContentBox = ({title, content}) => {
+import CancelIcon from '@mui/icons-material/Cancel';
+
+const ModalContentBox = ({title, content, handleClose}) => {
     return <Box sx={{
         display: "flex",
         flexDirection: "column",
@@ -11,7 +13,18 @@ const ModalContentBox = ({title, content}) => {
         alignItems: "start",
         width: "100%"
     }}>
-        <Typography component="div" variant='h5'>
+        <Box sx={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "end",
+            alignItems: "end",
+            width: "100%"
+        }}>
+            <IconButton aria-label="delete" onClick={handleClose}>
+                <CancelIcon />
+            </IconButton>
+        </Box>
+        <Typography component="div" variant='h4' width="100%" textAlign="center">
             {
                 title
             }

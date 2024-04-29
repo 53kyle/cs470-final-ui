@@ -101,7 +101,7 @@ function EditTraining({employee, setEditTrainingOpen}) {
 
     return (
         employee &&
-        <ModalContentBox title={`Training for ${employee.first_name} ${employee.last_name}`} content={
+        <ModalContentBox handleClose={() => setEditTrainingOpen(false)} title={`Training for ${employee.first_name} ${employee.last_name}`} content={
             <Fragment>
                 <Modal
                     open={addTrainingOpen}

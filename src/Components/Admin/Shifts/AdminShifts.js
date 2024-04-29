@@ -32,7 +32,7 @@ import AddIcon from "@mui/icons-material/Add";
 import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
 import AdminScheduleTopBar from "../Schedules/AdminScheduleTopBar";
 import { generate } from "../../../Utils/ScheduleGeneration";
-import { FcSettings } from "react-icons/fc";
+import {FcConferenceCall, FcEditImage, FcOvertime, FcPlus, FcReuse, FcSettings} from "react-icons/fc";
 import { useTheme } from "@mui/material/styles";
 import EmployeeNotifications from "../../Employee/Notifications/EmployeeNotifications";
 import AddShift from "./AddShift";
@@ -73,12 +73,12 @@ function AdminDateCell({ date, idx }) {
   const options = [
     {
       title: "Employees Available",
-      icon: <PeopleIcon fontSize="small" />,
+      icon: <FcConferenceCall fontSize="26px" />,
       action: viewEmployeesAvailable,
     },
     {
       title: "Time Off Requests",
-      icon: <EventAvailableIcon fontSize="small" />,
+      icon: <FcOvertime fontSize="26px" />,
       action: viewTimeOff,
     },
   ];
@@ -245,12 +245,12 @@ function AdminShiftsCell({ currentWeek, render, setRender, shifts, row_idx, col_
   const scheduledOptions = [
     {
       title: "Edit Shift",
-      icon: <EditCalendarIcon fontSize="small" />,
+      icon: <FcEditImage fontSize="26px" />,
       action: editShift,
     },
     {
       title: "Remove Shift",
-      icon: <DeleteIcon fontSize="small" />,
+      icon: <FcReuse fontSize="26px" />,
       action: handleOpenDialog,
     },
   ];
@@ -371,7 +371,7 @@ function AdminShiftsCell({ currentWeek, render, setRender, shifts, row_idx, col_
           </Box>
         )}
         {cellType === 0 && (
-          <Button endIcon={<AddIcon />} onClick={addShift} sx={{  fontWeight: theme.palette.type === 'dark' ? 'bold' : 'normal', fontSize: '16px', textShadow: theme.palette.type === 'dark' ? '1px 2px 2px rgba(0,0,0,0.5)' : null }}>
+          <Button startIcon={<FcPlus />} onClick={addShift} sx={{  fontWeight: theme.palette.type === 'dark' ? 'bold' : 'normal', fontSize: '16px', textShadow: theme.palette.type === 'dark' ? '1px 2px 2px rgba(0,0,0,0.5)' : null }}>
             Add Shift
           </Button>
         )}

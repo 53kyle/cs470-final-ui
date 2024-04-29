@@ -40,7 +40,7 @@ function AddTraining({untrainedDepartments, setDepartmentToAdd, setAddTrainingOp
     }
 
     return (
-        <ModalContentBox title={`Add Training`} content={
+        <ModalContentBox handleClose={() => setAddTrainingOpen(false)} title={`Add Training`} content={
             <Fragment>
                 <Typography
                     variant="body"
