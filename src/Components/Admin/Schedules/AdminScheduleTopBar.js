@@ -78,7 +78,7 @@ function AdminScheduleTopBar({startDate, setStartDate, endDate, setEndDate, curr
 
 
     return(
-        numShiftsFilled === 0 ?
+        !numShiftsFilled || numShiftsFilled === 0 ?
         <Fragment>
             <Box sx={{
                 height: 30,

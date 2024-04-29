@@ -17,7 +17,10 @@ import ClearIcon from "@mui/icons-material/Clear";
 import { FcSettings } from "react-icons/fc";
 import Typography from "@mui/material/Typography";
 import notificationSound from "../../../Utils/notification.wav";
-import { Dialog, DialogTitle, DialogActions, Button } from "@mui/material";
+import {Dialog, DialogTitle, DialogActions, Button, Box, Modal} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import AddTimeOffRequest from "../../Employee/Requests/AddTimeOffRequest";
+import AddAvailabilityRequest from "../../Employee/Requests/AddAvailabilityRequest";
 
 const requestsTableAttributes = [
   {
@@ -75,7 +78,18 @@ const availabilityRequestsTableAttributes = [
   },
 ];
 
-const RequestTable = () => {
+const modalStyle = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  boxShadow: 24,
+  p: 4,
+};
+
+const RequestTable = ( {user} ) => {
   const [timeoffRequests, setTimeoffRequests] = useState([]);
   const [availabilityRequests, setAvailabilityRequests] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -88,6 +102,8 @@ const RequestTable = () => {
   const [selectedRow2, setSelectedRow2] = useState(null);
   const [open, setOpen] = useState(false);
   const [open1, setOpen1] = useState(false);
+  const [addTimeOffOpen, setAddTimeOffOpen] = useState(false);
+  const [addAvailabilityOpen, setAddAvailabilityOpen] = useState(false);
 
   useEffect(() => {
     const fetchRequests = async () => {
@@ -105,7 +121,23 @@ const RequestTable = () => {
     };
 
     fetchRequests();
-  }, [isEditing]);
+  }, [isEditing, addTimeOffOpen, addAvailabilityOpen]);
+
+  const handleOpenAddTimeOff = () => {
+    setAddTimeOffOpen(true);
+  }
+
+  const handleCloseAddTimeOff = () => {
+    setAddTimeOffOpen(false);
+  }
+
+  const handleOpenAddAvailability = () => {
+    setAddAvailabilityOpen(true);
+  }
+
+  const handleCloseAddAvailability = () => {
+    setAddAvailabilityOpen(false);
+  }
 
   const handleOpenPopover = (event, index, requestObject) => {
     setAnchorEl(event.currentTarget);
@@ -410,6 +442,48 @@ const RequestTable = () => {
 
   return (
     <Fragment>
+      <Box flexDirection="row">
+        <Button
+            variant="contained"
+            endIcon={<AddIcon />}
+            onClick={handleOpenAddTimeOff}
+            sx={{ mb: 3, mr: 2 }}
+        >
+          Request Time Off
+        </Button>
+        <Button
+            variant="contained"
+            endIcon={<AddIcon />}
+            onClick={handleOpenAddAvailability}
+            sx={{ mb: 3 }}
+        >
+          Request Availability
+        </Button>
+      </Box>
+      <Modal
+          open={addTimeOffOpen}
+          onClose={handleCloseAddTimeOff}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+      >
+        <Box sx={modalStyle}>
+          <AddTimeOffRequest employee_id={user.employee_id} setAddTimeOffOpen={setAddTimeOffOpen} sx={{
+
+          }}/>
+        </Box>
+      </Modal>
+      <Modal
+          open={addAvailabilityOpen}
+          onClose={handleCloseAddAvailability}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+      >
+        <Box sx={modalStyle}>
+          <AddAvailabilityRequest employee_id={user.employee_id} setAddAvailabilityOpen={setAddAvailabilityOpen} sx={{
+
+          }}/>
+        </Box>
+      </Modal>
       <Dialog
         open={open}
         onClose={handleCloseApproveDialog}
@@ -447,7 +521,7 @@ const RequestTable = () => {
         </DialogActions>
       </Dialog>
       <Typography variant="h6" gutterBottom component="div">
-        Time off Requests
+        Time Off Requests
       </Typography>
       <TableContainer component={Paper} sx={{ marginBottom: 4 }}>
         <Table sx={{ minWidth: 650 }} aria-label="requests table">
