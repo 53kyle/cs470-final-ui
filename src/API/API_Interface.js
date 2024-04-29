@@ -200,4 +200,12 @@ export default class APIInterface {
     async removeTrained(employee_id, department) {
         return axiosAgent.post(`employees/remove-trained/${employee_id}/${department}`);
     }
+
+    async updateAvailabilityRequest(requestData) {
+        return axiosAgent.put(`employees/update-availability-request`, requestData);
+    }
+
+    async updateTimeoff(requestData) {
+        return axiosAgent.put(`employees/update-timeoff`, requestData);
+    }
 }

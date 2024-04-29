@@ -16,7 +16,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import dateFormat from "dateformat";
 import AddIcon from "@mui/icons-material/Add";
 import AddTraining from "./AddTraining";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { FcCancel } from "react-icons/fc";
 
 const modalStyle = {
     position: 'absolute',
@@ -154,7 +154,7 @@ function EditTraining({employee, setEditTrainingOpen}) {
                                 {trained}
                             </Typography>
                             <IconButton aria-label="delete">
-                                <DeleteIcon onClick={() => {
+                                <FcCancel  onClick={() => {
                                     setRemovedDepartments([...removedDepartments,trained])
                                 }} />
                             </IconButton>
@@ -181,7 +181,7 @@ function EditTraining({employee, setEditTrainingOpen}) {
                                 {trained}
                             </Typography>
                             <IconButton aria-label="delete">
-                                <DeleteIcon onClick={() => {
+                                <FcCancel  onClick={() => {
                                     setAddedDepartments([...addedDepartments.slice(0,idx),...addedDepartments.slice(idx + 1,addedDepartments.length)])
                                 }}/>
                             </IconButton>
