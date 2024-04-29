@@ -32,7 +32,7 @@ import AddIcon from "@mui/icons-material/Add";
 import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
 import AdminScheduleTopBar from "../Schedules/AdminScheduleTopBar";
 import { generate } from "../../../Utils/ScheduleGeneration";
-import {FcConferenceCall, FcEditImage, FcOvertime, FcPlus, FcReuse, FcSettings} from "react-icons/fc";
+import {FcConferenceCall, FcEditImage, FcOvertime, FcPlus, FcSettings, FcFullTrash, FcIdea} from "react-icons/fc";
 import { useTheme } from "@mui/material/styles";
 import EmployeeNotifications from "../../Employee/Notifications/EmployeeNotifications";
 import AddShift from "./AddShift";
@@ -250,7 +250,7 @@ function AdminShiftsCell({ currentWeek, render, setRender, shifts, row_idx, col_
     },
     {
       title: "Remove Shift",
-      icon: <FcReuse fontSize="26px" />,
+      icon: <FcFullTrash fontSize="26px" />,
       action: handleOpenDialog,
     },
   ];

@@ -15,7 +15,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import { generate } from "../../../Utils/ScheduleGeneration";
 import { post } from "../../../Utils/PostSchedule";
-import {FcConferenceCall, FcEditImage, FcExpired, FcOvertime, FcPlus, FcReuse, FcSettings} from "react-icons/fc";
+import {FcConferenceCall, FcEditImage, FcExpired, FcOvertime, FcPlus, FcFullTrash, FcSettings} from "react-icons/fc";
 import { useTheme } from '@mui/material/styles'
 
 import {
@@ -169,7 +169,7 @@ function AdminScheduleCell({shift, idx}) {
         },
         {
             title: "Remove Shift",
-            icon: <FcReuse fontSize="26px"/>,
+            icon: <FcFullTrash fontSize="26px"/>,
             action: deleteShift
         }
     ]

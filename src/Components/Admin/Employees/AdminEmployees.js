@@ -23,9 +23,10 @@ import {
   FcFinePrint,
   FcPlanner,
   FcSettings,
-  FcReuse,
   FcEditImage,
   FcOk, FcDepartment,
+  FcCancel,
+  FcAcceptDatabase,
 } from "react-icons/fc";
 import notificationSound from "../../../Utils/notification.wav";
 import AddShift from "../Shifts/AddShift";
@@ -92,6 +93,7 @@ const EmployeeTable = () => {
   const [open, setOpen] = useState(false);
   const [addEmployeeOpen, setAddEmployeeOpen] = useState(false);
   const [editTrainingOpen, setEditTrainingOpen] = useState(null);
+
 
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -494,32 +496,32 @@ const EmployeeTable = () => {
           }}
         >
           <MenuItem onClick={handleOpenAvailabilityModal}>
-            <ListItemIcon style={{ fontSize: "26px" }}>
+            <ListItemIcon style={{ fontSize: "26px"}}>
               <FcFinePrint />
             </ListItemIcon>
             <Typography variant="inherit">View Availability</Typography>
           </MenuItem>
           <MenuItem onClick={handleOpenRequestsModal}>
-            <ListItemIcon style={{ fontSize: "26px" }}>
+            <ListItemIcon style={{ fontSize: "26px"}}>
               <FcPlanner />
             </ListItemIcon>
             <Typography variant="inherit">View Requests</Typography>
           </MenuItem>
-          <MenuItem onClick={handleEdit}>
+          <MenuItem onClick={handleEditTraining}>
             <ListItemIcon style={{ fontSize: "26px" }}>
-              <FcEditImage />
+              <FcAcceptDatabase  />
+            </ListItemIcon>
+            <Typography variant="inherit">View Training</Typography>
+          </MenuItem>
+          <MenuItem onClick={handleEdit}>
+            <ListItemIcon style={{ fontSize: "26px"}}>
+              <FcEditImage  />
             </ListItemIcon>
             <Typography variant="inherit">Edit</Typography>
           </MenuItem>
-          <MenuItem onClick={handleEditTraining}>
-            <ListItemIcon style={{ fontSize: "26px" }}>
-              <FcDepartment />
-            </ListItemIcon>
-            <Typography variant="inherit">Training</Typography>
-          </MenuItem>
           <MenuItem onClick={handleOpenDialog}>
-            <ListItemIcon style={{ fontSize: "26px" }}>
-              <FcReuse />
+            <ListItemIcon style={{ fontSize: "26px"}}>
+              <FcCancel />
             </ListItemIcon>
             <Typography variant="inherit">Remove</Typography>
           </MenuItem>
