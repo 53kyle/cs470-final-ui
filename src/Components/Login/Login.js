@@ -8,6 +8,7 @@ import {Divider} from "@mui/material";
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import hashCode from '../../Utils/hashPassword';
 
 function Login({setUser}) {
     const [userInput, setUserInput] = useState('');
@@ -15,16 +16,6 @@ function Login({setUser}) {
     const [verifyInput, setVerifyInput] = useState(false);
     const [authFailed, setAuthFailed] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
-
-    function hashCode(str) {
-        let hash = 0;
-        for (let i = 0, len = str.length; i < len; i++) {
-            let chr = str.charCodeAt(i);
-            hash = (hash << 5) - hash + chr;
-            hash |= 0; // Convert to 32bit integer
-        }
-        return hash.toString(16);
-    }
 
     const handleUserInputChange = event => {
         console.log("handleInputChange called.");
