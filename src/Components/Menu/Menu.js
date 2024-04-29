@@ -31,6 +31,8 @@ import Switch from "@mui/material/Switch";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { lightTheme, darkTheme } from "../../Utils/theme";
 import EmployeeNotifications from "../Employee/Notifications/EmployeeNotifications";
+import ChangePassword from "./ChangePassword";
+import AddTimeOffRequest from "../Employee/Requests/AddTimeOffRequest";
 
 let drawerWidth = 240;
 
@@ -100,8 +102,16 @@ function Menu({ user, logoutAction }) {
   const [notificationCounts, setNotificationCounts] = useState({});
   const [notifications, setNotifications] = useState([]);
   const [notificationsOpen, setNotificationsOpen] = React.useState(false);
+  const [optionsOpen, setOptionsOpen] = useState(false);
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false);
 
   const handleOpenNotifications = () => setNotificationsOpen(true);
+
+  const handleOpenOptions = () => setOptionsOpen(true);
+
+  const handleOpenPassword = () => setChangePasswordOpen(true);
+  const handleClosePassword = () => setChangePasswordOpen(false);
+
   const handleCloseNotifications = () => {
     const setNotificationsRead = async () => {
       const api = new API();
@@ -262,9 +272,9 @@ function Menu({ user, logoutAction }) {
                 m: 1,
               }}
             >
-              <Typography variant="h6" component="div">
+              <Button variant="h6" onClick={handleOpenOptions}>
                 {`${user.first_name} ${user.last_name}`}
-              </Typography>
+              </Button>
 
               <Typography variant="h7" component="div">
                 {user.id}
@@ -352,6 +362,37 @@ function Menu({ user, logoutAction }) {
             }}/>
           </Box>
         </Modal>
+        <Modal
+            open={optionsOpen}
+            onClose={() => setOptionsOpen(false)}
+            aria-labelledby="options-modal-title"
+            aria-describedby="options-modal-description"
+        >
+          <Box sx={notificationsStyle}>
+            <Typography variant="h6" component="h2">
+              Options
+            </Typography>
+            <List>
+              <ListItem button onClick={handleOpenPassword}>
+                <ListItemText primary="Change Password" />
+              </ListItem>
+              <ListItem button onClick={logoutAction}>
+                <ListItemText primary="Log Out" />
+              </ListItem>
+            </List>
+          </Box>
+        </Modal>
+        <Modal
+            open={changePasswordOpen}
+            onClose={handleClosePassword}
+            aria-labelledby="change-password-modal-title"
+            aria-describedby="change-password-modal-description"
+        >
+          <Box sx={notificationsStyle}>
+            <ChangePassword user={user} handleClose={handleClosePassword} />
+          </Box>
+        </Modal>
+
         <Main open={open}>
           {React.cloneElement(menuItemsForUser()[selectedMenuItem].component, {
             user: user,
