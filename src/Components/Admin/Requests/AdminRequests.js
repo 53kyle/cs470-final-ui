@@ -415,13 +415,13 @@ const RequestTable = ( {user} ) => {
             horizontal: "right",
           }}
         >
-          <MenuItem onClick={handleApprove}>
+          <MenuItem onClick={handleOpenApproveDialog}>
             <ListItemIcon sx={{ color: "green" }}>
               <CheckIcon />
             </ListItemIcon>
             Approve
           </MenuItem>
-          <MenuItem onClick={handleDeny}>
+          <MenuItem onClick={handleOpenDenyDialog}>
             <ListItemIcon sx={{ color: "red" }}>
               <ClearIcon />
             </ListItemIcon>
