@@ -3,7 +3,7 @@ import API from "../../../API/API_Interface";
 
 import {
     Button,
-    Checkbox,
+    Checkbox, IconButton,
     MenuItem, Modal,
     Select,
     TextField
@@ -16,6 +16,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import dateFormat from "dateformat";
 import AddIcon from "@mui/icons-material/Add";
 import AddTraining from "./AddTraining";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const modalStyle = {
     position: 'absolute',
@@ -33,6 +34,7 @@ function EditTraining({employee, setEditTrainingOpen}) {
     const [trainedDepartments, setTrainedDepartments] = useState([]);
     const [untrainedDepartments, setUntrainedDepartments] = useState([]);
     const [addedDepartments, setAddedDepartments] = useState([]);
+    const [removedDepartments, setRemovedDepartments] = useState([]);
     const [departmentToAdd, setDepartmentToAdd] = useState("");
     const [addTrainingOpen, setAddTrainingOpen] = useState(false);
 
@@ -45,6 +47,9 @@ function EditTraining({employee, setEditTrainingOpen}) {
     }
 
     useEffect(() => {
+        if (departmentToAdd === "") {
+            return;
+        }
         if (!allDepartments.some((trained) => trained.department === departmentToAdd) && !addedDepartments.some((trained) => trained === departmentToAdd)) {
             setAddedDepartments([...addedDepartments, departmentToAdd])
         }
@@ -62,7 +67,7 @@ function EditTraining({employee, setEditTrainingOpen}) {
                 setAllDepartments(allDepartments);
 
                 const trainedDepartmentsResponse = await api.trainedSummaryWithID(employee.employee_id);
-                setTrainedDepartments(allDepartments.filter((department) => trainedDepartmentsResponse.data.some((trained) => trained.department === department)));
+                setTrainedDepartments(allDepartments.filter((department) => trainedDepartmentsResponse.data.some((trained) => trained.department === department) && !removedDepartments.some((removedDepartment) => removedDepartment === department)));
                 setUntrainedDepartments(allDepartments.filter((department) => !trainedDepartmentsResponse.data.some((trained) => trained.department === department)
                     && !addedDepartments.some((addedDepartment) => addedDepartment === department)));
 
@@ -72,11 +77,25 @@ function EditTraining({employee, setEditTrainingOpen}) {
         }
 
         fetchData();
-    }, [addedDepartments]);
+    }, [addedDepartments, removedDepartments]);
 
     const saveTraining = async () => {
         try {
             const api = new API();
+
+            removedDepartments.forEach(async (department) => {
+                try {
+                    let trained = {
+                        employee_id: employee.employee_id,
+                        department: department
+                    }
+
+                    console.log(trained)
+                    await api.removeTrained(trained.employee_id, trained.department);
+                } catch (error) {
+                    console.error("Error saving training:", error);
+                }
+            })
 
             addedDepartments.forEach(async (department) => {
                 try {
@@ -117,26 +136,56 @@ function EditTraining({employee, setEditTrainingOpen}) {
                 </Modal>
                 {
                     trainedDepartments.map((trained) =>(
-                        <Typography
-                            variant="h6"
-                            align="center"
-                            component="div"
-                            style={{ whiteSpace: "pre-wrap" }}
-                        >
-                            {trained}
-                        </Typography>
+                        <Box sx={{
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "flex-end",
+                            justifyContent: "center",
+                            zIndex: 'tooltip',
+                            width: '100%'
+                        }}>
+                            <Typography
+                                variant="h6"
+                                align="start"
+                                component="div"
+                                width="100%"
+                                style={{ whiteSpace: "pre-wrap" }}
+                            >
+                                {trained}
+                            </Typography>
+                            <IconButton aria-label="delete">
+                                <DeleteIcon onClick={() => {
+                                    setRemovedDepartments([...removedDepartments,trained])
+                                }} />
+                            </IconButton>
+                        </Box>
                     ))
                 }
                 {
-                    addedDepartments.map((trained) =>(
-                        <Typography
-                            variant="h6"
-                            align="center"
-                            component="div"
-                            style={{ whiteSpace: "pre-wrap" }}
-                        >
-                            {trained}
-                        </Typography>
+                    addedDepartments.map((trained, idx) =>(
+                        <Box sx={{
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "flex-end",
+                            justifyContent: "center",
+                            zIndex: 'tooltip',
+                            width: '100%'
+                        }}>
+                            <Typography
+                                variant="h6"
+                                align="start"
+                                component="div"
+                                width="100%"
+                                style={{ whiteSpace: "pre-wrap" }}
+                            >
+                                {trained}
+                            </Typography>
+                            <IconButton aria-label="delete">
+                                <DeleteIcon onClick={() => {
+                                    setAddedDepartments([...addedDepartments.slice(0,idx),...addedDepartments.slice(idx + 1,addedDepartments.length)])
+                                }}/>
+                            </IconButton>
+                        </Box>
                     ))
                 }
                 <Box flexDirection="row" >

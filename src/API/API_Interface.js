@@ -196,4 +196,8 @@ export default class APIInterface {
     async addTrained(employee_id, department) {
         return axiosAgent.post(`employees/add-trained/${employee_id}/${department}`);
     }
+
+    async removeTrained(employee_id, department) {
+        return axiosAgent.post(`employees/remove-trained/${employee_id}/${department}`);
+    }
 }
