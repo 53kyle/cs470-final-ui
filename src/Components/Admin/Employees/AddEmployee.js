@@ -61,7 +61,7 @@ function AddEmployee({setAddEmployeeOpen}) {
     }
 
     return (
-        <ModalContentBox title={'Add Employee'} content={
+        <ModalContentBox handleClose={() => setAddEmployeeOpen(false)} title={'Add Employee'} content={
             <Fragment>
                 <Typography
                     variant="body"

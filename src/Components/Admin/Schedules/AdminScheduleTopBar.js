@@ -1,5 +1,19 @@
 import React, {Fragment, useState} from "react";
-import {Box, Button, TextField, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, List, ListItem, ListItemText} from "@mui/material";
+import {
+    Box,
+    Button,
+    TextField,
+    Typography,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    List,
+    ListItem,
+    ListItemText,
+    LinearProgress
+} from "@mui/material";
 
 import EventRepeatIcon from '@mui/icons-material/EventRepeat';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
@@ -21,7 +35,7 @@ const style = {
     p: 4,
 };
 
-function AdminScheduleTopBar({startDate, setStartDate, endDate, setEndDate, currentWeek, generateSchedule, postSchedule}) {
+function AdminScheduleTopBar({startDate, setStartDate, endDate, setEndDate, currentWeek, generateSchedule, postSchedule, numShifts, setNumShifts, numShiftsFilled}) {
     const [open, setOpen] = React.useState(false);
     const [unfilledShifts, setUnfilledShifts] = useState([]);
     const [shifts, setShifts] = useState([]);
@@ -56,6 +70,7 @@ function AdminScheduleTopBar({startDate, setStartDate, endDate, setEndDate, curr
             setShifts(shiftData.data)
             const unfilledShifts = shiftData.data.filter(shift => shift.employee_id === null && shift.posted === 0);
             setUnfilledShifts(unfilledShifts);
+            setNumShifts(unfilledShifts.length);
         } catch (error) {
             console.error('Error fetching unfilled shifts:', error);
         }
@@ -63,6 +78,7 @@ function AdminScheduleTopBar({startDate, setStartDate, endDate, setEndDate, curr
 
 
     return(
+        !numShiftsFilled || numShiftsFilled === 0 ?
         <Fragment>
             <Box sx={{
                 height: 30,
@@ -235,7 +251,12 @@ function AdminScheduleTopBar({startDate, setStartDate, endDate, setEndDate, curr
                 )}
 
             </Box>
-        </Fragment>
+        </Fragment> : <Fragment>
+                <Typography variant="h6" align="center" component="div" width="100%" mb={2}>
+                    {`Generating Shift ${numShiftsFilled} of ${numShifts}...`}
+                </Typography>
+                <LinearProgress variant="determinate" value={100*(numShiftsFilled/numShifts)} sx={{ml: 25, mr: 25}}/>
+            </Fragment>
     )
 };
 

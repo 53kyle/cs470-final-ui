@@ -15,7 +15,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import { generate } from "../../../Utils/ScheduleGeneration";
 import { post } from "../../../Utils/PostSchedule";
-import { FcSettings } from "react-icons/fc";
+import {FcConferenceCall, FcEditImage, FcExpired, FcOvertime, FcPlus, FcReuse, FcSettings} from "react-icons/fc";
 import { useTheme } from '@mui/material/styles'
 
 import {
@@ -63,17 +63,17 @@ function AdminDateCell({date, idx}) {
     const options = [
         {
             title: "Employees Available",
-            icon: <PeopleIcon fontSize="small"/>,
+            icon: <FcConferenceCall fontSize="26px"/>,
             action: viewEmployeesAvailable
         },
         {
             title: "Time Off Requests",
-            icon: <EventAvailableIcon fontSize="small"/>,
+            icon: <FcOvertime fontSize="26px"/>,
             action: viewTimeOff
         },
         {
             title: "Shifts Needed",
-            icon: <PriorityHighIcon fontSize="small"/>,
+            icon: <FcExpired fontSize="26px"/>,
             action: viewShiftsNeeded
         }
     ]
@@ -164,12 +164,12 @@ function AdminScheduleCell({shift, idx}) {
     const scheduledOptions = [
         {
             title: "Edit Shift",
-            icon: <EditCalendarIcon fontSize="small"/>,
+            icon: <FcEditImage fontSize="26px"/>,
             action: editShift
         },
         {
             title: "Remove Shift",
-            icon: <DeleteIcon fontSize="small"/>,
+            icon: <FcReuse fontSize="26px"/>,
             action: deleteShift
         }
     ]
@@ -177,7 +177,7 @@ function AdminScheduleCell({shift, idx}) {
     const unscheduledOptions = [
         {
             title: "Add Shift",
-            icon: <AddIcon fontSize="small"/>,
+            icon: <FcPlus fontSize="26px"/>,
             action: addShift
         }
     ]

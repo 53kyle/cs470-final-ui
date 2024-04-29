@@ -406,6 +406,7 @@ const RequestsTable = ({ user }) => {
                   </Typography>
                 </TableCell>
               ))}
+              <TableCell align="right"></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

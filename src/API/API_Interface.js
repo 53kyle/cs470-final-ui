@@ -99,10 +99,6 @@ export default class APIInterface {
             return axiosAgent.put(`employees/update`, employeeData);
     }
 
-    async updatePassword(password_hash, employee_id) {
-        return axiosAgent.put(`employees/update-password/${password_hash}/${employee_id}`);
-    }
-
     async updateShift(employee_id, shift_id) {
         return axiosAgent.put(`shifts/update/${employee_id}/${shift_id}`);
     }
@@ -199,9 +195,5 @@ export default class APIInterface {
 
     async addTrained(employee_id, department) {
         return axiosAgent.post(`employees/add-trained/${employee_id}/${department}`);
-    }
-
-    async employeeHash(employee_id) {
-        return axiosAgent.get(`employees/hash/${employee_id}`);
     }
 }
