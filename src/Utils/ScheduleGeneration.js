@@ -28,6 +28,7 @@ export async function generate(startDate, endDate, setNumShiftsFilled) {
         let numShiftsFilled = 0;
         // Assign empty shifts to employees
         const shiftPromises = [];
+
         for (const shift of shiftData.data) {
             // Only look at a shift if it has no employee assigned to it
 
@@ -42,7 +43,7 @@ export async function generate(startDate, endDate, setNumShiftsFilled) {
                 // If there are no employees trained for this shift, log it and continue to next shift
                 if(!trainedEmployees.length){
                     console.log("No Employees Trained for Shift: " + shift.shift_id)
-                    return
+                    continue
                 }
 
                 // Get list of employees who are available to work this shift
@@ -52,7 +53,7 @@ export async function generate(startDate, endDate, setNumShiftsFilled) {
                 // If there are no employees available for this shift, log it and continue to next shift
                 if(!availableEmployees.length){
                     console.log("No Employees Available for Shift: " + shift.shift_id)
-                    return
+                    continue
                 }
 
                 // Fetches object containing all employees and the amount of shifts they have so far
@@ -74,7 +75,7 @@ export async function generate(startDate, endDate, setNumShiftsFilled) {
                 // If there is no employee who is available and trained, log and continue to next shift
                 if(!filteredData.length){
                     console.log("No Employees Available and Trained for Shift: " + shift.shift_id)
-                    return
+                    continue
                 }
 
                 // Get the first and last day of the work week
@@ -121,6 +122,7 @@ export async function generate(startDate, endDate, setNumShiftsFilled) {
         };
 
         await Promise.all(shiftPromises);
+        console.log("Done");
 
         setNumShiftsFilled(0);
 

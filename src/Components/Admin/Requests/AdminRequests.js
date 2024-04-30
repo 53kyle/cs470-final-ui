@@ -222,6 +222,14 @@ const RequestTable = ({ user }) => {
     return formattedTime;
   }
 
+  const formatDisplayTime = (time) => {
+    if (!time) return "";
+    const [hours, minutes] = time.split(":");
+    const ampm = hours >= 12 ? "PM" : "AM";
+    const formattedHours = hours % 12 || 12;
+    return `${formattedHours}:${minutes} ${ampm}`;
+  };
+
   const handleApprove = async () => {
     handleCloseDialog();
     setIsEditing(true);
@@ -373,7 +381,6 @@ const RequestTable = ({ user }) => {
     handleClosePopover();
   };
 
-  // Function to format date in desired format
   const formatDate = (dateString) => {
     const options = {
       month: "long",
@@ -506,7 +513,17 @@ const RequestTable = ({ user }) => {
     >
       {availabilityRequestsTableAttributes.map((attr, idx) => (
         <TableCell key={idx} align={attr.align}>
-          {attr.attributeDBName === "status" ? (
+          {attr.attributeDBName === "start_time" ||
+          attr.attributeDBName === "end_time" ? (
+            <Typography
+              variant="body1"
+              style={{
+                fontSize: "0.9rem",
+              }}
+            >
+              {formatDisplayTime(requestObject[attr.attributeDBName])}
+            </Typography>
+          ) : attr.attributeDBName === "status" ? (
             <Typography
               variant="body1"
               style={{
@@ -521,6 +538,7 @@ const RequestTable = ({ user }) => {
           )}
         </TableCell>
       ))}
+
       <TableCell align="right">
         {requestObject.status === "Pending" ? (
           <IconButton

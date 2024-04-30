@@ -153,6 +153,14 @@ const RequestsTable = ({ user }) => {
     return formattedTime;
   }
 
+  const formatDisplayTime = (time) => {
+    if (!time) return "";
+    const [hours, minutes] = time.split(":");
+    const ampm = hours >= 12 ? "PM" : "AM";
+    const formattedHours = hours % 12 || 12;
+    return `${formattedHours}:${minutes} ${ampm}`;
+  };
+
   const handleOpenAddTimeOff = () => {
     setAddTimeOffOpen(true);
   };
@@ -384,7 +392,6 @@ const RequestsTable = ({ user }) => {
       </TableCell>
     </TableRow>
   );
-  
 
   const renderAvailabilityTableRow = (requestObject, index) => (
     <TableRow
@@ -393,7 +400,17 @@ const RequestsTable = ({ user }) => {
     >
       {availabilityRequestsTableAttributes.map((attr, idx) => (
         <TableCell key={idx} align={attr.align}>
-          {attr.attributeDBName === "status" ? (
+          {attr.attributeDBName === "start_time" ||
+          attr.attributeDBName === "end_time" ? (
+            <Typography
+              variant="body1"
+              style={{
+                fontSize: "0.9rem",
+              }}
+            >
+              {formatDisplayTime(requestObject[attr.attributeDBName])}
+            </Typography>
+          ) : attr.attributeDBName === "status" ? (
             <Typography
               variant="body1"
               style={{
@@ -408,7 +425,7 @@ const RequestsTable = ({ user }) => {
           )}
         </TableCell>
       ))}
-       <TableCell align="right">
+      <TableCell align="right">
         {requestObject.status === "Pending" ? (
           <IconButton
             onClick={(event) => handleGearClick(event, requestObject)}
@@ -420,33 +437,33 @@ const RequestsTable = ({ user }) => {
             <FcSettings />
           </IconButton>
         )}
-          <Popover
-            open={Boolean(anchorEl)}
-            anchorEl={anchorEl}
-            onClose={handleClosePopover}
-            anchorOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-          >
-            <MenuItem onClick={handleEdit}>
-              <ListItemIcon>
-                <FcEditImage />
-              </ListItemIcon>
-              <Typography variant="inherit">Edit</Typography>
-            </MenuItem>
-            <MenuItem onClick={handleOpenRemoveDialog}>
-              <ListItemIcon>
-                <FcFullTrash />
-              </ListItemIcon>
-              <Typography variant="inherit">Remove</Typography>
-            </MenuItem>
-          </Popover>
-        </TableCell>
+        <Popover
+          open={Boolean(anchorEl)}
+          anchorEl={anchorEl}
+          onClose={handleClosePopover}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+        >
+          <MenuItem onClick={handleEdit}>
+            <ListItemIcon>
+              <FcEditImage />
+            </ListItemIcon>
+            <Typography variant="inherit">Edit</Typography>
+          </MenuItem>
+          <MenuItem onClick={handleOpenRemoveDialog}>
+            <ListItemIcon>
+              <FcFullTrash />
+            </ListItemIcon>
+            <Typography variant="inherit">Remove</Typography>
+          </MenuItem>
+        </Popover>
+      </TableCell>
     </TableRow>
   );
 

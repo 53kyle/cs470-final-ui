@@ -215,7 +215,7 @@ const PunchTable = () => {
             <FcSettings />
           </IconButton>
         ) : (
-          <IconButton disabled>
+          <IconButton style={{ opacity: 0.5 }} disabled>
             <FcSettings />
           </IconButton>
         )}
