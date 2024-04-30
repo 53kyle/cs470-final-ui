@@ -343,43 +343,48 @@ const RequestsTable = ({ user }) => {
           ) : null}
         </TableCell>
       ))}
-      {requestObject.status === "Pending" && (
-        <TableCell align="right">
+      <TableCell align="right">
+        {requestObject.status === "Pending" ? (
           <IconButton
             onClick={(event) => handleGearClick(event, requestObject)}
           >
             <FcSettings />
           </IconButton>
-          <Popover
-            open={Boolean(anchorEl)}
-            anchorEl={anchorEl}
-            onClose={handleClosePopover}
-            anchorOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-          >
-            <MenuItem onClick={handleEdit}>
-              <ListItemIcon>
-                <FcEditImage />
-              </ListItemIcon>
-              <Typography variant="inherit">Edit</Typography>
-            </MenuItem>
-            <MenuItem onClick={handleRemove}>
-              <ListItemIcon>
-                <FcFullTrash />
-              </ListItemIcon>
-              <Typography variant="inherit">Remove</Typography>
-            </MenuItem>
-          </Popover>
-        </TableCell>
-      )}
+        ) : (
+          <IconButton style={{ opacity: 0.5 }} disabled>
+            <FcSettings />
+          </IconButton>
+        )}
+        <Popover
+          open={Boolean(anchorEl)}
+          anchorEl={anchorEl}
+          onClose={handleClosePopover}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+        >
+          <MenuItem onClick={handleEdit}>
+            <ListItemIcon>
+              <FcEditImage />
+            </ListItemIcon>
+            <Typography variant="inherit">Edit</Typography>
+          </MenuItem>
+          <MenuItem onClick={handleRemove}>
+            <ListItemIcon>
+              <FcFullTrash />
+            </ListItemIcon>
+            <Typography variant="inherit">Remove</Typography>
+          </MenuItem>
+        </Popover>
+      </TableCell>
     </TableRow>
   );
+  
 
   const renderAvailabilityTableRow = (requestObject, index) => (
     <TableRow
@@ -403,13 +408,18 @@ const RequestsTable = ({ user }) => {
           )}
         </TableCell>
       ))}
-      {requestObject.status === "Pending" && (
-        <TableCell align="right">
+       <TableCell align="right">
+        {requestObject.status === "Pending" ? (
           <IconButton
             onClick={(event) => handleGearClick(event, requestObject)}
           >
             <FcSettings />
           </IconButton>
+        ) : (
+          <IconButton style={{ opacity: 0.5 }} disabled>
+            <FcSettings />
+          </IconButton>
+        )}
           <Popover
             open={Boolean(anchorEl)}
             anchorEl={anchorEl}
@@ -437,7 +447,6 @@ const RequestsTable = ({ user }) => {
             </MenuItem>
           </Popover>
         </TableCell>
-      )}
     </TableRow>
   );
 
