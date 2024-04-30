@@ -33,6 +33,7 @@ import { lightTheme, darkTheme } from "../../Utils/theme";
 import EmployeeNotifications from "../Employee/Notifications/EmployeeNotifications";
 import ChangePassword from "./ChangePassword";
 import AddTimeOffRequest from "../Employee/Requests/AddTimeOffRequest";
+import {FcAbout, FcExpand, FcGenealogy, FcMenu, FcSettings} from "react-icons/fc";
 
 let drawerWidth = 240;
 
@@ -272,17 +273,17 @@ function Menu({ user, logoutAction }) {
                 m: 1,
               }}
             >
-              <Button variant="h6" onClick={handleOpenOptions}>
+              <Typography variant="h6">
                 {`${user.first_name} ${user.last_name}`}
-              </Button>
+              </Typography>
 
               <Typography variant="h7" component="div">
                 {user.id}
               </Typography>
             </Box>
 
-            <Button color="inherit" onClick={logoutAction}>
-              Log Out
+            <Button color="inherit" onClick={handleOpenOptions}>
+              <FcSettings fontSize="26px"></FcSettings>
             </Button>
           </Toolbar>
         </AppBar>

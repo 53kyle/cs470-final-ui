@@ -214,7 +214,8 @@ const RequestTable = ( {user} ) => {
       try {
         const api = new API();
         selectedRequest.status = "Approved";
-        await api.updateAvailabilityRequest(selectedRequest);
+        await api.ApproveAvailabilityRequest(selectedRequest);
+        await api.removeAvailabilityRequest(selectedRequest.employee_id, selectedRequest.day_of_week)
         setIsEditing(false);
       } catch (error) {
         console.error("Error approving availability request:", error);

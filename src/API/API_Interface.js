@@ -209,6 +209,14 @@ export default class APIInterface {
         return axiosAgent.put(`employees/update-availability-request`, requestData);
     }
 
+    async ApproveAvailabilityRequest(requestData) {
+        return axiosAgent.put(`employees/approve-availability-request`, requestData);
+    }
+
+    async removeAvailabilityRequest(employee_id, day_of_week) {
+        return axiosAgent.delete(`employees/requests/remove-availability/${employee_id}/${day_of_week}`);
+    }
+
     async updateTimeoff(requestData) {
         return axiosAgent.put(`employees/update-timeoff`, requestData);
     }

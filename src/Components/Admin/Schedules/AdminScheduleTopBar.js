@@ -168,10 +168,10 @@ function AdminScheduleTopBar({startDate, setStartDate, endDate, setEndDate, curr
                                 </Typography>
                                 <DialogTitle id="confirmation-dialog-title">Are you sure you want to Generate {unfilledShifts.length} Shifts?</DialogTitle>
                                 <DialogActions>
-                                    <Button onClick={() => { generateSchedule(); handleClose(); }} color="error">
+                                    <Button onClick={() => { generateSchedule(); handleClose(); }} >
                                         Yes
                                     </Button>
-                                    <Button onClick={handleClose} autoFocus>
+                                    <Button onClick={handleClose} autoFocus color="error">
                                         No
                                     </Button>
                                 </DialogActions>
