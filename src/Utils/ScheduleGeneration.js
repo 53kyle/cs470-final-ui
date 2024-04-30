@@ -33,7 +33,6 @@ export async function generate(startDate, endDate, setNumShiftsFilled) {
             // Only look at a shift if it has no employee assigned to it
 
             if (shift.employee_id === null) {
-                console.log("Next");
                 numShiftsFilled += 1;
                 setNumShiftsFilled(numShiftsFilled);
 
