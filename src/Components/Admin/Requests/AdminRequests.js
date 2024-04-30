@@ -441,7 +441,7 @@ const RequestTable = ({ user }) => {
             <FcSettings />
           </IconButton>
         ) : (
-          <IconButton disabled>
+          <IconButton style={{ opacity: 0.5 }} disabled>
             <FcSettings />
           </IconButton>
         )}
@@ -527,7 +527,7 @@ const RequestTable = ({ user }) => {
             <FcSettings />
           </IconButton>
         ) : (
-          <IconButton disabled>
+          <IconButton style={{ opacity: 0.5 }} disabled>
             <FcSettings />
           </IconButton>
         )}
