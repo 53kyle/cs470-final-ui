@@ -359,9 +359,11 @@ const RequestsTable = ({ user }) => {
             <FcSettings />
           </IconButton>
         ) : (
-          <IconButton style={{ opacity: 0.5 }} disabled>
-            <FcSettings />
-          </IconButton>
+            <IconButton
+                onClick={(event) => handleGearClick(event, requestObject)}
+            >
+              <FcSettings />
+            </IconButton>
         )}
         <Popover
           open={Boolean(anchorEl)}

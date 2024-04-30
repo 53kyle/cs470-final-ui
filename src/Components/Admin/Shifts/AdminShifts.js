@@ -162,21 +162,26 @@ function AdminShiftsCell({ currentWeek, render, setRender, shifts, row_idx, col_
   useEffect (() => {
     async function checkAvailability() {
       try {
+        if (cellType === -1 || !shift) {
+          setBackgroundColor("rgba(0, 0, 0, 0)");
+          return;
+        }
+
         const api = new API();
 
+        // Get list of employees who are trained to work this shift
+        const trainedEmployeesResponse = await api.employeesTrainedInShift(shift.shift_id);
+        const trainedEmployees = trainedEmployeesResponse.data.map(obj => obj.employee_id);
+
+        // Get list of employees who are available to work this shift
+        const availableEmployeesResponse = await api.employeesAvailableForShift(shift.shift_id);
+        const availableEmployees = availableEmployeesResponse.data.map(obj => obj.employee_id);
+
+        const intersectionArray = trainedEmployees.filter(element => availableEmployees.includes(element));
+
+        console.log(availableEmployees.length, trainedEmployees.length)
+
         if (shift.employee_id === null) {
-          // Get list of employees who are trained to work this shift
-          const trainedEmployeesResponse = await api.employeesTrainedInShift(shift.shift_id);
-          const trainedEmployees = trainedEmployeesResponse.data.map(obj => obj.employee_id);
-
-          // Get list of employees who are available to work this shift
-          const availableEmployeesResponse = await api.employeesAvailableForShift(shift.shift_id);
-          const availableEmployees = availableEmployeesResponse.data.map(obj => obj.employee_id);
-
-          const intersectionArray = trainedEmployees.filter(element => availableEmployees.includes(element));
-
-          console.log(availableEmployees.length, trainedEmployees.length)
-
           // If there are no employees available for this shift, log it and continue to next shift
           if (cellType > -1 && (intersectionArray.length === 0)) {
             //console.log("No Employees Available for Shift: " + shift.shift_id)
@@ -192,7 +197,12 @@ function AdminShiftsCell({ currentWeek, render, setRender, shifts, row_idx, col_
           }
         }
         else if (shift && !shift.posted) {
-          setBackgroundColor("rgba(0, 255, 0, 0.1)");
+          if (intersectionArray.length === 0) {
+            setBackgroundColor("rgba(227, 61, 148, 0.1)");
+          }
+          else {
+            setBackgroundColor("rgba(0, 255, 0, 0.1)");
+          }
         }
         else {
           setBackgroundColor("rgba(0, 0, 0, 0)");
@@ -546,6 +556,8 @@ function AdminShifts() {
         numShifts={numShifts}
         numShiftsFilled={numShiftsFilled}
         setNumShifts={setNumShifts}
+        render={render}
+        setRender={setRender}
       />
       <Divider
         sx={{

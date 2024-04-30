@@ -26,6 +26,8 @@ import { post } from "../../../Utils/PostSchedule";
 import API from "../../../API/API_Interface";
 
 import notificationSound from "../../../Utils/notification.wav";
+import {ContentPaste, CopyAll} from "@mui/icons-material";
+import {paste} from "@testing-library/user-event/dist/paste";
 
 const style = {
     width: 400,
@@ -35,10 +37,12 @@ const style = {
     p: 4,
 };
 
-function AdminScheduleTopBar({startDate, setStartDate, endDate, setEndDate, currentWeek, generateSchedule, postSchedule, numShifts, setNumShifts, numShiftsFilled}) {
+function AdminScheduleTopBar({startDate, setStartDate, endDate, setEndDate, currentWeek, generateSchedule, postSchedule, numShifts, setNumShifts, numShiftsFilled, render, setRender}) {
     const [open, setOpen] = React.useState(false);
     const [unfilledShifts, setUnfilledShifts] = useState([]);
     const [shifts, setShifts] = useState([]);
+    const [copiedShifts, setCopiedShifts] = useState([]);
+    const [copiedWeek, setCopiedWeek] = useState(currentWeek);
     const playNotificationSound = () => {
         const sound = new Audio(notificationSound);
         sound.play();
@@ -63,6 +67,52 @@ function AdminScheduleTopBar({startDate, setStartDate, endDate, setEndDate, curr
         setEndDate(currentWeek[6]);
     }
 
+    const copyShifts = async () => {
+        try {
+            const api = new API();
+            const shiftData = await api.shiftsInRange(DateHelper.dateToMySQLDate(startDate), DateHelper.dateToMySQLDate(endDate));
+            setCopiedShifts(shiftData.data);
+            setCopiedWeek(currentWeek);
+        } catch (error) {
+            console.error('Error copying shifts:', error);
+        }
+    }
+
+    const pasteShifts = async () => {
+        const diff = currentWeek[0] - copiedWeek[0];
+        const api = new API();
+
+        if (diff === 0) {
+            return;
+        }
+
+        copiedShifts.forEach(async (shift) => {
+            let newDate = DateHelper.textToDate(shift.date) + diff;
+            let newStartTime = DateHelper.textToDate(shift.start_time) + diff;
+            let newEndTime = DateHelper.textToDate(shift.end_time) + diff;
+            let newMealStart = shift.meal_start ? DateHelper.textToDate(shift.meal_start) + diff : null;
+            let newMealEnd = shift.meal_end ? DateHelper.textToDate(shift.meal_start) + diff : null;
+
+            const newShift = {
+                ...shift,
+                posted: false,
+                employee_id: null,
+                date: DateHelper.dateToMySQLDateTime(newDate),
+                start_time: DateHelper.dateToMySQLDateTime(newStartTime),
+                end_time: DateHelper.dateToMySQLDateTime(newEndTime),
+                meal_start: DateHelper.dateToMySQLDateTime(newMealStart),
+                meal_end: DateHelper.dateToMySQLDateTime(newMealEnd)
+            };
+
+            try {
+                await api.addShift(newShift);
+                setRender(!render);
+            } catch (error) {
+                console.error("Error adding shift:", error);
+            }
+        });
+    }
+
     const fetchUnfilledShifts = async () => {
         try {
             const api = new API();
@@ -75,7 +125,6 @@ function AdminScheduleTopBar({startDate, setStartDate, endDate, setEndDate, curr
             console.error('Error fetching unfilled shifts:', error);
         }
     };
-
 
     return(
         !numShiftsFilled || numShiftsFilled === 0 ?
@@ -124,6 +173,7 @@ function AdminScheduleTopBar({startDate, setStartDate, endDate, setEndDate, curr
                             variant="contained"
                             endIcon={<EventAvailableIcon />}
                             onClick={handleOpen}
+                            sx={{ mr: 2 }}
                         >
                             Generate Schedule
                         </Button>
@@ -179,6 +229,30 @@ function AdminScheduleTopBar({startDate, setStartDate, endDate, setEndDate, curr
                     </>
                 )}
 
+                {generateSchedule && (
+                    <>
+                        <Button
+                            variant="contained"
+                            endIcon={<CopyAll />}
+                            onClick={copyShifts}
+                            sx={{ mr: 2 }}
+                        >
+                            Copy
+                        </Button>
+                    </>
+                )}
+                {generateSchedule && (
+                    <>
+                        <Button
+                            variant="contained"
+                            endIcon={<ContentPaste />}
+                            onClick={pasteShifts}
+                            disabled={copiedShifts.length === 0}
+                        >
+                            Paste
+                        </Button>
+                    </>
+                )}
                 {postSchedule && (
                     <>
                         <Button
