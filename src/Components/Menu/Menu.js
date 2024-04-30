@@ -357,7 +357,7 @@ function Menu({ user, logoutAction }) {
             aria-describedby="modal-modal-description"
         >
           <Box sx={notificationsStyle}>
-            <EmployeeNotifications user={user} sx={{
+            <EmployeeNotifications user={user} handleCloseNotifications={() => setNotificationsOpen(false)} sx={{
 
             }}/>
           </Box>

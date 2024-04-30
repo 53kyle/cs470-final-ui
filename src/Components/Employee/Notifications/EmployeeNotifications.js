@@ -9,7 +9,7 @@ import ScheduleHelper from "../../../Utils/ScheduleHelper";
 import CircleIcon from '@mui/icons-material/Circle';
 import ModalContentBox from "../../Generic/ModalContentBox";
 
-function EmployeeNotifications({user}) {
+function EmployeeNotifications({user, handleCloseNotifications}) {
     const [notifications, setNotifications] = useState([]);
 
     useEffect(() => {
@@ -31,7 +31,7 @@ function EmployeeNotifications({user}) {
     }, [user]);
 
     return (
-        <ModalContentBox title="Notifications" content={
+        <ModalContentBox handleClose={handleCloseNotifications} title="Notifications" content={
             notifications.length > 0 ? notifications.map((item, index) => (
                 <Fragment key={index}>
                     <Box
