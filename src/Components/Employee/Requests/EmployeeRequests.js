@@ -555,6 +555,7 @@ const RequestsTable = ({ user }) => {
                   </Typography>
                 </TableCell>
               ))}
+              <TableCell/>
             </TableRow>
           </TableHead>
           <TableBody>

@@ -793,6 +793,7 @@ const RequestTable = ({ user }) => {
                   </Typography>
                 </TableCell>
               ))}
+              <TableCell/>
             </TableRow>
           </TableHead>
           <TableBody>
