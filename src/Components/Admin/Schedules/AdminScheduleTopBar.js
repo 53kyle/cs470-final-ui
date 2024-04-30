@@ -15,7 +15,6 @@ import {
     LinearProgress
 } from "@mui/material";
 
-import EventRepeatIcon from '@mui/icons-material/EventRepeat';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 

@@ -22,7 +22,6 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import API from "../../API/API_Interface";
-
 import MuiAppBar from "@mui/material/AppBar";
 
 import { AdminMenuItems, EmployeeMenuItems } from "../../Utils/MenuItems";

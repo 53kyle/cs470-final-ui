@@ -220,4 +220,5 @@ export default class APIInterface {
     async employeeHash(employee_id) {
         return axiosAgent.get(`employees/hash/${employee_id}`);
     }
+
 }
