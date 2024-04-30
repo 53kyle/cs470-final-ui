@@ -191,6 +191,9 @@ function AdminShiftsCell({ currentWeek, render, setRender, shifts, row_idx, col_
             setBackgroundColor("rgba(0, 0, 0, 0)");
           }
         }
+        else if (shift && !shift.posted) {
+          setBackgroundColor("rgba(0, 255, 0, 0.1)");
+        }
         else {
           setBackgroundColor("rgba(0, 0, 0, 0)");
         }
@@ -296,9 +299,10 @@ function AdminShiftsCell({ currentWeek, render, setRender, shifts, row_idx, col_
               zIndex: "tooltip",
             }}
           >
+            {!shift.posted &&
             <IconButton aria-label="menu" size="small" onClick={handleOpen}>
               <FcSettings/>
-            </IconButton>
+            </IconButton>}
           </Box>
           <Menu
             id="basic-menu"
