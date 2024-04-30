@@ -205,10 +205,6 @@ export default class APIInterface {
         return axiosAgent.post(`employees/remove-trained/${employee_id}/${department}`);
     }
 
-    async updateAvailabilityRequest(requestData) {
-        return axiosAgent.put(`employees/update-availability-request`, requestData);
-    }
-
     async updateTimeoff(requestData) {
         return axiosAgent.put(`employees/update-timeoff`, requestData);
     }
@@ -221,4 +217,19 @@ export default class APIInterface {
         return axiosAgent.get(`employees/hash/${employee_id}`);
     }
 
+    async ApproveAvailabilityRequest(requestData) {
+        return axiosAgent.put(`employees/approve-availability-request`, requestData);
+    }
+
+    async removeAvailabilityRequest(employee_id, day_of_week) {
+        return axiosAgent.delete(`employees/requests/remove-availability/${employee_id}/${day_of_week}`);
+    }
+
+    async updateTimeoff(requestData, oldStartTime) {
+        return axiosAgent.put(`employees/update-timeoff`, { ...requestData, oldStartTime });
+    }
+
+    async removeTimeoffRequest(employee_id, start_time, end_time, reason){
+        return axiosAgent.delete(`employees/requests/remove-time-off/${employee_id}/${start_time}/${end_time}/${reason}`);
+    }
 }
