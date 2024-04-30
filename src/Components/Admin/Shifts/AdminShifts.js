@@ -36,6 +36,7 @@ import {FcConferenceCall, FcEditImage, FcOvertime, FcPlus, FcSettings, FcFullTra
 import { useTheme } from "@mui/material/styles";
 import EmployeeNotifications from "../../Employee/Notifications/EmployeeNotifications";
 import AddShift from "./AddShift";
+import {ContentPaste, CopyAll} from "@mui/icons-material";
 
 const modalStyle = {
   position: 'absolute',
@@ -491,7 +492,55 @@ function AdminShifts() {
   const [editShift, setEditShift] = useState(null);
   const [numShifts, setNumShifts] = useState(1);
   const [numShiftsFilled, setNumShiftsFilled] = useState(0);
+  const [copiedShifts, setCopiedShifts] = useState([]);
+  const [copiedWeek, setCopiedWeek] = useState(currentWeek);
   const theme = useTheme();
+
+  const copyShifts = async () => {
+    try {
+      const api = new API();
+      const shiftData = await api.shiftsInRange(DateHelper.dateToMySQLDate(currentWeek[0]), DateHelper.dateToMySQLDate(currentWeek[6]));
+      setCopiedShifts(shiftData.data);
+      setCopiedWeek(currentWeek);
+    } catch (error) {
+      console.error('Error copying shifts:', error);
+    }
+  }
+
+  const pasteShifts = async () => {
+    const diff = currentWeek[0] - copiedWeek[0];
+    const api = new API();
+
+    if (diff === 0) {
+      return;
+    }
+
+    copiedShifts.forEach(async (shift) => {
+      let newDate = DateHelper.textToDate(shift.date) + diff;
+      let newStartTime = DateHelper.textToDate(shift.start_time) + diff;
+      let newEndTime = DateHelper.textToDate(shift.end_time) + diff;
+      let newMealStart = shift.meal_start ? DateHelper.textToDate(shift.meal_start) + diff : null;
+      let newMealEnd = shift.meal_end ? DateHelper.textToDate(shift.meal_start) + diff : null;
+
+      const newShift = {
+        ...shift,
+        posted: false,
+        employee_id: null,
+        date: DateHelper.dateToMySQLDateTime(newDate),
+        start_time: DateHelper.dateToMySQLDateTime(newStartTime),
+        end_time: DateHelper.dateToMySQLDateTime(newEndTime),
+        meal_start: DateHelper.dateToMySQLDateTime(newMealStart),
+        meal_end: DateHelper.dateToMySQLDateTime(newMealEnd)
+      };
+
+      try {
+        await api.addShift(newShift);
+        setRender(!render);
+      } catch (error) {
+        console.error("Error adding shift:", error);
+      }
+    });
+  }
 
   const handleSetStartDate = (date) => {
     setStartDate(date);
@@ -575,6 +624,27 @@ function AdminShifts() {
           mt: 3,
         }}
       />
+      <Box sx={{
+        mt: 3,
+        mb: 3
+      }}>
+        <Button
+            variant="contained"
+            endIcon={<CopyAll />}
+            onClick={copyShifts}
+            sx={{ mr: 2 }}
+        >
+          Copy
+        </Button>
+        <Button
+            variant="contained"
+            endIcon={<ContentPaste />}
+            onClick={pasteShifts}
+            disabled={copiedShifts.length === 0}
+        >
+          Paste
+        </Button>
+      </Box>
 
       <AdminShiftsTable
           currentWeek={currentWeek}
