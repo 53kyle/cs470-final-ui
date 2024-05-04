@@ -60,6 +60,14 @@ export default class APIInterface {
         return axiosAgent.get(`shifts/employee/${employee_id}/${start_date}/${end_date}`);
     }
 
+    async unpostedShiftsForEmployeeInRange(start_date, end_date, employee_id) {
+        return axiosAgent.get(`shifts/unposted/${employee_id}/${start_date}/${end_date}`);
+    }
+
+    async conflictingShiftForEmployee(employee_id, shift_id) {
+        return axiosAgent.get(`shifts/conflicting/${employee_id}/${shift_id}`);
+    }
+
     async allEmployees() {
         return axiosAgent.get(`employees/all-employees`);
     }
@@ -109,6 +117,10 @@ export default class APIInterface {
 
     async employeesTrainedInShift(shift_id) {
         return axiosAgent.get(`employees/trained/${shift_id}`);
+    }
+
+    async employeesAvailableTrainedForShift(shift_id) {
+        return axiosAgent.get(`employees/eligible/${shift_id}`);
     }
 
     async employeesAvailableForShift(shift_id) {
@@ -232,4 +244,5 @@ export default class APIInterface {
     async removeTimeoffRequest(employee_id, start_time, end_time, reason){
         return axiosAgent.delete(`employees/requests/remove-time-off/${employee_id}/${start_time}/${end_time}/${reason}`);
     }
+
 }
